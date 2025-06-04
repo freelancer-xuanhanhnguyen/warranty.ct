@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: laravel-app
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_HOST
+        fromService:
+          type: pserv
+          name: laravel-db
+      - key: DB_DATABASE
+        value: laravel_warranty
+      - key: DB_USERNAME
+        value: root
+      - key: DB_PASSWORD
+        value: root
