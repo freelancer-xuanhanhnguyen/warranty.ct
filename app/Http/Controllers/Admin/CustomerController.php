@@ -1,0 +1,108 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Customer;
+use App\Models\Service;
+use Illuminate\Http\Request;
+
+class CustomerController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $q = \request()->q;
+        $data = Customer::when($q, function ($query) use ($q) {
+            $query->where('name', 'like', "%$q%")
+                ->orWhere('code', 'like', "%$q%")
+                ->orWhere('email', 'like', "%$q%");
+        })
+            ->paginate(20);
+        return view('admin.customers.index', compact('data'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('admin.customers.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|unique:customers,email',
+        ]);
+
+        $service = Customer::create($request->all());
+
+        if ($service) {
+            return back()->with(['message' => "Thêm khách hàng thành công."]);
+        }
+
+        return back()->withInput()->with(['error' => 'Có lỗi xảy ra, vui lòng thử lại.']);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $q = \request()->q;
+        $data = Customer::findOrFail($id);
+        $services = Service::whereHas('order', function ($query) use ($id) {
+            $query->select('id')
+                ->where('customer_id', $id);
+        })
+            ->when($q, function ($query) use ($q) {
+                $query->where('code', 'like', "%$q%");
+            })
+            ->latest()
+            ->get();
+
+        return view('admin.customers.show', compact('data', 'services'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $data = Customer::findOrFail($id);
+        return view('admin.customers.edit', compact('data'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $request->validate([
+            'email' => 'required|email|unique:customers,email,' . $id,
+        ]);
+
+        $updated = Customer::findOrFail($id)->update($request->all());
+
+        if ($updated) {
+            return back()->with(['message' => "Cập nhật khách hàng thành công."]);
+        }
+
+        return back()->withInput()->with(['error' => 'Có lỗi xảy ra, vui lòng thử lại.']);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        Customer::destroy($id);
+        return back()->with(['message' => 'Đã xóa thành công.']);
+    }
+}
