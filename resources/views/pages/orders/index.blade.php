@@ -43,7 +43,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($data as $item)
+                        @foreach($data ?? [] as $item)
                             <tr>
                                 <td class="text-center fs-sm">
                                     <a class="fw-semibold"
@@ -112,7 +112,7 @@
                 </div>
                 <!-- END All Orders Table -->
 
-                {{ $data->links('layouts.inc.pagination') }}
+                {{ $data?->links('layouts.inc.pagination') }}
             </div>
         </div>
     </div>

@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\Customer::factory(10)->create();
         \App\Models\Product::factory(30)->create();
         \App\Models\Order::factory(50)->create();
-        \App\Models\Service::factory(50)->create();
-        \App\Models\ServiceStatus::factory(100)->create();
+//        \App\Models\Service::factory(50)->create();
+//        \App\Models\ServiceStatus::factory(100)->create();
     }
 }

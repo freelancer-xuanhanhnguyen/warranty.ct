@@ -13,9 +13,9 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word,
-            'code' => strtoupper($this->faker->bothify('PRD###??')),
-            'serial' => strtoupper($this->faker->bothify('SN####??')),
+            'name' => $this->faker->text(50),
+            'code' => strtoupper($this->faker->bothify('P###??')),
+            'serial' => strtoupper($this->faker->bothify('????????')),
             'warranty_period_unit' => $this->faker->randomElement([Product::WARRANTY_UNIT_DAY, Product::WARRANTY_UNIT_MONTH, Product::WARRANTY_UNIT_YEAR]),
             'warranty_period' => $this->faker->numberBetween(6, 36),
             'periodic_warranty_unit' => $this->faker->randomElement([Product::WARRANTY_UNIT_DAY, Product::WARRANTY_UNIT_MONTH, Product::WARRANTY_UNIT_YEAR]),

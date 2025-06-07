@@ -13,20 +13,24 @@ class OrderController extends Controller
     {
         $q = \request()->q;
         $customer = Customer::where('email', $email)->first('id');
-        $data = Order::with([
-            'product',
-            'customer',
-            'service'
-        ])
-            ->where('customer_id', $customer->id)
-            ->when($q, function ($query) use ($q) {
-                $query->where('code', 'like', "%$q%")
-                    ->orWhereHas('product', function ($_query) use ($q) {
-                        $_query->where('name', 'like', "%$q%")
-                            ->orWhere('code', 'like', "%$q%");
-                    });
-            })
-            ->paginate(20);
+        $data = null;
+        if ($customer) {
+            $data = Order::with([
+                'product',
+                'customer',
+                'service'
+            ])
+                ->where('customer_id', $customer->id)
+                ->when($q, function ($query) use ($q) {
+                    $query->where('code', 'like', "%$q%")
+                        ->orWhereHas('product', function ($_query) use ($q) {
+                            $_query->where('name', 'like', "%$q%")
+                                ->orWhere('code', 'like', "%$q%");
+                        });
+                })
+                ->paginate(20);
+        }
+
 
         return view('pages.orders.index', compact('data'));
     }
