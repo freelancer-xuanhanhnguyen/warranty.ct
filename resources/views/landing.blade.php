@@ -14,14 +14,14 @@
                                 <img width="100" src="{{asset('media/logo/logo.png')}}" alt="">
                                 <h1 class="h5 mb-1">{{the_website_name()}}</h1>
                                 <p class="fs-base text-muted mb-4">
-                                    Theo dỗi quá trình bảo hành - sửa chữa thiết bị của bạn tốt hơn!
+                                    Theo dõi quá trình bảo hành - sửa chữa thiết bị của bạn tốt hơn!
                                 </p>
                             </div>
 
                             <div class="form-floating mb-4">
                                 <input type="email" class="form-control form-control-sm @error('email') is-invalid @enderror" id="email"
                                        name="email" placeholder="vui lòng nhập email của bạn" required>
-                                <label for="email">Email</label>
+                                <label for="email">Nhập email của bạn</label>
                                 @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
