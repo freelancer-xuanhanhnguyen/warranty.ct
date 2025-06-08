@@ -13,11 +13,11 @@
     <!-- Side Header -->
     <div class="content-header">
         <!-- Logo -->
-        <a class="font-semibold text-dual" href="/">
+        <a class="font-semibold text-dual" href="{{route('dashboard')}}">
           <span class="smini-visible">
             <i class="fa fa-circle-notch text-primary"></i>
           </span>
-            <img width="50" src="{{asset("/media/logo/logo-tmdt.jpg")}}" alt="">
+            <img width="50" src="{{asset("/media/logo/logo.png")}}" alt="">
         </a>
         <!-- END Logo -->
 

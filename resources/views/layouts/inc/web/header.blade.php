@@ -5,7 +5,7 @@
         <div class="d-flex align-items-center">
             <!-- Logo -->
             <a class="fw-semibold fs-5 tracking-wider text-dual me-3" href="/">
-                <img width="50" src="{{asset("/media/logo/logo-tmdt.jpg")}}" alt="">
+                <img width="50" src="{{asset("/media/logo/logo.png")}}" alt="">
             </a>
             <!-- END Logo -->
         </div>

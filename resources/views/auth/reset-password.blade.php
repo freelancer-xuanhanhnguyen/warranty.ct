@@ -13,10 +13,13 @@
                         </div>
                         <div class="block-content">
                             <div class="p-sm-3 px-lg-4 px-xxl-5 py-lg-5">
-                                <h1 class="h2 mb-1">OneUI</h1>
-                                <p class="fw-medium text-muted">
-                                    Please fill the following details to reset an account.
-                                </p>
+                                <div class="text-center">
+                                    <img width="100" src="{{asset('media/logo/logo.png')}}" alt="">
+                                    <h1 class="h5 mb-1">{{the_website_name()}}</h1>
+                                    <p class="fw-medium text-muted">
+                                        Vui lòng điền các thông tin sau để thiết lập lại tài khoản.
+                                    </p>
+                                </div>
 
                                 <!-- Sign Up Form -->
                                 <!-- jQuery Validation (.js-validation-signup class is initialized in js/pages/op_auth_signup.min.js which was auto compiled from _js/pages/op_auth_signup.js) -->
@@ -39,9 +42,9 @@
                                         </div>
                                     </div>
                                     <div class="row mb-4">
-                                        <div class="col-md-6 col-xl-5">
+                                        <div class="col">
                                             <button type="submit" class="btn w-100 btn-alt-success">
-                                                <i class="fa fa-fw fa-plus me-1 opacity-50"></i> Reset Password
+                                                <i class="fa fa-fw fa-plus me-1 opacity-50"></i> Đặt lại mật khẩu
                                             </button>
                                         </div>
                                     </div>

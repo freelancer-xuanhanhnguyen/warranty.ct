@@ -20,11 +20,14 @@
                             </div>
                         </div>
                         <div class="block-content">
-                            <div class="p-sm-3 px-lg-4 px-xxl-5 py-lg-5">
-                                <h1 class="h2 mb-1">{{the_website_name()}}</h1>
-                                <p class="fw-medium text-muted">
-                                    Xin chào, vui lòng nhập tài khoản của bạn.
-                                </p>
+                            <div class="p-sm-3 px-lg-4 px-xxl-5 pt-sm-0 pb-lg-5">
+                                <div class="text-center">
+                                    <img width="100" src="{{asset('media/logo/logo.png')}}" alt="">
+                                    <h1 class="h5 mb-1">{{the_website_name()}}</h1>
+                                    <p class="fw-medium text-muted">
+                                        Xin chào, vui lòng nhập tài khoản của bạn.
+                                    </p>
+                                </div>
 
                                 <!-- Sign In Form -->
                                 <!-- jQuery Validation (.js-validation-signin class is initialized in js/pages/op_auth_signin.min.js which was auto compiled from _js/pages/op_auth_signin.js) -->
@@ -57,7 +60,7 @@
                                         </div>
                                     </div>
                                     <div class="row mb-4">
-                                        <div class="col-md-6 col-xl-5">
+                                        <div class="col">
                                             <button type="submit" class="btn w-100 btn-alt-primary">
                                                 <i class="fa fa-fw fa-sign-in-alt me-1 opacity-50"></i> Đăng nhập
                                             </button>
