@@ -69,3 +69,9 @@ function format_money($amount)
     if (!$amount) return null;
     return number_format($amount, 0, ',', '.') . 'đ';
 }
+
+
+function the_website_name()
+{
+    return "CÔNG TY CỔ PHẦN TẬP ĐOÀN NAM VIỆT NAM";
+}

@@ -10,10 +10,9 @@
                     <!-- Sign In Block -->
                     <div class="block block-rounded mb-0">
                         <div class="block-header block-header-default">
-                            <h3 class="block-title">Sign In</h3>
+                            <h3 class="block-title">Đăng nhập</h3>
                             <div class="block-options">
-                                <a class="btn-block-option fs-sm" href="{{route('password.forgot')}}">Forgot
-                                    Password?</a>
+                                <a class="btn-block-option fs-sm" href="{{route('password.forgot')}}">Quên mật khẩu?</a>
                                 {{--<a class="btn-block-option" href="{{route('register')}}" data-bs-toggle="tooltip"
                                    data-bs-placement="left" title="New Account">
                                     <i class="fa fa-user-plus"></i>
@@ -22,9 +21,9 @@
                         </div>
                         <div class="block-content">
                             <div class="p-sm-3 px-lg-4 px-xxl-5 py-lg-5">
-                                <h1 class="h2 mb-1">OneUI</h1>
+                                <h1 class="h2 mb-1">{{the_website_name()}}</h1>
                                 <p class="fw-medium text-muted">
-                                    Welcome, please login.
+                                    Xin chào, vui lòng nhập tài khoản của bạn.
                                 </p>
 
                                 <!-- Sign In Form -->
@@ -44,7 +43,7 @@
                                         <div class="mb-4">
                                             <input type="password"
                                                    class="form-control form-control-alt form-control-lg @error('password') is-invalid @enderror"
-                                                   id="password" name="password" placeholder="Password">
+                                                   id="password" name="password" placeholder="Mật khẩu">
                                             @error('password')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -53,14 +52,14 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" value=""
                                                        id="remember" name="remember">
-                                                <label class="form-check-label" for="remember">Remember Me</label>
+                                                <label class="form-check-label" for="remember">Nhớ mật khẩu?</label>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row mb-4">
                                         <div class="col-md-6 col-xl-5">
                                             <button type="submit" class="btn w-100 btn-alt-primary">
-                                                <i class="fa fa-fw fa-sign-in-alt me-1 opacity-50"></i> Sign In
+                                                <i class="fa fa-fw fa-sign-in-alt me-1 opacity-50"></i> Đăng nhập
                                             </button>
                                         </div>
                                     </div>
@@ -73,7 +72,7 @@
                 </div>
             </div>
             <div class="fs-sm text-muted text-center">
-                <strong>OneUI 5.8</strong> &copy; <span data-toggle="year-copy"></span>
+                <strong>BẢN QUYỀN</strong> <span data-toggle="year-copy"></span> {{the_website_name()}}
             </div>
         </div>
     </div>

@@ -17,7 +17,7 @@
           <span class="smini-visible">
             <i class="fa fa-circle-notch text-primary"></i>
           </span>
-            <span class="smini-hide fs-5 tracking-wider">One<span class="fw-normal">UI</span></span>
+            <img width="50" src="{{asset("/media/logo/logo-tmdt.jpg")}}" alt="">
         </a>
         <!-- END Logo -->
 

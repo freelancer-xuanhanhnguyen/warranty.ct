@@ -15,11 +15,15 @@ class UserController extends Controller
     public function index()
     {
         $q = \request()->q;
+        $role = \request()->role;
         $data = User::when($q, function ($query) use ($q) {
             $query->where('name', 'like', "%$q%")
                 ->orWhere('id', 'like', "%$q%")
                 ->orWhere('email', 'like', "%$q%");
         })
+            ->when($role, function ($query) use ($role) {
+                $query->where('role', $role);
+            })
             ->paginate(20);
         return view('admin.users.index', compact('data'));
     }

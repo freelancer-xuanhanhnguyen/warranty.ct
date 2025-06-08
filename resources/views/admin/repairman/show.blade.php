@@ -67,7 +67,7 @@
                                 </div>
                                 <dl class="mb-0">
                                     <dt class="h3 fw-extrabold mt-3 mb-0">
-                                        {{$report->total_under_warranty}}
+                                        {{$report?->total_under_warranty}}
                                     </dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">
                                         Thiết bị đang bảo hành
@@ -82,7 +82,7 @@
                                 </div>
                                 <dl class="mb-0">
                                     <dt class="h3 fw-extrabold mt-3 mb-0">
-                                        {{$report->total_under_repair}}
+                                        {{$report?->total_under_repair}}
                                     </dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">
                                         Thiết bị đang sửa
@@ -97,7 +97,7 @@
                                 </div>
                                 <dl class="mb-0">
                                     <dt class="h3 fw-extrabold mt-3 mb-0">
-                                        {{$report->total_services}}
+                                        {{$report?->total_services}}
                                     </dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">
                                         Tổng thiết bị

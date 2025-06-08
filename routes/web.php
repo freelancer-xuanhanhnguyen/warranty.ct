@@ -11,6 +11,9 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Web\OrderController;
 use App\Http\Controllers\Web\TrackEmailController;
 use App\Http\Controllers\Web\ServiceController;
+use App\Models\Customer;
+use App\Models\Service;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,7 +46,11 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     });
 
     Route::match(['get', 'post'], '/dashboard', function () {
-        return view('dashboard');
+        $cskh = User::where('role', User::ROLE_CSKH)->count();
+        $repairman = User::where('role', User::ROLE_REPAIRMAN)->count();
+        $customer = Customer::count();
+        $service = Service::count();
+        return view('dashboard', compact('cskh', 'repairman', 'customer', 'service'));
     })->name('dashboard');
 
     Route::resource('products', ProductController::class)->names('admin.products');

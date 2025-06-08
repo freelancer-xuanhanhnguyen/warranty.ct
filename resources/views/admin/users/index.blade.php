@@ -51,13 +51,28 @@
             <div class="block-content">
                 <!-- Search Form -->
                 <form action="" method="GET">
-                    <div class="mb-4">
-                        <div class="input-group">
-                            <input type="text" class="form-control form-control-alt" id="q"
-                                   name="q" placeholder="Tìm kiếm" value="{{request()->q}}">
-                            <span class="input-group-text bg-body border-0">
-                      <i class="fa fa-search"></i>
-                    </span>
+                    <div class="row mb-4 align-content-end">
+                        <div class="col-md-4">
+                            <label class="form-label" for="status">Tìm kiếm</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-alt" id="q"
+                                       name="q" value="{{request()->q}}">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-search me-1"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="role">Chức vụ</label>
+                            <select class="form-select" id="role"
+                                    name="role">
+                                <option value="">Tất cả</option>
+                                @foreach(\App\Models\User::ROLE as $key => $value)
+                                    <option value="{{$key}}"
+                                            @if(request()->role === "$key") selected @endif>{{$value}}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </form>

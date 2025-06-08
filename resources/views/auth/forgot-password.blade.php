@@ -9,7 +9,7 @@
                     <!-- Reminder Block -->
                     <div class="block block-rounded mb-0">
                         <div class="block-header block-header-default">
-                            <h3 class="block-title">Forgot Password</h3>
+                            <h3 class="block-title">Quên mật khẩu?</h3>
                             <div class="block-options">
                                 <a class="btn-block-option" href="{{route('login')}}" data-bs-toggle="tooltip"
                                    data-bs-placement="left" title="Sign In">
@@ -19,9 +19,10 @@
                         </div>
                         <div class="block-content">
                             <div class="p-sm-3 px-lg-4 px-xxl-5 py-lg-5">
-                                <h1 class="h2 mb-1">OneUI</h1>
+                                <h1 class="h2 mb-1">{{the_website_name()}}</h1>
                                 <p class="fw-medium text-muted">
-                                    Please provide your account’s email or username and we will send you your password.
+                                    Vui lòng cung cấp email hoặc tên người dùng của tài khoản và chúng tôi sẽ gửi cho
+                                    bạn mật khẩu.
                                 </p>
 
                                 <!-- Reminder Form -->
@@ -37,7 +38,7 @@
                                     <div class="row mb-4">
                                         <div class="col-md-6 col-xl-5">
                                             <button type="submit" class="btn w-100 btn-alt-primary">
-                                                <i class="fa fa-fw fa-envelope me-1 opacity-50"></i> Send Mail
+                                                <i class="fa fa-fw fa-envelope me-1 opacity-50"></i> Gửi Mail
                                             </button>
                                         </div>
                                     </div>
@@ -50,7 +51,7 @@
                 </div>
             </div>
             <div class="fs-sm text-muted text-center">
-                <strong>OneUI 5.8</strong> &copy; <span data-toggle="year-copy"></span>
+                <strong>BẢN QUYỀN</strong> <span data-toggle="year-copy"></span> {{the_website_name()}}
             </div>
         </div>
     </div>
