@@ -70,7 +70,7 @@ Route::group([], function () {
     Route::get('/', [TrackEmailController::class, 'index']);
     Route::post('/', [TrackEmailController::class, 'trackEmail'])->name('track-email');
 
-    Route::prefix('track/{email}')->group(function () {
+    Route::middleware('auth.customer')->prefix('track/{email}')->group(function () {
         Route::prefix('/orders')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('orders.index');
             Route::get('/{id}/history', [OrderController::class, 'history'])->name('orders.history');
