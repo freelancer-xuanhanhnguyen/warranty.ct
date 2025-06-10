@@ -18,7 +18,7 @@ class RepairmanController extends Controller
     {
         $latestStatuses = DB::table('service_statuses as ss1')
             ->select('ss1.service_id', 'ss1.code')
-            ->whereRaw('ss1.created_at = (SELECT MAX(ss2.created_at) FROM service_statuses ss2 WHERE ss2.service_id = ss1.service_id)');
+            ->whereRaw('ss1.id = (SELECT MAX(ss2.id) FROM service_statuses ss2 WHERE ss2.service_id = ss1.service_id)');
 
         $query = DB::table('services')
             ->select('users.name as repairman_name', 'services.repairman_id', 'users.email', DB::raw('COUNT(services.id) as total_services'))
@@ -73,7 +73,7 @@ class RepairmanController extends Controller
         $user = User::findOrFail($id);
         $latestStatuses = DB::table('service_statuses as ss1')
             ->select('ss1.service_id', 'ss1.code')
-            ->whereRaw('ss1.created_at = (SELECT MAX(ss2.created_at) FROM service_statuses ss2 WHERE ss2.service_id = ss1.service_id)');
+            ->whereRaw('ss1.id = (SELECT MAX(ss2.id) FROM service_statuses ss2 WHERE ss2.service_id = ss1.service_id)');
 
         $report = DB::table('services')
             ->select('users.name as repairman_name', 'services.repairman_id', 'users.email', DB::raw('COUNT(services.id) as total_services'))
