@@ -56,16 +56,31 @@ class CustomerController extends Controller
     public function show(string $id)
     {
         $q = \request()->q;
+        $status = \request()->status;
+
         $data = Customer::findOrFail($id);
-        $services = Service::whereHas('order', function ($query) use ($id) {
-            $query->select('id')
-                ->where('customer_id', $id);
-        })
+        $query = Service::with([
+            'order.product',
+            'order.customer',
+            'repairman',
+            'status',
+        ])
+            ->whereHas('order', function ($query) use ($id) {
+                $query->select('id')
+                    ->where('customer_id', $id);
+            })
             ->when($q, function ($query) use ($q) {
                 $query->where('code', 'like', "%$q%");
-            })
-            ->latest()
-            ->get();
+            });
+
+        if (isset($status)) {
+            $query = $query->whereHas('status', function ($query) use ($status) {
+                $query->select('id')->where('code', $status);
+            });
+        }
+
+        $services = $query->latest()
+            ->paginate(20);
 
         return view('admin.customers.show', compact('data', 'services'));
     }

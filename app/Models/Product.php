@@ -25,4 +25,9 @@ class Product extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function repairman()
+    {
+        return $this->belongsTo(User::class, 'repairman_id');
+    }
 }

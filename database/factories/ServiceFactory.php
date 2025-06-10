@@ -24,7 +24,7 @@ class ServiceFactory extends Factory
             'fee_detail' => $this->faker->text(100),
             'reception_date' => $this->faker->date,
             'expected_completion_date' => $this->faker->date,
-            'evaluate' => $this->faker->randomElement([0, 1, 2, 3, 4, 5]),
+            'evaluate' => $this->faker->randomElement([null, 1, 2, 3, 4, 5]),
             'evaluate_note' => $this->faker->sentence,
         ];
     }

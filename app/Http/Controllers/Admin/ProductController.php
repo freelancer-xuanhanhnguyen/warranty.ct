@@ -17,8 +17,8 @@ class ProductController extends Controller
     {
         $q = \request()->q;
         $data = Order::with([
-            'product',
-            'customer',
+            'product.repairman:id,name,email',
+            'customer:id,code,name,email',
         ])
             ->when($q, function ($query) use ($q) {
                 $query->where('code', 'like', "%$q%")
@@ -34,17 +34,33 @@ class ProductController extends Controller
 
     public function history($id)
     {
-        $q = \request()->q;
         $data = Order::findOrFail($id);
-        $services = Service::whereHas('order', function ($query) use ($id) {
-            $query->select('id')
-                ->where('product_id', $id);
-        })
+
+        $q = \request()->q;
+        $status = \request()->status;
+        $query = Service::with([
+            'order.product',
+            'order.customer',
+            'repairman',
+            'status',
+        ])
+            ->whereHas('order', function ($query) use ($id) {
+                $query->select('id')
+                    ->where('product_id', $id);
+            })
             ->when($q, function ($query) use ($q) {
                 $query->where('code', 'like', "%$q%");
-            })
+            });
+
+        if (isset($status)) {
+            $query = $query->whereHas('status', function ($query) use ($status) {
+                $query->select('id')->where('code', $status);
+            });
+        }
+
+        $services = $query
             ->latest()
-            ->get();
+            ->paginate(20);
 
         return view('admin.products.show', compact('data', 'services'));
     }

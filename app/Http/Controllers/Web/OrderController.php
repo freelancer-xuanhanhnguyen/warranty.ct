@@ -37,17 +37,32 @@ class OrderController extends Controller
 
     public function history($email, $id)
     {
-        $q = \request()->q;
         $customer = Customer::where('email', $email)->first('id');
         $data = Order::where('customer_id', $customer->id)
             ->findOrFail($id);
 
-        $services = Service::where('order_id', $id)
+        $q = \request()->q;
+        $status = \request()->status;
+        $query = Service::with([
+            'order.product',
+            'order.customer',
+            'repairman',
+            'status',
+        ])
+            ->where('order_id', $id)
             ->when($q, function ($query) use ($q) {
                 $query->where('code', 'like', "%$q%");
-            })
+            });
+
+        if (isset($status)) {
+            $query = $query->whereHas('status', function ($query) use ($status) {
+                $query->select('id')->where('code', $status);
+            });
+        }
+
+        $services = $query
             ->latest()
-            ->get();
+            ->paginate(20);
 
         return view('pages.orders.history', compact('data', 'services'));
     }

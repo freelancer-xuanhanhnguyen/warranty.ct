@@ -254,14 +254,18 @@
                             <div class="block-content">
                                 <div class="mb-4">
                                     <label class="form-label" for="status">Đánh giá</label>
-                                    <div class="js-rating" data-score="{{$data->evaluate}}"></div>
+                                    <div class="js-rating" data-score="{{$data->evaluate}}" aria-required="true"></div>
                                 </div>
 
                                 <div class="mb-4">
                                     <label class="form-label" for="evaluate_note">Đánh giá chi tiết</label>
                                     <textarea id="evaluate_note" class="form-control js-maxlength" maxlength="500"
                                               name="evaluate_note"
-                                              rows="4">{{old('evaluate_note', $data->evaluate_note)}}</textarea>
+                                              rows="4">{{old('evaluate_note', $data->evaluate_note ?: "Sản phẩm sau bảo hành:
+Dịch vụ sửa chữa:
+Dịch vụ CSKH:
+Kỹ thuật viên:")}}</textarea>
+                                    <small class="text-muted">Đánh giá phải từ 1 <i class="fa fa-star text-warning"></i></small>
                                 </div>
                             </div>
                         </div>

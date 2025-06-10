@@ -64,6 +64,46 @@
     </style>
 @endsection
 
+@section('js')
+    <!-- Page JS Plugins -->
+    <script src="{{ asset('js/lib/jquery.min.js') }}"></script>
+    <script src="{{asset('js/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
+    <script src="{{asset('js/plugins/raty-js/jquery.raty.js')}}"></script>
+    <!-- Page JS Code -->
+    <script type="module" src="{{asset('js/pages/be_comp_rating.js')}}"></script>
+    <script type="module">
+        One.helpersOnLoad(['jq-maxlength']);
+
+        function updateReviewSearch(isDelete = false) {
+            const params = new URLSearchParams(window.location.search);
+            if (!isDelete)
+                params.set('review', '');
+            else
+                params.delete('review');
+
+            const newUrl = `${window.location.pathname}?${params.toString()}`;
+            window.history.pushState({}, '', newUrl);
+        }
+
+        $(() => {
+            const reviewModal = $('#review-modal');
+
+            @if(request()->has('review'))
+            reviewModal.modal('show');
+            @endif
+
+            // reviewModal.on('shown.bs.modal', function () {
+            //     updateReviewSearch();
+            // })
+
+            reviewModal.on('hide.bs.modal', function () {
+                if (window.location.search.indexOf('review') >= 0)
+                    updateReviewSearch(true);
+            })
+        })
+    </script>
+@endsection
+
 @section('content')
     <!-- Content -->
     <div class="content content-full">
@@ -126,40 +166,32 @@
                             <table class="table table-borderless table-striped table-vcenter">
                                 <thead>
                                 <tr>
-                                    <th class="text-center" style="width: 100px;">Mã sản phẩm</th>
-                                    <th class="text-center" style="width: 100px;">Serial</th>
-                                    <th class="d-none d-sm-table-cell text-center">Mã đơn hàng</th>
-                                    <th class="d-none d-xl-table-cell">Khách hàng</th>
-                                    <th class="d-none d-xl-table-cell text-center">Tên sản phẩm</th>
-                                    <th class="d-none d-sm-table-cell text-center">Thời gian bảo hành</th>
-                                    <th class="d-none d-sm-table-cell text-center">Bảo hành định kỳ</th>
-                                    <th class="d-none d-sm-table-cell text-end">Ngày mua</th>
+                                    <th style="width: 100px;">Mã sản phẩm</th>
+                                    <th class="text-center">Mã đơn hàng</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th class="text-center">Thời gian bảo hành</th>
+                                    <th class="text-center">Bảo hành định kỳ</th>
+                                    <th class="text-end">Ngày mua</th>
+                                    <th class="text-center">Ngày bảo hành định kỳ</th>
+                                    <th>Kỹ thuật viên</th>
                                     <th class="text-center">Trạng thái</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach([$data->order] as $item)
+                                @foreach($data?->order ? [$data?->order] : [] as $item)
                                     <tr>
-                                        <td class="text-center fs-sm">
+                                        <td class="fs-sm">
                                             <a class="fw-semibold"
                                                href="{{route('orders.history',['email' => request()->email, 'id'=>  $item->id])}}">
                                                 <strong>{{$item->product?->code}}</strong>
                                             </a>
-                                        </td>
-                                        <td class="text-center fs-sm">
-                                            <strong>{{$item->product?->serial}}</strong>
+                                            <small class="text-muted">{{$item->product?->serial}}</small>
                                         </td>
                                         <td class="text-center fs-sm">
                                             <strong>{{$item->code}}</strong>
                                         </td>
 
-                                        <td class="fs-sm">
-                                            <small>({{$item->customer?->code}})</small>
-                                            <br>
-                                            {{$item->customer?->name}}
-                                        </td>
-
-                                        <td class="text-center fs-sm">
+                                        <td class="fs-sm" style="min-width: 200px">
                                             <strong>{{$item->product?->name}}</strong>
                                         </td>
 
@@ -175,15 +207,28 @@
                                             {{$item->purchase_date}}
                                         </td>
 
-                                        @php($isWarrantyExpired = isWarrantyExpired($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
+                                        @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit, $item->service?->created_at))
+                                        @php($isWarrantyExpired = $status['expired'])
 
-                                        <td class="d-none d-sm-table-cell fs-sm">
+                                        <td class="text-nowrap text-center fs-sm">
+                                            {{$status['next_warranty_check_date']}}
+                                        </td>
+
+                                        <td class="text-nowrap fs-sm">
+                                            {{$item->product?->repairman?->name}}
+                                            <br>
+                                            <small class="text-muted">{{$item->product?->repairman?->email}}</small>
+                                        </td>
+
+                                        <td class="fs-sm">
                                             @if($isWarrantyExpired)
                                                 <span
-                                                    class="badge bg-warning">Hết hạn bảo hành</span>
+                                                    class="badge bg-warning" data-bs-toggle="tooltip"
+                                                    title="Đã hết bảo hành vào ngày {{$status['warranty_end_date']}}">Hết bảo hành</span>
                                             @else
                                                 <span
-                                                    class="badge bg-info">Còn bảo hành</span>
+                                                    class="badge bg-info" data-bs-toggle="tooltip"
+                                                    title="Ngày bảo hành tiếp theo là {{$status['next_warranty_check_date']}} (tính từ ngày {{$status['used_base_date']}})">Còn bảo hành</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -201,6 +246,15 @@
         <div class="block block-rounded">
             <div class="block-header block-header-default">
                 <h3 class="block-title">Thông tin chi tiết</h3>
+
+                @if($data->evaluate < 1)
+                    <div class="block-options">
+                        <button type="button" class="btn btn-alt-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#review-modal">
+                            <i class="fa fa-user-tag me-1"></i> Đánh giá
+                        </button>
+                    </div>
+                @endif
             </div>
             <div class="block-content">
                 <table class="table table-borderless table-striped table-vcenter fs-sm">
@@ -260,7 +314,7 @@
                             Đánh giá chi tiết
                         </td>
                         <td>
-                            <span class="fw-semibold">{{$data->evaluate_note}}</span>
+                            <span class="fw-semibold">{!! nl2br(e($data->evaluate_note)) !!}</span>
                         </td>
                     </tr>
                     </tbody>
@@ -269,4 +323,56 @@
         </div>
     </div>
     <!-- END Content -->
+
+    @if($data->evaluate < 1)
+        <!-- Review Modal --->
+        <div class="modal fade" id="review-modal" tabindex="-1" aria-labelledby="modal-block-popin"
+             style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-popin modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="block block-rounded block-transparent mb-0">
+                        <div class="block-header block-header-default">
+                            <h3 class="block-title">Đánh giá dịch vụ bảo hành - sửa chữa</h3>
+                            <div class="block-options">
+                                <button type="button" class="btn-block-option" data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                    <i class="fa fa-fw fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="block-content">
+
+                            <form
+                                action="{{route('services.review', ['email' => request()->email, 'id' => $data->id])}}"
+                                method="POST">
+                                @csrf
+                                <div class="mb-4">
+                                    <label class="form-label" for="status">Đánh giá</label>
+                                    <div class="js-rating" data-score="5"></div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label" for="evaluate_note">Đánh giá chi tiết</label>
+                                    <textarea id="evaluate_note" class="form-control js-maxlength" maxlength="500"
+                                              name="evaluate_note"
+                                              rows="4">Sản phẩm sau bảo hành:
+Dịch vụ sửa chữa:
+Dịch vụ CSKH:
+Kỹ thuật viên:
+                            </textarea>
+                                </div>
+
+                                <div class="mb-4">
+                                    <button type="submit" class="btn w-100 btn-alt-primary d-block">
+                                        Gửi đánh giá
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END Review Modal --->
+    @endif
 @endsection

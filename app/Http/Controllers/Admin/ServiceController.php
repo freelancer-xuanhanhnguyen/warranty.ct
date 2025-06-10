@@ -113,8 +113,10 @@ class ServiceController extends Controller
     {
         $service = Service::with(['status'])->find($id);
         if (!$service) abort(404);
+
         $updated = $service?->update(collect($request->all())->merge([
-            'evaluate' => $request->score ?? 0
+            'evaluate' => $request->score ?: null,
+            'evaluate_note' => $request->score ? $request->evaluate_note : null
         ])->toArray());
 
         if ($service->status?->code != $request->status) {

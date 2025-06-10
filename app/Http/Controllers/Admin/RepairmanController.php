@@ -87,12 +87,26 @@ class RepairmanController extends Controller
             ->selectRaw("SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_repair", [ServiceStatus::STATUS_UNDER_REPAIR])
             ->first();
 
-        $data = Service::with([
+        $q = \request()->q;
+        $status = \request()->status;
+        $query = Service::with([
             'order.product',
             'order.customer',
+            'repairman',
             'status',
         ])
             ->where('repairman_id', $id)
+            ->when($q, function ($query) use ($q) {
+                $query->where('code', 'like', "%$q%");
+            });
+
+        if (isset($status)) {
+            $query = $query->whereHas('status', function ($query) use ($status) {
+                $query->select('id')->where('code', $status);
+            });
+        }
+
+        $data = $query
             ->latest()
             ->paginate(20);
 

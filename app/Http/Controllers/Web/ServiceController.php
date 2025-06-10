@@ -16,6 +16,7 @@ class ServiceController extends Controller
         $status = \request()->status;
         $query = Service::with([
             'order.product',
+            'order.customer',
             'repairman',
             'status',
         ])
@@ -82,5 +83,22 @@ class ServiceController extends Controller
         }
 
         return back()->withInput()->with(['error' => 'Có lỗi xảy ra, vui lòng thử lại.']);
+    }
+
+    public function review($email, $id, Request $request)
+    {
+        $service = Service::findOrFail($id);
+        if ($service->evaluate > 0) return back()->with(['error' => 'Dịch vụ đã được đánh giá, vui lòng kiểm tra lại.']);
+        if ($request->score > 0) {
+            $updated = $service->update(collect($request->only(['score', 'evaluate_note']))->merge([
+                'evaluate' => $request->score,
+            ])->toArray());
+
+            if ($updated) {
+                return back()->with(['message' => "Đánh giá thành công."]);
+            }
+        }
+
+        return back()->with(['error' => 'Có lỗi xảy ra, vui lòng thử lại.']);
     }
 }

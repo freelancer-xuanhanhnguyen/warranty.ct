@@ -4,7 +4,7 @@
         <!-- Left Section -->
         <div class="d-flex align-items-center">
             <!-- Logo -->
-            <a class="fw-semibold fs-5 tracking-wider text-dual me-3" href="/">
+            <a class="fw-semibold fs-5 tracking-wider text-dual me-3" href="{{route('orders.index', request()->email)}}">
                 <img width="50" src="{{asset("/media/logo/logo.png")}}" alt="">
             </a>
             <!-- END Logo -->

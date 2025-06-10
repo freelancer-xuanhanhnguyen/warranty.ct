@@ -16,7 +16,7 @@ class pageCompRating {
       let el = jQuery(element);
 
       el.raty({
-        score: el.data('score') || 0,
+        score: el.data('score') || null,
         number: el.data('number') || 5,
         cancel: el.data('cancel') || false,
         target: el.data('target') || false,

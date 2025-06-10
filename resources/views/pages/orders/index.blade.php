@@ -30,14 +30,14 @@
                     <table class="table table-borderless table-striped table-vcenter">
                         <thead>
                         <tr>
-                            <th class="text-center" style="width: 100px;">Mã sản phẩm</th>
-                            <th class="text-center" style="width: 100px;">Serial</th>
-                            <th class="text-center">Tên sản phẩm</th>
+                            <th style="width: 100px;">Mã sản phẩm</th>
                             <th class="text-center">Mã đơn hàng</th>
+                            <th>Tên sản phẩm</th>
                             <th class="text-center">Thời gian bảo hành</th>
                             <th class="text-center">Bảo hành định kỳ</th>
-                            <th class="text-center">Ngày mua</th>
+                            <th class="text-end">Ngày mua</th>
                             <th class="text-center">Ngày bảo hành định kỳ</th>
+                            <th>Kỹ thuật viên</th>
                             <th class="text-center">Trạng thái</th>
                             <th class="text-center"></th>
                         </tr>
@@ -45,22 +45,19 @@
                         <tbody>
                         @foreach($data ?? [] as $item)
                             <tr>
-                                <td class="text-center fs-sm">
+                                <td class="fs-sm">
                                     <a class="fw-semibold"
                                        href="{{route('orders.history',['email' => request()->email, 'id'=>  $item->id])}}">
                                         <strong>{{$item->product?->code}}</strong>
                                     </a>
+                                    <small class="text-muted">{{$item->product?->serial}}</small>
                                 </td>
-                                <td class="text-center fs-sm">
-                                    <strong>{{$item->product?->serial}}</strong>
-                                </td>
-
-                                <td class="text-center fs-sm">
-                                    <strong>{{$item->product?->name}}</strong>
-                                </td>
-
                                 <td class="text-center fs-sm">
                                     <strong>{{$item->code}}</strong>
+                                </td>
+
+                                <td class="fs-sm" style="min-width: 200px">
+                                    <strong>{{$item->product?->name}}</strong>
                                 </td>
 
                                 <td class="text-center fs-sm">
@@ -82,7 +79,13 @@
                                     {{$status['next_warranty_check_date']}}
                                 </td>
 
-                                <td class="d-none d-sm-table-cell fs-sm">
+                                <td class="text-nowrap fs-sm">
+                                    {{$item->product?->repairman?->name}}
+                                    <br>
+                                    <small class="text-muted">{{$item->product?->repairman?->email}}</small>
+                                </td>
+
+                                <td class="fs-sm">
                                     @if($isWarrantyExpired)
                                         <span
                                             class="badge bg-warning" data-bs-toggle="tooltip"

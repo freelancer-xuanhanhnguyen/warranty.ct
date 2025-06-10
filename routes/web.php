@@ -53,17 +53,23 @@ Route::middleware('auth')->prefix('admin')->group(function () {
         return view('dashboard', compact('cskh', 'repairman', 'customer', 'service'));
     })->name('dashboard');
 
-    Route::resource('products', ProductController::class)->names('admin.products');
-    Route::get('products/{id}/history', [ProductController::class, 'history'])->name('admin.products.history');
-    Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)->names('admin.services');
-    Route::resource('repairman', RepairmanController::class)->names('admin.repairman');
-    Route::resource('users', UserController::class)->names('admin.users');
-    Route::resource('customers', CustomerController::class)->names('admin.customers');
-    Route::resource('/change-password', ChangePasswordController::class)->names('admin.change-password')->only(['index', 'update']);
+    Route::resource('posts', \App\Http\Controllers\Admin\ServiceController::class)
+        ->except(['index', 'show', 'update', 'edit', 'create'])
+        ->names('admin.services');
 
-    Route::view('/pages/slick', 'pages.slick');
+    Route::middleware('auth.isAdmin')->group(function () {
+        Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)->except(['destroy'])->names('admin.services');
+        Route::resource('products', ProductController::class)->names('admin.products');
+        Route::get('products/{id}/history', [ProductController::class, 'history'])->name('admin.products.history');
+        Route::resource('repairman', RepairmanController::class)->names('admin.repairman');
+        Route::resource('users', UserController::class)->names('admin.users');
+        Route::resource('customers', CustomerController::class)->names('admin.customers');
+        Route::resource('/change-password', ChangePasswordController::class)->names('admin.change-password')->only(['index', 'update']);
+    });
+
+    /*Route::view('/pages/slick', 'pages.slick');
     Route::view('/pages/datatables', 'pages.datatables');
-    Route::view('/pages/blank', 'pages.blank');
+    Route::view('/pages/blank', 'pages.blank');*/
 });
 
 Route::group([], function () {
@@ -81,6 +87,7 @@ Route::group([], function () {
             Route::get('/{orderId}/create', [ServiceController::class, 'request'])->name('services.request');
             Route::post('/{orderId}/create', [ServiceController::class, 'create'])->name('services.create');
             Route::get('/{id}', [ServiceController::class, 'detail'])->name('services.detail');
+            Route::post('/{id}/review', [ServiceController::class, 'review'])->name('services.review');
         });
     });
 });

@@ -13,10 +13,10 @@
                             <h3 class="block-title">Đăng nhập</h3>
                             <div class="block-options">
                                 <a class="btn-block-option fs-sm" href="{{route('password.forgot')}}">Quên mật khẩu?</a>
-                                {{--<a class="btn-block-option" href="{{route('register')}}" data-bs-toggle="tooltip"
-                                   data-bs-placement="left" title="New Account">
+                                <a class="btn-block-option" href="{{route('register')}}" data-bs-toggle="tooltip"
+                                   data-bs-placement="left" title="Đăng ký tài khoản">
                                     <i class="fa fa-user-plus"></i>
-                                </a>--}}
+                                </a>
                             </div>
                         </div>
                         <div class="block-content">

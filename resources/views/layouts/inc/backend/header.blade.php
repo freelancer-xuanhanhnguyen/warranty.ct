@@ -56,10 +56,13 @@
                             @switch(auth()->user()->role)
                                 @case(\App\Models\User::ROLE_CSKH)
                                 CSKH
+                                @break
                                 @case(\App\Models\User::ROLE_REPAIRMAN)
                                 Kỹ thuật viên
+                                @break
                                 @default
                                 Admin
+                                @break
                             @endswitch
                         </p>
                     </div>

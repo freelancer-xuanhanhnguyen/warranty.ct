@@ -1,4 +1,4 @@
-@isset($star)
+@if($star > 0)
     @for($i = 1; $i <= 5; $i++)
         @if($i <= $star)
             <i class="text-warning fa fa-fw fa-star"></i>

@@ -163,40 +163,41 @@
                             <table class="table table-borderless table-striped table-vcenter">
                                 <thead>
                                 <tr>
-                                    <th class="text-center" style="width: 100px;">Mã sản phẩm</th>
-                                    <th class="text-center" style="width: 100px;">Serial</th>
-                                    <th class="d-none d-sm-table-cell text-center">Mã đơn hàng</th>
-                                    <th class="d-none d-xl-table-cell">Khách hàng</th>
-                                    <th class="d-none d-xl-table-cell text-center">Tên sản phẩm</th>
-                                    <th class="d-none d-sm-table-cell text-center">Thời gian bảo hành</th>
-                                    <th class="d-none d-sm-table-cell text-center">Bảo hành định kỳ</th>
-                                    <th class="d-none d-sm-table-cell text-end">Ngày mua</th>
+                                    <th style="width: 100px;">Mã sản phẩm</th>
+                                    <th class="text-center">Mã đơn hàng</th>
+                                    <th>Khách hàng</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th class="text-center">Thời gian bảo hành</th>
+                                    <th class="text-center">Bảo hành định kỳ</th>
+                                    <th class="text-end">Ngày mua</th>
+                                    <th class="text-center">Ngày bảo hành định kỳ</th>
+                                    <th>Kỹ thuật viên</th>
                                     <th class="text-center">Trạng thái</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach([$data->order] as $item)
                                     <tr>
-                                        <td class="text-center fs-sm">
+                                        <td class="fs-sm">
                                             <a class="fw-semibold"
                                                href="{{route('admin.products.history', $item->id)}}">
                                                 <strong>{{$item->product?->code}}</strong>
                                             </a>
-                                        </td>
-                                        <td class="text-center fs-sm">
-                                            <strong>{{$item->product?->serial}}</strong>
+                                            <small class="text-muted">{{$item->product?->serial}}</small>
                                         </td>
                                         <td class="text-center fs-sm">
                                             <strong>{{$item->code}}</strong>
                                         </td>
 
                                         <td class="fs-sm">
-                                            <small>({{$item->customer?->code}})</small>
+                                            <small class="text-muted">({{$item->customer?->code}})</small>
                                             <br>
                                             {{$item->customer?->name}}
+                                            <br>
+                                            <small class="text-muted">({{$item->customer?->email}})</small>
                                         </td>
 
-                                        <td class="text-center fs-sm">
+                                        <td class="fs-sm" style="min-width: 200px">
                                             <strong>{{$item->product?->name}}</strong>
                                         </td>
 
@@ -212,15 +213,28 @@
                                             {{$item->purchase_date}}
                                         </td>
 
-                                        @php($isWarrantyExpired = isWarrantyExpired($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
+                                        @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit, $item->service?->created_at))
+                                        @php($isWarrantyExpired = $status['expired'])
 
-                                        <td class="d-none d-sm-table-cell fs-sm">
+                                        <td class="text-nowrap text-center fs-sm">
+                                            {{$status['next_warranty_check_date']}}
+                                        </td>
+
+                                        <td class="text-nowrap fs-sm">
+                                            {{$item->product?->repairman?->name}}
+                                            <br>
+                                            <small class="text-muted">{{$item->product?->repairman?->email}}</small>
+                                        </td>
+
+                                        <td class="fs-sm">
                                             @if($isWarrantyExpired)
                                                 <span
-                                                    class="badge bg-warning">Hết hạn bảo hành</span>
+                                                    class="badge bg-warning" data-bs-toggle="tooltip"
+                                                    title="Đã hết bảo hành vào ngày {{$status['warranty_end_date']}}">Hết bảo hành</span>
                                             @else
                                                 <span
-                                                    class="badge bg-info">Còn bảo hành</span>
+                                                    class="badge bg-info" data-bs-toggle="tooltip"
+                                                    title="Ngày bảo hành tiếp theo là {{$status['next_warranty_check_date']}} (tính từ ngày {{$status['used_base_date']}})">Còn bảo hành</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -307,7 +321,7 @@
                             Đánh giá chi tiết
                         </td>
                         <td>
-                            <span class="fw-semibold">{{$data->evaluate_note}}</span>
+                            <span class="fw-semibold">{!! nl2br(e($data->evaluate_note)) !!}</span>
                         </td>
                     </tr>
                     </tbody>
