@@ -53,12 +53,12 @@ Route::middleware('auth')->prefix('admin')->group(function () {
         return view('dashboard', compact('cskh', 'repairman', 'customer', 'service'));
     })->name('dashboard');
 
-    Route::resource('posts', \App\Http\Controllers\Admin\ServiceController::class)
-        ->except(['index', 'show', 'update', 'edit', 'create'])
+    Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)
+        ->only(['index', 'show', 'update', 'edit', 'create'])
         ->names('admin.services');
 
     Route::middleware('auth.isAdmin')->group(function () {
-        Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)->except(['destroy'])->names('admin.services');
+        // Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)->except(['destroy'])->names('admin.services');
         Route::resource('products', ProductController::class)->names('admin.products');
         Route::get('products/{id}/history', [ProductController::class, 'history'])->name('admin.products.history');
         Route::resource('repairman', RepairmanController::class)->names('admin.repairman');
