@@ -58,7 +58,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
         ->names('admin.services');
 
     Route::middleware('auth.isAdmin')->group(function () {
-        // Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)->except(['destroy'])->names('admin.services');
+        Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)->only(['destroy'])->names('admin.services');
         Route::resource('products', ProductController::class)->names('admin.products');
         Route::get('products/{id}/history', [ProductController::class, 'history'])->name('admin.products.history');
         Route::resource('repairman', RepairmanController::class)->names('admin.repairman');
