@@ -32,7 +32,7 @@ function checkWarrantyStatus(
 
     $baseDate = $baseDate instanceof Carbon ? $baseDate : Carbon::parse($baseDate);
 
-    $warrantyEndDate = match ($warrantyUnit) {
+    $warrantyEndDate = match ((int)$warrantyUnit) {
         Product::WARRANTY_UNIT_DAY => $baseDate->copy()->addDays($warrantyValue),
         Product::WARRANTY_UNIT_MONTH => $baseDate->copy()->addMonths($warrantyValue),
         Product::WARRANTY_UNIT_YEAR => $baseDate->copy()->addYears($warrantyValue),
