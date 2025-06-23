@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -16,15 +18,20 @@ class UserController extends Controller
     {
         $q = \request()->q;
         $role = \request()->role;
-        $data = User::when($q, function ($query) use ($q) {
+        $query = User::when($q, function ($query) use ($q) {
             $query->where('name', 'like', "%$q%")
                 ->orWhere('id', 'like', "%$q%")
                 ->orWhere('email', 'like', "%$q%");
         })
             ->when($role, function ($query) use ($role) {
                 $query->where('role', $role);
-            })
-            ->paginate(20);
+            });
+
+        if (request()->has('export')) {
+            return Excel::download(new UsersExport($query->get()), 'Nhân viên.xlsx');
+        }
+
+        $data = $query->paginate(20);
         return view('admin.users.index', compact('data'));
     }
 

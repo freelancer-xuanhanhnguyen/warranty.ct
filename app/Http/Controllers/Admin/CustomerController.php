@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\CustomersExport;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
@@ -15,12 +17,17 @@ class CustomerController extends Controller
     public function index()
     {
         $q = \request()->q;
-        $data = Customer::when($q, function ($query) use ($q) {
+        $query = Customer::when($q, function ($query) use ($q) {
             $query->where('name', 'like', "%$q%")
                 ->orWhere('code', 'like', "%$q%")
                 ->orWhere('email', 'like', "%$q%");
-        })
-            ->paginate(20);
+        });
+
+        if (request()->has('export')) {
+            return Excel::download(new CustomersExport($query->get()), 'Khách hàng.xlsx');
+        }
+
+        $data = $query->paginate(20);
         return view('admin.customers.index', compact('data'));
     }
 

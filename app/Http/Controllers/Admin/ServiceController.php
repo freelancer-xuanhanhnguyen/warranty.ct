@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\ServicesExport;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ServiceController extends Controller
 {
@@ -36,6 +37,10 @@ class ServiceController extends Controller
 
         if (hasRole([User::ROLE_REPAIRMAN], true)) {
             $query = $query->where('repairman_id', auth()->id());
+        }
+
+        if (request()->has('export')) {
+            return Excel::download(new ServicesExport($query->latest()->get()), 'Phiếu yêu cầu bảo hành - sửa chữa.xlsx');
         }
 
         $data = $query

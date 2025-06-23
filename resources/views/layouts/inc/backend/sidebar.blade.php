@@ -86,7 +86,7 @@
         <div class="content-side">
             <ul class="nav-main">
                 <li class="nav-main-item">
-                    <a class="nav-main-link{{ request()->is('dashboard') ? ' active' : '' }}"
+                    <a class="nav-main-link{{ request()->is('admin/dashboard') ? ' active' : '' }}"
                        href="{{ route('dashboard') }}">
                         <i class="nav-main-link-icon si si-chart"></i>
                         <span class="nav-main-link-name">Báo cáo số liệu</span>
@@ -94,7 +94,7 @@
                 </li>
                 <li class="nav-main-heading">Quản lý dữ liệu</li>
                 <li class="nav-main-item">
-                    <a class="nav-main-link{{ request()->is('services*') ? ' active' : '' }}"
+                    <a class="nav-main-link{{ request()->is('admin/services*') ? ' active' : '' }}"
                        href="{{route('admin.services.index')}}">
                         <i class="nav-main-link-icon si si-support"></i>
                         <span class="nav-main-link-name">Phiếu bảo hành - sửa chữa</span>
@@ -102,14 +102,14 @@
                 </li>
                 @if(hasRole())
                     <li class="nav-main-item">
-                        <a class="nav-main-link{{ request()->is('products*') ? ' active' : '' }}"
+                        <a class="nav-main-link{{ request()->is('admin/products*') ? ' active' : '' }}"
                            href="{{route('admin.products.index')}}">
                             <i class="nav-main-link-icon si si-puzzle"></i>
                             <span class="nav-main-link-name">Thiết bị</span>
                         </a>
                     </li>
                     <li class="nav-main-item">
-                        <a class="nav-main-link{{ request()->is('repairman*') ? ' active' : '' }}"
+                        <a class="nav-main-link{{ request()->is('admin/repairman*') ? ' active' : '' }}"
                            href="{{route('admin.repairman.index')}}">
                             <i class="nav-main-link-icon si si-social-steam"></i>
                             <span class="nav-main-link-name">Kỹ thuật viên</span>
@@ -118,14 +118,14 @@
 
                     <li class="nav-main-heading">Quản lý người dùng</li>
                     <li class="nav-main-item">
-                        <a class="nav-main-link{{ request()->is('users*') ? ' active' : '' }}"
+                        <a class="nav-main-link{{ request()->is('admin/users*') ? ' active' : '' }}"
                            href="{{route('admin.users.index')}}">
                             <i class="nav-main-link-icon si si-user"></i>
                             <span class="nav-main-link-name">Nhân viên</span>
                         </a>
                     </li>
                     <li class="nav-main-item">
-                        <a class="nav-main-link{{ request()->is('customer*') ? ' active' : '' }}"
+                        <a class="nav-main-link{{ request()->is('admin/customer*') ? ' active' : '' }}"
                            href="{{route('admin.customers.index')}}">
                             <i class="nav-main-link-icon si si-people"></i>
                             <span class="nav-main-link-name">Khách hàng</span>

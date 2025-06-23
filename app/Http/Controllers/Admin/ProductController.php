@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\OrdersExport;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -16,7 +18,7 @@ class ProductController extends Controller
     public function index()
     {
         $q = \request()->q;
-        $data = Order::with([
+        $query = Order::with([
             'product.repairman:id,name,email',
             'customer:id,code,name,email',
         ])
@@ -26,8 +28,12 @@ class ProductController extends Controller
                         $_query->where('name', 'like', "%$q%")
                             ->orWhere('code', 'like', "%$q%");
                     });
-            })
-            ->paginate(20);
+            });
+
+        if (request()->has('export')) {
+            return Excel::download(new OrdersExport($query->get()), 'Thiết bị bảo hành - sửa chữa.xlsx');
+        }
+        $data = $query->paginate(20);
 
         return view('admin.products.index', compact('data'));
     }
