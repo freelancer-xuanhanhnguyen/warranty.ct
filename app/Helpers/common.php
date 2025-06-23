@@ -11,7 +11,7 @@ function isWarrantyExpired($purchaseDate, $warrantyValue, $warrantyUnit): bool
     $purchaseDate = $purchaseDate instanceof Carbon ? $purchaseDate : Carbon::parse($purchaseDate);
 
     // Tính ngày hết bảo hành
-    $warrantyEndDate = match ($warrantyUnit) {
+    $warrantyEndDate = match ((int)$warrantyUnit) {
         Product::WARRANTY_UNIT_DAY => $purchaseDate->copy()->addDays($warrantyValue),
         Product::WARRANTY_UNIT_MONTH => $purchaseDate->copy()->addMonths($warrantyValue),
         Product::WARRANTY_UNIT_YEAR => $purchaseDate->copy()->addYears($warrantyValue),
