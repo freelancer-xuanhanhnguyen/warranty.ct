@@ -17,7 +17,7 @@
           <span class="smini-visible">
             <i class="fa fa-circle-notch text-primary"></i>
           </span>
-            <img width="50" src="{{asset("/media/logo/logo.png")}}" alt="">
+            <x-logo />
         </a>
         <!-- END Logo -->
 

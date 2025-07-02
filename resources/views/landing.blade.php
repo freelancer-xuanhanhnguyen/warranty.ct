@@ -11,7 +11,7 @@
                             @csrf
 
                             <div class="text-center">
-                                <img width="100" src="{{asset('media/logo/logo.png')}}" alt="">
+                                <x-logo :width="100"/>
                                 <h1 class="h5 mb-1">{{the_website_name()}}</h1>
                                 <p class="fs-base text-muted mb-4">
                                     Theo dõi quá trình bảo hành - sửa chữa thiết bị của bạn tốt hơn!
