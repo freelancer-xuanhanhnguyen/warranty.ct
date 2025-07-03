@@ -54,7 +54,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     })->name('dashboard');
 
     Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)
-        ->only(['index', 'show', 'update', 'edit', 'create'])
+        ->only(['index', 'show', 'update', 'store', 'edit', 'create'])
         ->names('admin.services');
 
     Route::middleware('auth.isAdmin')->group(function () {

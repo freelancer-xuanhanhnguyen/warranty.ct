@@ -18,9 +18,9 @@ class CustomerController extends Controller
     {
         $q = \request()->q;
         $query = Customer::when($q, function ($query) use ($q) {
-            $query->where('name', 'like', "%$q%")
-                ->orWhere('code', 'like', "%$q%")
-                ->orWhere('email', 'like', "%$q%");
+            $query->where('name', 'like', "%{$q}%")
+                ->orWhere('code', 'like', "%{$q}%")
+                ->orWhere('email', 'like', "%{$q}%");
         });
 
         if (request()->has('export')) {
@@ -77,7 +77,7 @@ class CustomerController extends Controller
                     ->where('customer_id', $id);
             })
             ->when($q, function ($query) use ($q) {
-                $query->where('code', 'like', "%$q%");
+                $query->where('code', 'like', "%{$q}%");
             });
 
         if (isset($status)) {

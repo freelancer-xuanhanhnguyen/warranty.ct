@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignId('customer_id');
             $table->string('code');
             $table->date('purchase_date');
-            $table->date('warranty_expired');
+            $table->date('warranty_expired')->nullable();
 
             $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete();
             $table->foreign('customer_id')->references('id')->on('customers')->cascadeOnDelete();

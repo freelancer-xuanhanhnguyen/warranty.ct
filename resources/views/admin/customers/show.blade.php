@@ -65,7 +65,8 @@
                     <div class="block-content">
                         <div class="fs-4 mb-1">{{$data->name}}</div>
                         <address class="fs-sm">
-                            <i class="fa-solid fa-person-half-dress"></i> {{\App\Models\Customer::GENDER[$data->gender]}}<br>
+                            <i class="fa-solid fa-person-half-dress"></i> {{\App\Models\Customer::GENDER[$data->gender]}}
+                            <br>
                             <i class="fa fa-calendar"></i> {{$data->birthday}}<br>
                             <i class="fa fa-address-book"></i> {{$data->address}}
                             <br>
@@ -147,8 +148,10 @@
                                     {{$item->order->code ?? $item->order_id}}
                                 </td>
                                 <td class="fs-sm">
-                                    <small class="text-muted">({{$item->order?->customer?->code}})</small>
-                                    <br>
+                                    @if($item->order?->customer?->code)
+                                        <small class="text-muted">({{$item->order?->customer?->code}})</small>
+                                        <br>
+                                    @endif
                                     {{$item->order?->customer?->name}}
                                     <br>
                                     <small class="text-muted">({{$item->order?->customer?->email}})</small>

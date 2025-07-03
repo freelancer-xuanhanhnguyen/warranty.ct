@@ -22,10 +22,10 @@ class OrderController extends Controller
             ])
                 ->where('customer_id', $customer->id)
                 ->when($q, function ($query) use ($q) {
-                    $query->where('code', 'like', "%$q%")
+                    $query->where('code', 'like', "%{$q}%")
                         ->orWhereHas('product', function ($_query) use ($q) {
-                            $_query->where('name', 'like', "%$q%")
-                                ->orWhere('code', 'like', "%$q%");
+                            $_query->where('name', 'like', "%{$q}%")
+                                ->orWhere('code', 'like', "%{$q}%");
                         });
                 })
                 ->paginate(20);
@@ -51,7 +51,7 @@ class OrderController extends Controller
         ])
             ->where('order_id', $id)
             ->when($q, function ($query) use ($q) {
-                $query->where('code', 'like', "%$q%");
+                $query->where('code', 'like', "%{$q}%");
             });
 
         if (isset($status)) {

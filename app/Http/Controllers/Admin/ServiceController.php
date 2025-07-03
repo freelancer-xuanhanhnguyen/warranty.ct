@@ -6,6 +6,7 @@ use App\Exports\ServicesExport;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Service;
+use App\Models\ServiceStatus;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -26,7 +27,7 @@ class ServiceController extends Controller
             'status',
         ])
             ->when($q, function ($query) use ($q) {
-                $query->where('code', 'like', "%$q%");
+                $query->where('code', 'like', "%{$q}%");
             });
 
         if (isset($status)) {
@@ -71,10 +72,20 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
+        $service = Service::with('status')
+            ->where('order_id', $request->order_id)
+            ->whereHas('status', function ($q) {
+                $q->whereNotIn('code', [ServiceStatus::STATUS_COMPLETED, ServiceStatus::STATUS_CANCELED]);
+            })->first('id');
+
+        if ($service) return redirect(route('admin.services.show', $service->id))
+            ->with(['error' => 'Sản phẩm đang trong quá trình bảo hành - sữa chữa.']);
+
         $service = Service::create($request->all());
 
         if ($service) {
-            return back()->with(['message' => "Thêm phiếu " . strtolower(Service::TYPE[$request->type]) . " thành công."]);
+            return redirect(route('admin.services.show', $service->id))
+                ->with(['message' => "Thêm phiếu " . strtolower(Service::TYPE[$request->type]) . " thành công."]);
         }
 
         return back()->withInput()->with(['error' => 'Có lỗi xảy ra, vui lòng thử lại.']);
@@ -131,7 +142,8 @@ class ServiceController extends Controller
         }
 
         if ($updated) {
-            return back()->with(['message' => "Cập nhật phiếu " . strtolower(Service::TYPE[$service->type]) . " thành công."]);
+            return redirect(route('admin.services.show', $id))
+                ->with(['message' => "Cập nhật phiếu " . strtolower(Service::TYPE[$service->type]) . " thành công."]);
         }
 
         return back()->withInput()->with(['error' => 'Có lỗi xảy ra, vui lòng thử lại.']);

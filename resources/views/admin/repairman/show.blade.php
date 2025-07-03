@@ -175,8 +175,10 @@
                                     {{$item->order->code ?? $item->order_id}}
                                 </td>
                                 <td class="fs-sm">
-                                    <small class="text-muted">({{$item->order?->customer?->code}})</small>
-                                    <br>
+                                    @if($item->order?->customer?->code)
+                                        <small class="text-muted">({{$item->order?->customer?->code}})</small>
+                                        <br>
+                                    @endif
                                     {{$item->order?->customer?->name}}
                                     <br>
                                     <small class="text-muted">({{$item->order?->customer?->email}})</small>

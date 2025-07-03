@@ -22,7 +22,7 @@
         <!-- END Logo -->
 
         <!-- Extra -->
-        <div>
+        <div class="d-none">
             <!-- Dark Mode -->
             <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
             <a class="btn btn-sm btn-alt-secondary" data-toggle="layout" data-action="dark_mode_toggle"

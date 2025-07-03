@@ -82,6 +82,7 @@
                             <tr>
                                 <td class="fs-sm">
                                     <strong>{{$item->product?->code}}</strong>
+                                    <br>
                                     <small class="text-muted">{{$item->product?->serial}}</small>
                                 </td>
                                 <td class="text-center fs-sm">
@@ -89,8 +90,10 @@
                                 </td>
 
                                 <td class="fs-sm">
-                                    <small class="text-muted">({{$item->customer?->code}})</small>
-                                    <br>
+                                    @if($item->customer?->code)
+                                        <small class="text-muted">({{$item->customer?->code}})</small>
+                                        <br>
+                                    @endif
                                     {{$item->customer?->name}}
                                     <br>
                                     <small class="text-muted">({{$item->customer?->email}})</small>
@@ -213,8 +216,10 @@
                                     {{$item->order->code ?? $item->order_id}}
                                 </td>
                                 <td class="fs-sm">
-                                    <small class="text-muted">({{$item->order?->customer?->code}})</small>
-                                    <br>
+                                    @if($item->order?->customer?->code)
+                                        <small class="text-muted">({{$item->order?->customer?->code}})</small>
+                                        <br>
+                                    @endif
                                     {{$item->order?->customer?->name}}
                                     <br>
                                     <small class="text-muted">({{$item->order?->customer?->email}})</small>

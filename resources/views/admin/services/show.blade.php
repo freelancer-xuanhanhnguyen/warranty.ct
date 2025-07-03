@@ -183,6 +183,7 @@
                                                href="{{route('admin.products.history', $item->id)}}">
                                                 <strong>{{$item->product?->code}}</strong>
                                             </a>
+                                            <br>
                                             <small class="text-muted">{{$item->product?->serial}}</small>
                                         </td>
                                         <td class="text-center fs-sm">
@@ -190,8 +191,10 @@
                                         </td>
 
                                         <td class="fs-sm">
-                                            <small class="text-muted">({{$item->customer?->code}})</small>
-                                            <br>
+                                            @if($item->customer?->code)
+                                                <small class="text-muted">({{$item->customer?->code}})</small>
+                                                <br>
+                                            @endif
                                             {{$item->customer?->name}}
                                             <br>
                                             <small class="text-muted">({{$item->customer?->email}})</small>

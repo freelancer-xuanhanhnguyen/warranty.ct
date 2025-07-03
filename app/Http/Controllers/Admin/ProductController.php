@@ -23,10 +23,10 @@ class ProductController extends Controller
             'customer:id,code,name,email',
         ])
             ->when($q, function ($query) use ($q) {
-                $query->where('code', 'like', "%$q%")
+                $query->where('code', 'like', "%{$q}%")
                     ->orWhereHas('product', function ($_query) use ($q) {
-                        $_query->where('name', 'like', "%$q%")
-                            ->orWhere('code', 'like', "%$q%");
+                        $_query->where('name', 'like', "%{$q}%")
+                            ->orWhere('code', 'like', "%{$q}%");
                     });
             });
 
@@ -55,7 +55,7 @@ class ProductController extends Controller
                     ->where('product_id', $id);
             })
             ->when($q, function ($query) use ($q) {
-                $query->where('code', 'like', "%$q%");
+                $query->where('code', 'like', "%{$q}%");
             });
 
         if (isset($status)) {

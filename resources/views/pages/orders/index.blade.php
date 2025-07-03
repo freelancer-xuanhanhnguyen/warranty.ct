@@ -50,6 +50,7 @@
                                        href="{{route('orders.history',['email' => request()->email, 'id'=>  $item->id])}}">
                                         <strong>{{$item->product?->code}}</strong>
                                     </a>
+                                    <br>
                                     <small class="text-muted">{{$item->product?->serial}}</small>
                                 </td>
                                 <td class="text-center fs-sm">

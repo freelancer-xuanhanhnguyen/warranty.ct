@@ -185,6 +185,7 @@
                                                href="{{route('orders.history',['email' => request()->email, 'id'=>  $item->id])}}">
                                                 <strong>{{$item->product?->code}}</strong>
                                             </a>
+                                            <br>
                                             <small class="text-muted">{{$item->product?->serial}}</small>
                                         </td>
                                         <td class="text-center fs-sm">
@@ -247,7 +248,7 @@
             <div class="block-header block-header-default">
                 <h3 class="block-title">Thông tin chi tiết</h3>
 
-                @if($data->evaluate < 1)
+                @if($data->evaluate < 1 && \App\Models\ServiceStatus::STATUS[$data?->status?->code ?? 0] === \App\Models\ServiceStatus::STATUS_COMPLETED)
                     <div class="block-options">
                         <button type="button" class="btn btn-alt-primary btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#review-modal">

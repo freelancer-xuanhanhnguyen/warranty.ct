@@ -31,10 +31,10 @@ class RepairmanController extends Controller
             $q = \request()->q;
             $query = $query->where([
                 ['users.role', '=', User::ROLE_REPAIRMAN],
-                ['users.name', 'like', "%$q%"],
+                ['users.name', 'like', "%{$q}%"],
             ])->orWhere([
                 ['users.role', '=', User::ROLE_REPAIRMAN],
-                ['users.email', 'like', "%$q%"],
+                ['users.email', 'like', "%{$q}%"],
             ]);
         } else {
             $query = $query->where('users.role', '=', User::ROLE_REPAIRMAN);
@@ -97,7 +97,7 @@ class RepairmanController extends Controller
         ])
             ->where('repairman_id', $id)
             ->when($q, function ($query) use ($q) {
-                $query->where('code', 'like', "%$q%");
+                $query->where('code', 'like', "%{$q}%");
             });
 
         if (isset($status)) {

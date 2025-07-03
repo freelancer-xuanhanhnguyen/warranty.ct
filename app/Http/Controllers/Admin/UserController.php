@@ -19,9 +19,9 @@ class UserController extends Controller
         $q = \request()->q;
         $role = \request()->role;
         $query = User::when($q, function ($query) use ($q) {
-            $query->where('name', 'like', "%$q%")
-                ->orWhere('id', 'like', "%$q%")
-                ->orWhere('email', 'like', "%$q%");
+            $query->where('name', 'like', "%{$q}%")
+                ->orWhere('id', 'like', "%{$q}%")
+                ->orWhere('email', 'like', "%{$q}%");
         })
             ->when($role, function ($query) use ($role) {
                 $query->where('role', $role);
@@ -69,19 +69,7 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $q = \request()->q;
-        $data = User::findOrFail($id);
-        $services = Service::whereHas('order', function ($query) use ($id) {
-            $query->select('id')
-                ->where('customer_id', $id);
-        })
-            ->when($q, function ($query) use ($q) {
-                $query->where('code', 'like', "%$q%");
-            })
-            ->latest()
-            ->paginate(20);
-
-        return view('admin.users.show', compact('data', 'services'));
+        //
     }
 
     /**

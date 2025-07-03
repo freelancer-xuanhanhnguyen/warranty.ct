@@ -5,7 +5,7 @@
         <div class="d-flex align-items-center">
             <!-- Logo -->
             <a class="fw-semibold fs-5 tracking-wider text-dual me-3" href="{{route('orders.index', request()->email)}}">
-                <x-logo />
+                <x-logo :width="200" />
             </a>
             <!-- END Logo -->
         </div>

@@ -24,7 +24,7 @@ class ServiceController extends Controller
                 $query->select('id')->where('email', $email);
             })
             ->when($q, function ($query) use ($q) {
-                $query->where('code', 'like', "%$q%");
+                $query->where('code', 'like', "%{$q}%");
             });
 
         if (isset($status)) {
@@ -73,13 +73,27 @@ class ServiceController extends Controller
         $order = Order::with('product')->findOrFail($orderId);
         $isWarrantyExpired = isWarrantyExpired($order->purchase_date, $order->product?->warranty_period, $order->product?->warranty_period_unit);
         $type = $isWarrantyExpired ? Service::TYPE_REPAIR : Service::TYPE_WARRANTY;
+
+        $service = Service::with('status')
+            ->where([
+                ['order_id', $orderId],
+                ['type', $type]
+            ])
+            ->whereHas('status', function ($q) {
+                $q->whereNotIn('code', [ServiceStatus::STATUS_COMPLETED, ServiceStatus::STATUS_CANCELED]);
+            })->first('id');
+
+        if ($service) return redirect(route('services.detail', [$email, $service->id]))
+            ->with(['error' => 'Vui lòng chờ, sản phẩm đang trong quá trình bảo hành - sữa chữa.']);
+
         $service = Service::create(collect($request->all())->merge([
             'order_id' => $orderId,
             'type' => $type
         ])->toArray());
 
         if ($service) {
-            return back()->with(['message' => "Thêm phiếu " . strtolower($type) . " thành công."]);
+            return redirect(route('services.detail', [$email, $service->id]))
+                ->with(['message' => "Thêm phiếu " . strtolower(Service::TYPE[$type]) . " thành công."]);
         }
 
         return back()->withInput()->with(['error' => 'Có lỗi xảy ra, vui lòng thử lại.']);

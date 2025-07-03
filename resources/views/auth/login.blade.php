@@ -22,7 +22,7 @@
                         <div class="block-content">
                             <div class="p-sm-3 px-lg-4 px-xxl-5 pt-sm-0 pb-lg-5">
                                 <div class="text-center">
-                                    <x-logo :width="100"/>
+                                    <x-logo />
                                     <h1 class="h5 mb-1">{{the_website_name()}}</h1>
                                     <p class="fw-medium text-muted">
                                         Xin chào, vui lòng nhập tài khoản của bạn.

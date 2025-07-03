@@ -13,6 +13,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        // Chạy 01:00 mỗi ngày, lấy dữ liệu ngày hôm qua
+        $schedule->command('sync:woo-orders')
+            ->dailyAt('00:00')
+            ->withoutOverlapping()
+            ->onOneServer();
     }
 
     /**
