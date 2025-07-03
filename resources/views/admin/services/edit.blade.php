@@ -200,7 +200,7 @@
 
                             @if(hasRole([\App\Models\User::ROLE_CSKH]))
                                 <div class="mb-4">
-                                    <label class="form-label" for="repairman_id">Ký thuật viên</label>
+                                    <label class="form-label" for="repairman_id">Kỹ thuật viên</label>
                                     <select class="js-select2 form-select" id="repairman_id"
                                             name="repairman_id" data-placeholder="Vui lòng chọn">
                                         <option value=""></option>

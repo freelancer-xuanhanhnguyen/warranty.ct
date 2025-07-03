@@ -23,7 +23,7 @@
                         <div class="block-content">
                             <div class="p-sm-3 px-lg-4 px-xxl-5 pt-sm-0 pb-lg-5">
                                 <div class="text-center">
-                                    <x-logo />
+                                    <x-logo/>
                                     <h1 class="h5 mb-1">{{the_website_name()}}</h1>
                                     <p class="fw-medium text-muted">
                                         Vui lòng điền các thông tin sau để tạo tài khoản mới.
@@ -53,6 +53,19 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
+                                        <div class="mb-4">
+                                            <select class="form-select @error('role') is-invalid @enderror"
+                                                    name="role">
+                                                @foreach(\App\Models\User::ROLE as $key => $item)
+                                                    <option value="{{$key}}"
+                                                            @if(old('$item') === $key) selected @endif>{{$item}}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('role')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
                                         <div class="mb-4">
                                             <input type="password"
                                                    class="form-control form-control-lg form-control-alt @error('password') is-invalid @enderror"

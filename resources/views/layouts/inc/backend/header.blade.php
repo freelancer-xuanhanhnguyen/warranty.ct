@@ -87,21 +87,47 @@
                 </div>
             </div>
             <!-- END User Dropdown -->
-
+            @php($unreadNotifications = auth()->user()->unreadNotifications)
             <!-- Notifications Dropdown -->
             <div class="dropdown d-inline-block ms-2">
                 <button type="button" class="btn btn-sm btn-alt-secondary" id="page-header-notifications-dropdown"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-fw fa-bell"></i>
-                    <span class="text-primary">•</span>
+                    @if(count($unreadNotifications))
+                        <span class="text-primary">•</span>
+                    @endif
                 </button>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0 border-0 fs-sm"
                      aria-labelledby="page-header-notifications-dropdown">
                     <div class="p-2 bg-body-light border-bottom text-center rounded-top">
-                        <h5 class="dropdown-header text-uppercase">Notifications</h5>
+                        <h5 class="dropdown-header text-uppercase">Thông báo</h5>
                     </div>
                     <ul class="nav-items mb-0">
-                        <li>
+                        @php($notifications = auth()->user()
+                            ->notifications()
+                            ->orderBy('read_at', 'asc')
+                            ->orderBy('created_at', 'desc')
+                            ->limit(10)
+                            ->get())
+                        @foreach ($notifications as $notification)
+                            {{--class="bg-black-25"--}}
+                            <li>
+                                <a class="text-dark d-flex py-2"
+                                   href="{{route('admin.services.show', $notification->data['service_id'])}}">
+                                    <div class="flex-shrink-0 me-2 ms-3">
+                                        <i class="fa fa-fw fa-check-circle text-success"></i>
+                                    </div>
+                                    <div class="flex-grow-1 pe-2">
+                                        <div class="fw-semibold">{{ $notification->data['message'] }}</div>
+                                        <span
+                                            class="fw-medium text-muted">{{ $notification->created_at->diffForHumans() }}
+                                        </span>
+                                    </div>
+                                </a>
+                            </li>
+                        @endforeach
+
+                        {{--<li>
                             <a class="text-dark d-flex py-2" href="javascript:void(0)">
                                 <div class="flex-shrink-0 me-2 ms-3">
                                     <i class="fa fa-fw fa-check-circle text-success"></i>
@@ -166,13 +192,13 @@
                                     <span class="fw-medium text-muted">42 min ago</span>
                                 </div>
                             </a>
-                        </li>
+                        </li>--}}
                     </ul>
-                    <div class="p-2 border-top text-center">
+                    {{--<div class="p-2 border-top text-center">
                         <a class="d-inline-block fw-medium" href="javascript:void(0)">
                             <i class="fa fa-fw fa-arrow-down me-1 opacity-50"></i> Load More..
                         </a>
-                    </div>
+                    </div>--}}
                 </div>
             </div>
             <!-- END Notifications Dropdown -->

@@ -3,10 +3,17 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NewServiceMail;
 use App\Models\Order;
 use App\Models\Service;
 use App\Models\ServiceStatus;
+use App\Models\User;
+use App\Notifications\NewServiceNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 
 class ServiceController extends Controller
 {
@@ -74,6 +81,7 @@ class ServiceController extends Controller
         $isWarrantyExpired = isWarrantyExpired($order->purchase_date, $order->product?->warranty_period, $order->product?->warranty_period_unit);
         $type = $isWarrantyExpired ? Service::TYPE_REPAIR : Service::TYPE_WARRANTY;
 
+        DB::beginTransaction();
         $service = Service::with('status')
             ->where([
                 ['order_id', $orderId],
@@ -92,9 +100,28 @@ class ServiceController extends Controller
         ])->toArray());
 
         if ($service) {
+            try {
+                $admins = User::whereIn('role', [User::ROLE_ADMIN, User::ROLE_CSKH])
+                    ->orWhere('id', $service->repairman_id)
+                    ->get();
+                Notification::send($admins, new NewServiceNotification($service));
+
+                $order = Order::with('customer:id,email')
+                    ->find($service->order_id);
+
+                Mail::to($order->customer->email)
+                    ->send(new NewServiceMail($service));
+
+            } catch (\Exception $e) {
+                Log::debug($e);
+            }
+
+            DB::commit();
             return redirect(route('services.detail', [$email, $service->id]))
                 ->with(['message' => "Thêm phiếu " . strtolower(Service::TYPE[$type]) . " thành công."]);
         }
+
+        DB::rollBack();
 
         return back()->withInput()->with(['error' => 'Có lỗi xảy ra, vui lòng thử lại.']);
     }

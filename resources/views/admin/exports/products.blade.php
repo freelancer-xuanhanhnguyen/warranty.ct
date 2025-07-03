@@ -7,7 +7,7 @@
         <th>Tên sản phẩm</th>
         <th class="text-center">Thời gian bảo hành</th>
         <th class="text-center">Bảo hành định kỳ</th>
-        <th class="text-end">Ngày mua</th>
+        <th class="text-center">Ngày mua</th>
         <th class="text-center">Ngày bảo hành định kỳ</th>
         <th>Kỹ thuật viên</th>
         <th class="text-center">Trạng thái</th>
@@ -82,10 +82,15 @@
             <td class="text-center text-nowrap">
                 @if (!request()->has('export'))
                     <div class="btn-group btn-group-sm" role="group" aria-label="Small Horizontal Primary">
-                        <a class="btn btn-sm btn-alt-{{ $isWarrantyExpired ? 'warning' : 'info' }}"
+                        <a class="btn btn-sm btn-alt-{{ $isWarrantyExpired ? 'danger' : 'info' }}"
                            href="{{ route('admin.services.create') }}?order_code={{ $item->code }}&type={{ $isWarrantyExpired ? \App\Models\Service::TYPE_REPAIR : \App\Models\Service::TYPE_WARRANTY }}"
                            data-bs-toggle="tooltip" title="{{ $isWarrantyExpired ? 'Sửa chữa' : 'Bảo hành' }}">
                             <i class="fa fa-fw fa-screwdriver-wrench"></i>
+                        </a>
+
+                        <a class="btn btn-sm btn-alt-warning" href="{{ route('admin.products.edit', $item->id) }}"
+                           data-bs-toggle="tooltip" title="Sửa">
+                            <i class="fa fa-fw fa-pen"></i>
                         </a>
                     </div>
                 @endif

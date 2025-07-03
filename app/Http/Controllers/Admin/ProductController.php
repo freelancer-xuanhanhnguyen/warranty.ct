@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -104,7 +105,10 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $data = Product::findOrFail($id);
+        $users = User::where('role', User::ROLE_REPAIRMAN)->get(['id', 'name']);
+
+        return view('admin.products.edit', compact('data', 'users'));
     }
 
     /**
@@ -112,7 +116,14 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $updated = Product::findOrFail($id)->update($request->all());
+
+        if ($updated) {
+            return back()
+                ->with(['message' => "Cập thông tin sản phâm thành công."]);
+        }
+
+        return back()->withInput()->with(['error' => 'Có lỗi xảy ra, vui lòng thử lại.']);
     }
 
     /**

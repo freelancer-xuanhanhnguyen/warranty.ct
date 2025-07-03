@@ -25,7 +25,8 @@ class User extends Authenticatable
         'phone',
         'birthday',
         'gender',
-        'address'
+        'address',
+        'status'
     ];
 
     /**
@@ -45,6 +46,19 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+    ];
+
+    const STATUS_ACTIVE = 1;
+    const STATUS_DEACTIVATE = 0;
+
+    const STATUS = [
+        self::STATUS_ACTIVE => 'Hoạt động',
+        self::STATUS_DEACTIVATE => 'Không hoạt động',
+    ];
+
+    const STATUS_CLASS = [
+        self::STATUS_ACTIVE => 'success',
+        self::STATUS_DEACTIVATE => 'danger',
     ];
 
     const ROLE_ADMIN = 0;

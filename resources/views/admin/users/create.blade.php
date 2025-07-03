@@ -126,6 +126,18 @@
                                 <textarea type="text" class="js-maxlength form-control" id="address"
                                           name="address" rows="4" maxlength="255">{{old('address')}}</textarea>
                             </div>
+
+                            <div class="mb-4">
+                                <label class="form-label" for="status">Trạng thái</label>
+                                <select class="form-select" id="status"
+                                        name="status">
+                                    @foreach(\App\Models\User::STATUS as $key => $value)
+                                        <option value="{{$key}}"
+                                                @if(old('status') === $key) selected @endif>{{$value}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="mb-4 text-center">
                                 <button type="submit" class="btn btn-alt-primary">Thêm mới</button>
                             </div>

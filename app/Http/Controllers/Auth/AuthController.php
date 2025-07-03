@@ -29,6 +29,12 @@ class AuthController extends Controller
         ]);
 
         $credentials = $request->only('email', 'password');
+        $user = User::where('email', $request->email)
+            ->where('status', 0)
+            ->exists();
+        if ($user) return back()->with([
+            'error' => 'Tài khoản của bạn chưa được phê duyệt.',
+        ])->withInput();
 
         if (Auth::attempt($credentials, $request->remember ?? false)) {
             $request->session()->regenerate();
@@ -52,10 +58,10 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => User::ROLE_REPAIRMAN
+            'role' => $request->role,
         ]);
 
-        return redirect('/login');
+        return redirect('/login')->with('message', 'Đăng ký tài khoản thành công, vui lòng chờ Admin phê duyệt.');
     }
 
     public function logout(Request $request)
