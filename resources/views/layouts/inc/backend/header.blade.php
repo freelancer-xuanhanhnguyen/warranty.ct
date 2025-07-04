@@ -87,13 +87,14 @@
                 </div>
             </div>
             <!-- END User Dropdown -->
-            @php($unreadNotifications = auth()->user()->unreadNotifications)
+            @php($count = auth()->user()->unreadNotifications->count())
+            {{--@php($count = count($unreadNotifications))--}}
             <!-- Notifications Dropdown -->
             <div class="dropdown d-inline-block ms-2">
                 <button type="button" class="btn btn-sm btn-alt-secondary" id="page-header-notifications-dropdown"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-fw fa-bell"></i>
-                    @if(count($unreadNotifications))
+                    @if($count)
                         <span class="text-primary">•</span>
                     @endif
                 </button>
@@ -102,103 +103,68 @@
                     <div class="p-2 bg-body-light border-bottom text-center rounded-top">
                         <h5 class="dropdown-header text-uppercase">Thông báo</h5>
                     </div>
-                    <ul class="nav-items mb-0">
+                    <ul class="nav-items mb-0" style="max-height: 80vh;overflow: auto">
                         @php($notifications = auth()->user()
-                            ->notifications()
-                            ->orderBy('read_at', 'asc')
-                            ->orderBy('created_at', 'desc')
-                            ->limit(10)
-                            ->get())
+                                                    ->notifications()
+                                                    ->orderBy('read_at', 'asc')
+                                                    ->orderBy('created_at', 'desc')
+                                                    ->limit(10)
+                                                    ->get())
                         @foreach ($notifications as $notification)
-                            {{--class="bg-black-25"--}}
-                            <li>
+                            <li @if(!isset($notification->read_at)) class="bg-black-10" @endif>
+                                @if(!isset($notification->read_at))
+                                    <form id="notify-{{$notification->id}}" method="POST"
+                                          action="{{ route('notifications.read', $notification->id) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input name="redirect_url" type="text"
+                                               value="{{route('admin.services.show', $notification->data['service']['id'])}}"
+                                               hidden>
+                                    </form>
+                                @endif
+
                                 <a class="text-dark d-flex py-2"
-                                   href="{{route('admin.services.show', $notification->data['service_id'])}}">
+                                   href="{{route('admin.services.show', $notification->data['service']['id'])}}"
+                                   @if(!isset($notification->read_at))
+                                       onclick="event.preventDefault();document.getElementById('notify-{{$notification->id}}').submit()"
+                                    @endif
+                                >
                                     <div class="flex-shrink-0 me-2 ms-3">
-                                        <i class="fa fa-fw fa-check-circle text-success"></i>
+                                        @isset($notification->read_at)
+                                            <i class="fa fa-fw fa-check-circle text-success"></i>
+                                        @else
+                                            <span class="text-primary fs-lg">•</span>
+                                        @endif
                                     </div>
                                     <div class="flex-grow-1 pe-2">
-                                        <div class="fw-semibold">{{ $notification->data['message'] }}</div>
-                                        <span
-                                            class="fw-medium text-muted">{{ $notification->created_at->diffForHumans() }}
-                                        </span>
+                                        <div class="fw-semibold"
+                                             @if($notification->data['type'] === "update_fee")
+                                                 data-bs-toggle="tooltip"
+                                             title="{{ $notification->data['service']['fee_detail'] }}"
+                                            @endif
+                                        >
+                                            {{ $notification->data['message'] }}</div>
+                                        <small
+                                            class="fw-medium text-muted">{{$notification->data['created_by']['email']}}
+                                            • {{ $notification->created_at->diffForHumans() }}
+                                        </small>
                                     </div>
                                 </a>
                             </li>
                         @endforeach
-
-                        {{--<li>
-                            <a class="text-dark d-flex py-2" href="javascript:void(0)">
-                                <div class="flex-shrink-0 me-2 ms-3">
-                                    <i class="fa fa-fw fa-check-circle text-success"></i>
-                                </div>
-                                <div class="flex-grow-1 pe-2">
-                                    <div class="fw-semibold">You have a new follower</div>
-                                    <span class="fw-medium text-muted">15 min ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="text-dark d-flex py-2" href="javascript:void(0)">
-                                <div class="flex-shrink-0 me-2 ms-3">
-                                    <i class="fa fa-fw fa-plus-circle text-primary"></i>
-                                </div>
-                                <div class="flex-grow-1 pe-2">
-                                    <div class="fw-semibold">1 new sale, keep it up</div>
-                                    <span class="fw-medium text-muted">22 min ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="text-dark d-flex py-2" href="javascript:void(0)">
-                                <div class="flex-shrink-0 me-2 ms-3">
-                                    <i class="fa fa-fw fa-times-circle text-danger"></i>
-                                </div>
-                                <div class="flex-grow-1 pe-2">
-                                    <div class="fw-semibold">Update failed, restart server</div>
-                                    <span class="fw-medium text-muted">26 min ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="text-dark d-flex py-2" href="javascript:void(0)">
-                                <div class="flex-shrink-0 me-2 ms-3">
-                                    <i class="fa fa-fw fa-plus-circle text-primary"></i>
-                                </div>
-                                <div class="flex-grow-1 pe-2">
-                                    <div class="fw-semibold">2 new sales, keep it up</div>
-                                    <span class="fw-medium text-muted">33 min ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="text-dark d-flex py-2" href="javascript:void(0)">
-                                <div class="flex-shrink-0 me-2 ms-3">
-                                    <i class="fa fa-fw fa-user-plus text-success"></i>
-                                </div>
-                                <div class="flex-grow-1 pe-2">
-                                    <div class="fw-semibold">You have a new subscriber</div>
-                                    <span class="fw-medium text-muted">41 min ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="text-dark d-flex py-2" href="javascript:void(0)">
-                                <div class="flex-shrink-0 me-2 ms-3">
-                                    <i class="fa fa-fw fa-check-circle text-success"></i>
-                                </div>
-                                <div class="flex-grow-1 pe-2">
-                                    <div class="fw-semibold">You have a new follower</div>
-                                    <span class="fw-medium text-muted">42 min ago</span>
-                                </div>
-                            </a>
-                        </li>--}}
                     </ul>
-                    {{--<div class="p-2 border-top text-center">
-                        <a class="d-inline-block fw-medium" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-arrow-down me-1 opacity-50"></i> Load More..
-                        </a>
-                    </div>--}}
+                    @if($count)
+                        <div class="p-2 border-top text-center">
+                            <form id="notify-read-all" method="POST" action="{{ route('notifications.readAll') }}">
+                                @csrf
+                                @method('PATCH')
+                            </form>
+                            <a class="d-inline-block fw-medium" href="#"
+                               onclick="event.preventDefault();document.getElementById('notify-read-all').submit()">
+                                <i class="fa fa-fw fa-check-circle me-1 text-success"></i> Đã đọc tất cả
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
             <!-- END Notifications Dropdown -->

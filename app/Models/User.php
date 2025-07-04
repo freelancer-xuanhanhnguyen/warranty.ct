@@ -86,4 +86,9 @@ class User extends Authenticatable
         self::GENDER_FEMALE => 'Nữ',
         self::GENDER_OTHER => 'Khác',
     ];
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
 }

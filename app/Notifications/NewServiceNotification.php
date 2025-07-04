@@ -2,25 +2,22 @@
 
 namespace App\Notifications;
 
-use App\Mail\NewServiceMail;
 use App\Models\Service;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class NewServiceNotification extends Notification
 {
     use Queueable;
 
-    protected Service $service;
+    protected array $data;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($service)
+    public function __construct($data)
     {
-        $this->service = $service;
+        $this->data = $data;
     }
 
     /**
@@ -38,18 +35,12 @@ class NewServiceNotification extends Notification
      */
     public function toMail(object $notifiable)
     {
-        return (new NewServiceMail($this->service))
-            ->to($notifiable->email);
+        //
     }
 
     public function toDatabase($notifiable)
     {
-        $type = strtolower(Service::TYPE[$this->service->type]);
-
-        return [
-            'service_id' => $this->service->id,
-            'message' => "Phiếu $type mới #" . $this->service->code,
-        ];
+        return $this->data;
     }
 
     /**

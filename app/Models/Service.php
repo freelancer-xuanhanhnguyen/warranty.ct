@@ -12,6 +12,10 @@ class Service extends Model
 
     protected $fillable = ['order_id', 'repairman_id', 'code', 'type', 'content', 'fee_total', 'fee_detail', 'reception_date', 'expected_completion_date', 'evaluate', 'evaluate_note'];
 
+    protected $casts = [
+        'fee_total' => 'float',
+    ];
+
     const TYPE_REPAIR = 0;
     const TYPE_WARRANTY = 1;
 
@@ -49,6 +53,7 @@ class Service extends Model
     {
         return Attribute::make(
             get: fn ($value) => number_format($value, 0, '', ''),
+            set: fn ($value) => number_format((float) $value, 2, '.', ''),
         );
     }
 }

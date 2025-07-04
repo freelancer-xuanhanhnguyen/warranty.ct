@@ -10,18 +10,20 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NewServiceMail extends Mailable
+class ServiceStatusMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $service;
+    public $status;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($service)
+    public function __construct($service, $status)
     {
         $this->service = $service;
+        $this->status = $status;
     }
 
     /**
@@ -32,7 +34,7 @@ class NewServiceMail extends Mailable
         $type = strtolower(Service::TYPE[$this->service->type]);
 
         return new Envelope(
-            subject: "Phiếu $type mới #" . $this->service->code,
+            subject: "Trạng thái phiếu $type #" . $this->service->code,
         );
     }
 
@@ -43,7 +45,7 @@ class NewServiceMail extends Mailable
     {
         return new Content(
             markdown: 'emails.services.new',
-            with: ['service' => $this->service]
+            with: ['service' => $this->service, 'status' => $this->status]
         );
     }
 

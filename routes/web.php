@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ChangePasswordController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RepairmanController;
 use App\Http\Controllers\Admin\UserController;
@@ -56,6 +57,12 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)
         ->only(['index', 'show', 'update', 'store', 'edit', 'create'])
         ->names('admin.services');
+
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])
+        ->name('notifications.read');
+
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
+        ->name('notifications.readAll');
 
     Route::middleware('auth.isAdmin')->group(function () {
         Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)->only(['destroy'])->names('admin.services');

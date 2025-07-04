@@ -62,14 +62,14 @@
                         <div class="col">
                             <div class="input-group">
                                 <input type="text" class="form-control form-control-alt" id="q" name="q"
-                                    value="{{ request()->q }}" placeholder="Tìm kiếm">
-                                <span class="input-group-text bg-body border-0">
-                                    <i class="fa fa-search"></i>
-                                </span>
+                                       value="{{ request()->q }}" placeholder="Tìm kiếm">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-search me-1"></i>
+                                </button>
                             </div>
                         </div>
 
-                        <x-btn-export />
+                        <x-btn-export/>
                     </div>
                 </form>
                 <!-- END Search Form -->
