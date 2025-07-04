@@ -16,7 +16,14 @@ class ChangePasswordController extends Controller
 
     public function update($id, Request $request)
     {
+        $user = auth()->user();
+
         $request->validate([
+            'current_password' => ['required', function ($attribute, $value, $fail) use ($user) {
+                if (!Hash::check($value, $user->password)) {
+                    return $fail('Mật khẩu hiện tại không đúng.');
+                }
+            }],
             'password' => 'required|min:6|confirmed',
         ]);
 

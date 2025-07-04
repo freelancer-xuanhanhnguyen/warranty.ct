@@ -18,8 +18,8 @@ class ResetPasswordController extends Controller
     public function reset(Request $request)
     {
         $request->validate([
-            'token'    => 'required',
-            'email'    => 'required|email',
+            'token' => 'required',
+            'email' => 'required|email',
             'password' => 'required|min:6|confirmed',
         ]);
 
@@ -33,8 +33,8 @@ class ResetPasswordController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-            ? redirect('/dashboard')->with('status', __($status))
-            : back()->withErrors(['email' => [__($status)]]);
+            ? redirect(route('dashboard'))->with(['message' => "Thay đổi mật khẩu thành công."])
+            : back()->withInput()->with(['error' => "Có lỗi xảy ra, vui lòng kiểm tra lại."]);
     }
 }
 

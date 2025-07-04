@@ -45,6 +45,17 @@
                                 @method('put')
 
                                 <div class="mb-4">
+                                    <label class="form-label" for="current_password">Mật khẩu hiện tại<span
+                                            class="text-danger">*</span></label>
+                                    <input type="password"
+                                           class="form-control form-control-lg form-control-alt @error('current_password') is-invalid @enderror"
+                                           id="current_password" name="current_password" required>
+                                    @error('current_password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-4">
                                     <label class="form-label" for="password">Mật khẩu <span
                                             class="text-danger">*</span></label>
                                     <input type="password"
