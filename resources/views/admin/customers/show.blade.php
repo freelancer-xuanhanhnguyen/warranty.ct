@@ -87,14 +87,14 @@
             </div>
             <div class="block-content">
                 <!-- Search Form -->
-                <form action="" method="GET">
+                <form class="search-form" action="" method="GET">
                     <div class="row mb-4 align-content-end">
                         <div class="col-md-4">
                             <label class="form-label" for="status">Mã phiếu</label>
                             <div class="input-group">
                                 <input type="text" class="form-control form-control-alt" id="q"
                                        name="q" value="{{request()->q}}">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip"  title="Tìm kiếm">
                                     <i class="fa fa-search me-1"></i>
                                 </button>
                             </div>
@@ -197,6 +197,7 @@
                                 </td>
                             </tr>
                         @endforeach
+                        <x-empty :data="$services"/>
                         </tbody>
                     </table>
                 </div>

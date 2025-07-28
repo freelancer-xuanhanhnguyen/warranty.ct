@@ -55,7 +55,7 @@
         <div class="block block-rounded">
             <div class="block-content">
                 <!-- Search Form -->
-                <form action="" method="GET">
+                <form class="search-form" action="" method="GET">
                     <div class="mb-4">
                         <div class="input-group">
                             <input type="text" class="form-control form-control-alt" id="q"

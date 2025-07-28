@@ -8,9 +8,6 @@
 @endsection
 
 @section('js')
-    <!-- jQuery (required for DataTables plugin) -->
-    <script src="{{ asset('js/lib/jquery.min.js') }}"></script>
-
     <!-- Page JS Plugins -->
     <script src="{{ asset('js/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
     <script src="{{ asset('js/plugins/datatables-buttons-jszip/jszip.min.js') }}"></script>
@@ -58,6 +55,7 @@
                                 <input type="text" class="js-maxlength form-control" id="code"
                                        name="code" value="{{old('code', $data->code)}}" placeholder="######"
                                        maxlength="20" readonly required>
+                                <x-invalid-feedback name="code"/>
                             </div>
 
                             <div class="mb-4">
@@ -65,11 +63,14 @@
                                         class="text-danger">*</span></label>
                                 <input type="text" class="js-maxlength form-control" id="name" maxlength="255"
                                        name="name" value="{{old('name', $data->name)}}" required>
+                                <x-invalid-feedback name="name"/>
                             </div>
 
                             <div class="mb-4">
                                 <label class="form-label" for="email">Email <span class="text-danger">*</span></label>
-                                <input type="email" class="js-maxlength form-control @error('email') is-invalid @enderror" id="email" maxlength="255"
+                                <input type="email"
+                                       class="js-maxlength form-control @error('email') is-invalid @enderror" id="email"
+                                       maxlength="255"
                                        name="email" value="{{old('emaill', $data->email)}}" required>
                                 @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -80,6 +81,7 @@
                                 <label class="form-label" for="birthday">Ngày sinh</label>
                                 <input type="date" class="form-control" id="birthday"
                                        name="birthday" value="{{old('birthday', $data->birthday)}}">
+                                <x-invalid-feedback name="birthday"/>
                             </div>
 
                             <div class="mb-4">
@@ -90,6 +92,7 @@
                                                 @if(old('gender', $data->gender) == $key) selected @endif>{{$type}}</option>
                                     @endforeach
                                 </select>
+                                <x-invalid-feedback name="gender"/>
                             </div>
 
                             <div class="mb-4">
@@ -97,6 +100,7 @@
                                 <textarea type="text" class="js-maxlength form-control" id="address"
                                           name="address" rows="4"
                                           maxlength="255">{{old('address', $data->address)}}</textarea>
+                                <x-invalid-feedback name="address"/>
                             </div>
                             <div class="mb-4 text-center">
                                 <button type="submit" class="btn btn-alt-primary">Cập nhật</button>

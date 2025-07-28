@@ -46,6 +46,7 @@
                         {{$data->product?->name}}
                     </h2>
                 </div>
+
             </div>
         </div>
     </div>
@@ -59,6 +60,24 @@
         <div class="block block-rounded">
             <div class="block-header block-header-default">
                 <h3 class="block-title">Thông tin sản phẩm</h3>
+
+                @php($isWarrantyExpired = isWarrantyExpired($data->purchase_date, $data->product?->warranty_period, $data->product?->warranty_period_unit))
+
+                <div>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Small Horizontal Primary">
+                        <a class="btn btn-sm btn-alt-{{ $isWarrantyExpired ? 'danger' : 'info' }}"
+                           href="{{ route('admin.services.create') }}?order_code={{ $data->code }}&type={{ $isWarrantyExpired ? \App\Models\Service::TYPE_REPAIR : \App\Models\Service::TYPE_WARRANTY }}"
+                           data-bs-toggle="tooltip" title="{{ $isWarrantyExpired ? 'Sửa chữa' : 'Bảo hành' }}">
+                            <i class="fa fa-fw fa-screwdriver-wrench"></i>
+                        </a>
+
+                        <a class="btn btn-sm btn-alt-warning"
+                           href="{{ route('admin.products.edit', $data->product_id) }}"
+                           data-bs-toggle="tooltip" title="Sửa">
+                            <i class="fa fa-fw fa-pen"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
             <div class="block-content">
                 <div class="table-responsive">
@@ -115,7 +134,7 @@
                                     {{$item->purchase_date}}
                                 </td>
 
-                                @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit, $item->service?->created_at))
+                                @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
                                 @php($isWarrantyExpired = $status['expired'])
 
                                 <td class="text-nowrap text-center fs-sm">
@@ -155,14 +174,14 @@
             </div>
             <div class="block-content">
                 <!-- Search Form -->
-                <form action="" method="GET">
+                <form class="search-form" action="" method="GET">
                     <div class="row mb-4 align-content-end">
                         <div class="col-md-4">
                             <label class="form-label" for="status">Mã phiếu</label>
                             <div class="input-group">
                                 <input type="text" class="form-control form-control-alt" id="q"
                                        name="q" value="{{request()->q}}">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Tìm kiếm">
                                     <i class="fa fa-search me-1"></i>
                                 </button>
                             </div>
@@ -265,6 +284,7 @@
                                 </td>
                             </tr>
                         @endforeach
+                        <x-empty :data="$services"/>
                         </tbody>
                     </table>
                 </div>

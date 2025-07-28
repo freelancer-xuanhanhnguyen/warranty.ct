@@ -216,7 +216,7 @@
                                             {{$item->purchase_date}}
                                         </td>
 
-                                        @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit, $item->service?->created_at))
+                                        @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
                                         @php($isWarrantyExpired = $status['expired'])
 
                                         <td class="text-nowrap text-center fs-sm">

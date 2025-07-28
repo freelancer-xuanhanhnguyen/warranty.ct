@@ -208,7 +208,7 @@
                                             {{$item->purchase_date}}
                                         </td>
 
-                                        @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit, $item->service?->created_at))
+                                        @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
                                         @php($isWarrantyExpired = $status['expired'])
 
                                         <td class="text-nowrap text-center fs-sm">
@@ -248,7 +248,7 @@
             <div class="block-header block-header-default">
                 <h3 class="block-title">Thông tin chi tiết</h3>
 
-                @if($data->evaluate < 1 && \App\Models\ServiceStatus::STATUS[$data?->status?->code ?? 0] === \App\Models\ServiceStatus::STATUS_COMPLETED)
+                @if($data->evaluate < 1 && $data?->status?->code === \App\Models\ServiceStatus::STATUS_COMPLETED)
                     <div class="block-options">
                         <button type="button" class="btn btn-alt-primary btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#review-modal">

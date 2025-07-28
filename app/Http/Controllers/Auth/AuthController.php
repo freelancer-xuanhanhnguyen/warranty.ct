@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\NewServiceNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 
 class AuthController extends Controller
 {
@@ -54,12 +56,22 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
+
+        $users = User::active()
+            ->whereIn('role', [User::ROLE_ADMIN])
+            ->get();
+
+        Notification::send($users, new NewServiceNotification([
+            'type' => 'user-register',
+            'user' => $user,
+            'message' => 'Phê duyệt tài khoản mới'
+        ]));
 
         return redirect('/login')->with('message', 'Đăng ký tài khoản thành công, vui lòng chờ Admin phê duyệt.');
     }

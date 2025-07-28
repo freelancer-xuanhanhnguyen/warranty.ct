@@ -118,13 +118,22 @@
                                         @csrf
                                         @method('PATCH')
                                         <input name="redirect_url" type="text"
-                                               value="{{route('admin.services.show', $notification->data['service']['id'])}}"
+                                               @if(isset($notification->data['service']))
+                                                   value="{{route('admin.services.show', $notification->data['service']['id'])}}"
+                                               @elseif(isset($notification->data['user']))
+                                                   value="{{route('admin.users.edit', $notification->data['user']['id'])}}"
+                                               @endif
                                                hidden>
                                     </form>
                                 @endif
 
                                 <a class="text-dark d-flex py-2"
-                                   href="{{route('admin.services.show', $notification->data['service']['id'])}}"
+                                   @if(isset($notification->data['service']))
+                                       href="{{route('admin.services.show', $notification->data['service']['id'])}}"
+                                   @elseif(isset($notification->data['user']))
+                                       href="{{route('admin.users.edit', $notification->data['user']['id'])}}"
+                                   @endif
+
                                    @if(!isset($notification->read_at))
                                        onclick="event.preventDefault();document.getElementById('notify-{{$notification->id}}').submit()"
                                     @endif
@@ -143,9 +152,10 @@
                                              title="{{ $notification->data['service']['fee_detail'] }}"
                                             @endif
                                         >
-                                            {{ $notification->data['message'] }}</div>
+                                            {{ $notification->data['message'] }}
+                                        </div>
                                         <small
-                                            class="fw-medium text-muted">{{ $notification->data['created_by']['email'] ?? null }}
+                                            class="fw-medium text-muted">{{ $notification->data['created_by']['email'] ?? $notification->data['user']['email'] ?? null }}
                                             • {{ $notification->created_at->diffForHumans() }}
                                         </small>
                                     </div>

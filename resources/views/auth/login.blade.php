@@ -22,7 +22,7 @@
                         <div class="block-content">
                             <div class="p-sm-3 px-lg-4 px-xxl-5 pt-sm-0 pb-lg-5">
                                 <div class="text-center">
-                                    <x-logo />
+                                    <x-logo/>
                                     <h1 class="h5 mb-1">{{the_website_name()}}</h1>
                                     <p class="fw-medium text-muted">
                                         Xin chào, vui lòng nhập tài khoản của bạn.
@@ -43,10 +43,11 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                        <div class="mb-4">
+                                        <div class="mb-4 position-relative">
                                             <input type="password"
                                                    class="form-control form-control-alt form-control-lg @error('password') is-invalid @enderror"
                                                    id="password" name="password" placeholder="Mật khẩu">
+{{--                                            <i class="fa fa-fw fa-eye"></i>--}}
                                             @error('password')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror

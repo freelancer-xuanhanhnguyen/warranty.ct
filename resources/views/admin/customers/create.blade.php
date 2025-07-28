@@ -70,6 +70,7 @@
                                         class="text-danger">*</span></label>
                                 <input type="text" class="js-maxlength form-control" id="name" maxlength="255"
                                        name="name" value="{{old('name')}}" required>
+                                <x-invalid-feedback name="name"/>
                             </div>
 
                             <div class="mb-4">
@@ -87,6 +88,7 @@
                                 <label class="form-label" for="birthday">Ngày sinh</label>
                                 <input type="date" class="form-control" id="birthday"
                                        name="birthday" value="{{old('birthday')}}">
+                                <x-invalid-feedback name="birthday"/>
                             </div>
 
                             <div class="mb-4">
@@ -97,6 +99,7 @@
                                                 @if(old('gender') == $key) selected @endif>{{$type}}</option>
                                     @endforeach
                                 </select>
+                                <x-invalid-feedback name="gender"/>
                             </div>
 
                             <div class="mb-4">
@@ -104,12 +107,14 @@
                                 <input type="text" class="js-masked-phone-vn form-control"
                                        id="phone" name="phone" value="{{old('phone')}}"
                                        placeholder="0383 999 999">
+                                <x-invalid-feedback name="phone"/>
                             </div>
 
                             <div class="mb-4">
                                 <label class="form-label" for="address">Địa chỉ</label>
                                 <textarea type="text" class="js-maxlength form-control" id="address"
                                           name="address" rows="4" maxlength="255">{{old('address')}}</textarea>
+                                <x-invalid-feedback name="address"/>
                             </div>
                             <div class="mb-4 text-center">
                                 <button type="submit" class="btn btn-alt-primary">Thêm mới</button>

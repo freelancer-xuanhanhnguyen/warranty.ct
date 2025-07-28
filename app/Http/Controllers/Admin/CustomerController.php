@@ -46,7 +46,7 @@ class CustomerController extends Controller
     {
         $request->validate([
             'email' => 'required|email|unique:customers,email',
-            'gender' => 'nullable|integer|in:' . implode(',', array_keys(Customer::GENDER)),
+            'gender' => 'nullable|in:' . implode(',', array_keys(Customer::GENDER)),
             'phone' => 'nullable|string|max:20',
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:255',
@@ -112,6 +112,11 @@ class CustomerController extends Controller
     {
         $request->validate([
             'email' => 'required|email|unique:customers,email,' . $id,
+            'gender' => 'nullable|in:' . implode(',', array_keys(Customer::GENDER)),
+            'phone' => 'nullable|string|max:20',
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
         ]);
 
         $updated = Customer::findOrFail($id)->update($request->all());
@@ -128,7 +133,7 @@ class CustomerController extends Controller
      */
     public function destroy(string $id)
     {
-        Customer::destroy($id);
+        Customer::findOrFail($id)->delete();
         return back()->with(['message' => 'Đã xóa thành công.']);
     }
 }

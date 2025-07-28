@@ -12,7 +12,7 @@
             </div>
             <div class="block-content">
                 <!-- Search Form -->
-                <form action="" method="GET">
+                <form class="search-form" action="" method="GET">
                     <div class="mb-4">
                         <div class="input-group">
                             <input type="text" class="form-control form-control-alt" id="q"
@@ -73,7 +73,7 @@
                                     {{$item->purchase_date}}
                                 </td>
 
-                                @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit, $item->service?->created_at))
+                                @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
                                 @php($isWarrantyExpired = $status['expired'])
 
                                 <td class="text-nowrap text-center fs-sm">
@@ -111,6 +111,7 @@
                                 </td>
                             </tr>
                         @endforeach
+                        <x-empty :data="$data"/>
                         </tbody>
                     </table>
                 </div>
