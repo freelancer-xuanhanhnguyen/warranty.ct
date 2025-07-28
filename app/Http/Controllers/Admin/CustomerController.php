@@ -46,6 +46,10 @@ class CustomerController extends Controller
     {
         $request->validate([
             'email' => 'required|email|unique:customers,email',
+            'gender' => 'nullable|integer|in:' . implode(',', array_keys(Customer::GENDER)),
+            'phone' => 'nullable|string|max:20',
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:255',
         ]);
 
         $service = Customer::create($request->all());

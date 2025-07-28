@@ -145,7 +145,7 @@
                                         >
                                             {{ $notification->data['message'] }}</div>
                                         <small
-                                            class="fw-medium text-muted">{{$notification->data['created_by']['email']}}
+                                            class="fw-medium text-muted">{{ $notification->data['created_by']['email'] ?? null }}
                                             • {{ $notification->created_at->diffForHumans() }}
                                         </small>
                                     </div>

@@ -34,7 +34,7 @@
                 {{ $item->birthday }}
             </td>
             <td class="text-center fs-sm">
-                {{ \App\Models\Customer::GENDER[$item->gender] }}
+                {{ \App\Models\Customer::GENDER[$item->gender] ?? null }}
             </td>
 
             <td class="fs-sm">
@@ -61,5 +61,8 @@
             </td>
         </tr>
     @endforeach
+
+    <x-empty :data="$data"/>
+
     </tbody>
 </table>

@@ -96,5 +96,8 @@
             </td>
         </tr>
     @endforeach
+
+    <x-empty :data="$data"/>
+
     </tbody>
 </table>

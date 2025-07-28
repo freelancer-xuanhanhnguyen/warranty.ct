@@ -88,7 +88,8 @@
                             <i class="fa fa-fw fa-screwdriver-wrench"></i>
                         </a>
 
-                        <a class="btn btn-sm btn-alt-warning" href="{{ route('admin.products.edit', $item->product_id) }}"
+                        <a class="btn btn-sm btn-alt-warning"
+                           href="{{ route('admin.products.edit', $item->product_id) }}"
                            data-bs-toggle="tooltip" title="Sửa">
                             <i class="fa fa-fw fa-pen"></i>
                         </a>
@@ -97,5 +98,8 @@
             </td>
         </tr>
     @endforeach
+
+    <x-empty :data="$data"/>
+
     </tbody>
 </table>

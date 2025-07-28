@@ -22,17 +22,17 @@
         <!-- END Logo -->
 
         <!-- Extra -->
-        <div class="d-none">
+        <div>
             <!-- Dark Mode -->
             <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
-            <a class="btn btn-sm btn-alt-secondary" data-toggle="layout" data-action="dark_mode_toggle"
+            <a class="btn btn-sm btn-alt-secondary d-none" data-toggle="layout" data-action="dark_mode_toggle"
                href="javascript:void(0)">
                 <i class="far fa-moon"></i>
             </a>
             <!-- END Dark Mode -->
 
             <!-- Options -->
-            <div class="dropdown d-inline-block ms-1">
+            <div class="dropdown d-inline-block ms-1 d-none">
                 <a class="btn btn-sm btn-alt-secondary" id="sidebar-themes-dropdown" data-bs-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false" href="#">
                     <i class="fa fa-brush"></i>
