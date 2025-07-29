@@ -1,11 +1,7 @@
 @extends('layouts.backend')
 
-@section('css')
-    <!-- Page JS Plugins CSS -->
-@endsection
 
 @section('js')
-
 
     <!-- Page JS Plugins -->
     <script src="{{ asset('js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
@@ -49,8 +45,10 @@
                             <label class="form-label" for="status">Mã phiếu</label>
                             <div class="input-group">
                                 <input type="text" class="form-control form-control-alt" id="q" name="q"
-                                    value="{{ request()->q }}">
-                                <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip"  title="Tìm kiếm">
+                                       value="{{ request()->q }}">
+
+                                <x-sort-input/>
+                                <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Tìm kiếm">
                                     <i class="fa fa-search me-1"></i>
                                 </button>
                             </div>
@@ -67,7 +65,7 @@
                             </select>
                         </div>
 
-                        <x-btn-export />
+                        <x-btn-export/>
                     </div>
                 </form>
                 <!-- END Search Form -->

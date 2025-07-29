@@ -5,6 +5,9 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
+const FORMAT_DATE = 'd/m/Y';
+const FORMAT_DATETIME = 'd/m/Y H:m';
+
 function isWarrantyExpired($purchaseDate, $warrantyValue, $warrantyUnit): bool
 {
     // Convert về Carbon nếu không phải là Carbon

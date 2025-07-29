@@ -44,15 +44,17 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'email' => 'required|email|unique:customers,email',
             'gender' => 'nullable|in:' . implode(',', array_keys(Customer::GENDER)),
             'phone' => 'nullable|string|max:20',
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:255',
+            'birthday' => 'nullable|date',
+            'address' => 'nullable|string|max:500',
         ]);
 
-        $service = Customer::create($request->all());
+        $service = Customer::create($data);
 
         if ($service) {
             return back()->with(['message' => "Thêm khách hàng thành công."]);
@@ -110,16 +112,17 @@ class CustomerController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'email' => 'required|email|unique:customers,email,' . $id,
+        $data = $request->validate([
+            'email' => 'required|email|unique:customers,email',
             'gender' => 'nullable|in:' . implode(',', array_keys(Customer::GENDER)),
             'phone' => 'nullable|string|max:20',
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:255',
+            'birthday' => 'nullable|date',
+            'address' => 'nullable|string|max:500',
         ]);
 
-        $updated = Customer::findOrFail($id)->update($request->all());
+        $updated = Customer::findOrFail($id)->update($data);
 
         if ($updated) {
             return back()->with(['message' => "Cập nhật khách hàng thành công."]);

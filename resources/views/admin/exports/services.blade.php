@@ -1,17 +1,17 @@
 <table class="table table-borderless table-striped table-vcenter">
     <thead>
     <tr>
-        <th class="text-center" style="width: 100px;">Mã phiếu</th>
-        <th class="text-center">Mã đơn hàng</th>
+        <th class="sortable text-center" data-name="services__code" style="width: 100px;">Mã phiếu</th>
+        <th class="sortable text-center" data-name="orders__code">Mã đơn hàng</th>
         <th>Khách hàng</th>
         <th class="text-center">Loại phiếu</th>
-        <th>Tên sản phẩm</th>
+        <th class="sortable" data-name="products__name">Tên sản phẩm</th>
         <th>Vấn đề bảo hành</th>
         <th class="text-center">Tổng phí</th>
         <th>Kỹ thuật viên</th>
         <th class="text-center">Đánh giá</th>
         <th class="text-center">Trạng thái</th>
-        <th class="text-center">Ngày tạo</th>
+        <th class="sortable text-center" data-name="services__created_at">Ngày tạo</th>
         <th></th>
     </tr>
     </thead>
@@ -71,7 +71,7 @@
                     </span>
             </td>
             <td class="text-center fs-sm" style="min-width: 140px">
-                {{ $item->created_at }}
+                {{ $item->created_at->format(FORMAT_DATETIME) }}
             </td>
             <td class="text-center text-nowrap">
                 <div class="btn-group btn-group-sm" role="group" aria-label="Small Horizontal Primary">

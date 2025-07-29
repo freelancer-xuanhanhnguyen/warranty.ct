@@ -68,13 +68,16 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::resource('/profile', ProfileController::class)->names('admin.profile')->only(['index', 'update']);
     Route::resource('/change-password', ChangePasswordController::class)->names('admin.change-password')->only(['index', 'update']);
 
-    Route::middleware('auth.isAdmin')->group(function () {
+    Route::middleware('auth.role:' . User::ROLE_CSKH)->group(function () {
         Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)->only(['destroy'])->names('admin.services');
         Route::resource('products', ProductController::class)->names('admin.products');
         Route::get('products/{id}/history', [ProductController::class, 'history'])->name('admin.products.history');
         Route::resource('repairman', RepairmanController::class)->names('admin.repairman');
-        Route::resource('users', UserController::class)->names('admin.users');
         Route::resource('customers', CustomerController::class)->names('admin.customers');
+
+        Route::middleware('auth.role:' . User::ROLE_CSKH)->group(function () {
+            Route::resource('users', UserController::class)->names('admin.users');
+        });
     });
 
     /*Route::view('/pages/slick', 'pages.slick');

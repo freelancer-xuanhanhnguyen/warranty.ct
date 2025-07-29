@@ -26,5 +26,43 @@
                 validate: true
             });
         });
+
+        $val = $('.sort-input').val();
+        if ($val) {
+            $isAsc = $val === "asc"
+            $isDesc = $val === "desc"
+            $name = $('.sort-input').data('name')
+
+            $th = $(`.sortable[data-name=${$name}]`);
+
+            if ($isAsc) {
+                $th.addClass('--asc');
+            } else if ($isDesc) {
+                $th.addClass('--desc');
+            }
+        }
+
+        $('.sortable').on('click', function () {
+            $name = $(this).data('name')
+            if (!$name) return;
+            $isAsc = $(this).hasClass('--asc')
+            $isDesc = $(this).hasClass('--desc')
+            $search = $('.search-form');
+            $sortInput = $('.sort-input');
+
+            if ($isAsc) {
+                $(this).removeClass('--asc').addClass('--desc');
+                $sortInput.attr('name', `sort[${$name}]`).val('desc')
+            } else if ($isDesc) {
+                $(this).removeClass('--desc');
+                $sortInput.attr('name', ``).val('')
+            } else {
+                $(this).addClass('--asc');
+                $sortInput.attr('name', `sort[${$name}]`).val('asc')
+            }
+            $search.submit();
+        })
     });
+
+
 </script>

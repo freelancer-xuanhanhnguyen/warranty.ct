@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\ServicesExport;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\Service;
 use App\Models\ServiceStatus;
 use App\Models\User;
@@ -40,13 +41,22 @@ class ServiceController extends Controller
             $query = $query->where('repairman_id', auth()->id());
         }
 
+        $sort = \request()->sort ?? [];
+        if (\request()->sort)
+            foreach ($sort as $key => $value) {
+                $query = $query
+                    ->join('orders', 'orders.id', '=', 'services.order_id')
+                    ->join('products', 'products.id', '=', 'orders.product_id')
+                    ->orderBy(str_replace('__', '.', $key), $value);
+            } else {
+            $query = $query->latest();
+        }
+
         if (request()->has('export')) {
             return Excel::download(new ServicesExport($query->latest()->get()), 'Phiếu yêu cầu bảo hành - sửa chữa.xlsx');
         }
 
-        $data = $query
-            ->latest()
-            ->paginate(20);
+        $data = $query->paginate(20);
 
         return view('admin.services.index', compact('data'));
     }
@@ -76,6 +86,20 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
+        $data = $request->validate([
+            'order_id' => 'nullable|exists:orders,id',
+            'repairman_id' => 'nullable|exists:users,id',
+            'code' => 'nullable|string|max:255',
+            'type' => 'nullable|in:' . implode(',', array_keys(Service::TYPE)),
+            'content' => 'nullable|string|max:500',
+            'fee_total' => 'nullable|numeric|max:999999999999999999999',
+            'fee_detail' => 'nullable|string|max:500',
+            'reception_date' => 'nullable|date',
+            'expected_completion_date' => 'nullable|date',
+            'evaluate' => 'nullable|numeric|min:1|max:5',
+            'evaluate_note' => 'nullable|string|max:500',
+        ]);
+
         $service = Service::with('status')
             ->where('order_id', $request->order_id)
             ->whereHas('status', function ($q) {
@@ -85,7 +109,7 @@ class ServiceController extends Controller
         if ($service) return redirect(route('admin.services.show', $service->id))
             ->with(['error' => 'Sản phẩm đang trong quá trình bảo hành - sữa chữa.']);
 
-        $service = Service::create($request->all());
+        $service = Service::create($data);
 
         if ($service) {
             return redirect(route('admin.services.show', $service->id))
@@ -135,10 +159,24 @@ class ServiceController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $data = $request->validate([
+            'order_id' => 'nullable|exists:orders,id',
+            'repairman_id' => 'nullable|exists:users,id',
+            'code' => 'nullable|string|max:255',
+            'type' => 'nullable|in:' . implode(',', array_keys(Service::TYPE)),
+            'content' => 'nullable|string|max:500',
+            'fee_total' => 'nullable|numeric|max:99999999999999999',
+            'fee_detail' => 'nullable|string|max:500',
+            'reception_date' => 'nullable|date',
+            'expected_completion_date' => 'nullable|date',
+            'evaluate' => 'nullable|numeric|min:1|max:5',
+            'evaluate_note' => 'nullable|string|max:500',
+        ]);
+
         $service = Service::with(['status'])->find($id);
         if (!$service) abort(404);
 
-        $updated = $service?->update(collect($request->all())->merge([
+        $updated = $service?->update(collect($data)->merge([
             'evaluate' => $request->score ?: null,
             'evaluate_note' => $request->score ? $request->evaluate_note : null
         ])->toArray());

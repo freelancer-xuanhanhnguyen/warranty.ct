@@ -14,7 +14,6 @@
 
 @section('js')
 
-
     <!-- Page JS Plugins -->
     <script src="{{ asset('js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
@@ -49,13 +48,15 @@
         <div class="block block-rounded">
             <div class="block-content">
                 <!-- Search Form -->
-                <form class=" mb-4" action="" method="GET">
+                <form class="search-form mb-4" action="" method="GET">
                     <div class="row">
                         <div class="col">
                             <div class="input-group">
                                 <input type="text" class="form-control form-control-alt" id="q" name="q"
                                        value="{{ request()->q }}" placeholder="Tìm kiếm">
-                                <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip"  title="Tìm kiếm">
+
+                                <x-sort-input/>
+                                <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Tìm kiếm">
                                     <i class="fa fa-search me-1"></i>
                                 </button>
                             </div>

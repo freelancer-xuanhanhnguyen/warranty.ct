@@ -9,7 +9,7 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'code', 'serial', 'warranty_period_unit', 'warranty_period', 'periodic_warranty_unit', 'periodic_warranty', 'periodic_warranty', 'repairman_id'];
+    protected $fillable = ['name', 'code', 'serial', 'warranty_period_unit', 'warranty_period', 'periodic_warranty_unit', 'periodic_warranty', 'repairman_id'];
 
     const WARRANTY_UNIT_DAY = 0;
     const WARRANTY_UNIT_MONTH = 1;

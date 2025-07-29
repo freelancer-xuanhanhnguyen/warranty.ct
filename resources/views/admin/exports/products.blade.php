@@ -1,13 +1,13 @@
 <table class="table table-borderless table-striped table-vcenter">
     <thead>
     <tr>
-        <th style="width: 100px;">Mã sản phẩm</th>
+        <th class="sortable" data-name="products__code" style="width: 100px;">Mã sản phẩm</th>
         <th class="text-center">Mã đơn hàng</th>
         <th>Khách hàng</th>
-        <th>Tên sản phẩm</th>
+        <th class="sortable" data-name="products__name">Tên sản phẩm</th>
         <th class="text-center">Thời gian bảo hành</th>
         <th class="text-center">Bảo hành định kỳ</th>
-        <th class="text-center">Ngày mua</th>
+        <th class="sortable text-center" data-name="purchase_date">Ngày mua</th>
         <th class="text-center">Ngày bảo hành định kỳ</th>
         <th>Kỹ thuật viên</th>
         <th class="text-center">Trạng thái</th>
@@ -52,7 +52,7 @@
             </td>
 
             <td class="text-nowrap fs-sm">
-                {{ $item->purchase_date }}
+                {{ $item->purchase_date->format(FORMAT_DATE) }}
             </td>
 
             @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))

@@ -31,6 +31,12 @@ class ProductController extends Controller
                     });
             });
 
+        $sort = \request()->sort ?? [];
+        foreach ($sort as $key => $value) {
+            $query = $query->join('products', 'products.id', '=', 'orders.product_id')
+                ->orderBy(str_replace('__', '.', $key), $value);
+        }
+
         if (request()->has('export')) {
             return Excel::download(new OrdersExport($query->get()), 'Thiết bị bảo hành - sửa chữa.xlsx');
         }
@@ -116,7 +122,18 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $updated = Product::findOrFail($id)->update($request->all());
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:255',
+            'serial' => 'nullable|string|max:255',
+            'warranty_period_unit' => 'nullable|in:' . implode(',', array_keys(Product::WARRANTY_UNIT)),
+            'warranty_period' => 'nullable|numeric|max:99999',
+            'periodic_warranty_unit' => 'nullable|in' . implode(',', array_keys(Product::WARRANTY_UNIT)),
+            'periodic_warranty' => 'nullable|numeric|max:99999',
+            'repairman_id' => 'nullable|exists:users,id',
+        ]);
+
+        $updated = Product::findOrFail($id)->update($data);
 
         if ($updated) {
             return back()
