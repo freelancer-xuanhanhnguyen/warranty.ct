@@ -1,5 +1,23 @@
 @extends('layouts.simple')
 
+@section('css')
+    <!-- Page JS Plugins CSS -->
+    <link rel="stylesheet" href="{{ asset('js/plugins/select2/css/select2.min.css') }}">
+@endsection
+
+@section('js')
+
+    <!-- Page JS Plugins -->
+    <script src="{{asset('js/plugins/jquery.maskedinput/jquery.maskedinput.min.js')}}"></script>
+    <script src="{{asset('js/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
+
+    <script type="module">
+        jQuery('.js-masked-phone-vn:not(.js-masked-enabled)').mask('0999 999 999');
+
+        One.helpersOnLoad(['jq-masked-inputs']);
+    </script>
+@endsection
+
 @section('content')
     <!-- Page Content -->
     <div class="hero-static d-flex align-items-center">
@@ -40,7 +58,7 @@
                                             <input type="text"
                                                    class="form-control form-control-lg form-control-alt @error('name') is-invalid @enderror"
                                                    id="name" name="name" value="{{old('name')}}"
-                                                   placeholder="Tên tài khoản">
+                                                   placeholder="Họ & tên" required>
                                             @error('name')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -48,7 +66,7 @@
                                         <div class="mb-4">
                                             <input type="email"
                                                    class="form-control form-control-lg form-control-alt @error('email') is-invalid @enderror"
-                                                   id="email" name="email" value="{{old('email')}}" placeholder="Email">
+                                                   id="email" name="email" value="{{old('email')}}" placeholder="Email" required>
                                             @error('email')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -66,19 +84,40 @@
                                             @enderror
                                         </div>
 
+                                        <x-password name="password" placeholder="Mật khẩu"/>
+
+                                        <x-password name="password_confirmation" placeholder="Nhập lại mật khẩu"/>
+
                                         <div class="mb-4">
-                                            <input type="password"
-                                                   class="form-control form-control-lg form-control-alt @error('password') is-invalid @enderror"
-                                                   id="password" name="password" placeholder="Mật khẩu">
-                                            @error('password')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                            <label class="form-label" for="birthday">Ngày sinh</label>
+                                            <input type="date" class="form-control" id="birthday"
+                                                   name="birthday" value="{{old('birthday')}}">
                                         </div>
+
                                         <div class="mb-4">
-                                            <input type="password" class="form-control form-control-lg form-control-alt"
-                                                   id="password-confirm" name="password_confirmation"
-                                                   placeholder="Nhập lại mật khẩu">
+                                            <label class="form-label" for="gender">Giới tính</label>
+                                            <select class="form-select" id="gender" name="gender">
+                                                @foreach(\App\Models\User::GENDER as $key => $type)
+                                                    <option value="{{$key}}"
+                                                            @if(old('gender') == $key) selected @endif>{{$type}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label" for="phone">Điện thoại</label>
+                                            <input type="text" class="js-masked-phone-vn form-control"
+                                                   id="phone" name="phone" value="{{old('phone')}}"
+                                                   placeholder="0383 999 999">
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label" for="address">Địa chỉ</label>
+                                            <textarea type="text" class="js-maxlength form-control" id="address"
+                                                      name="address" rows="4"
+                                                      maxlength="250">{{old('address')}}</textarea>
+                                        </div>
+
                                         <div class="mb-4">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" value=""

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\ChangePasswordController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\RepairmanController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
@@ -64,6 +65,9 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
         ->name('notifications.readAll');
 
+    Route::resource('/profile', ProfileController::class)->names('admin.profile')->only(['index', 'update']);
+    Route::resource('/change-password', ChangePasswordController::class)->names('admin.change-password')->only(['index', 'update']);
+
     Route::middleware('auth.isAdmin')->group(function () {
         Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)->only(['destroy'])->names('admin.services');
         Route::resource('products', ProductController::class)->names('admin.products');
@@ -71,7 +75,6 @@ Route::middleware('auth')->prefix('admin')->group(function () {
         Route::resource('repairman', RepairmanController::class)->names('admin.repairman');
         Route::resource('users', UserController::class)->names('admin.users');
         Route::resource('customers', CustomerController::class)->names('admin.customers');
-        Route::resource('/change-password', ChangePasswordController::class)->names('admin.change-password')->only(['index', 'update']);
     });
 
     /*Route::view('/pages/slick', 'pages.slick');

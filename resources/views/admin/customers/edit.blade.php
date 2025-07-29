@@ -2,24 +2,17 @@
 
 @section('css')
     <!-- Page JS Plugins CSS -->
-    <link rel="stylesheet" href="{{ asset('js/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('js/plugins/select2/css/select2.min.css') }}">
 @endsection
 
 @section('js')
     <!-- Page JS Plugins -->
-    <script src="{{ asset('js/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-jszip/jszip.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons/buttons.html5.min.js') }}"></script>
+
     <script src="{{asset('js/plugins/jquery.maskedinput/jquery.maskedinput.min.js')}}"></script>
     <script src="{{asset('js/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
 
     <script type="module">
-        One.helpersOnLoad(['jq-maxlength', 'jq-masked-inputs']);
+        One.helpersOnLoad(['jq-masked-inputs']);
     </script>
 @endsection
 
@@ -61,7 +54,7 @@
                             <div class="mb-4">
                                 <label class="form-label" for="name">Tên khách hàng <span
                                         class="text-danger">*</span></label>
-                                <input type="text" class="js-maxlength form-control" id="name" maxlength="255"
+                                <input type="text" class="js-maxlength form-control" id="name" maxlength="250"
                                        name="name" value="{{old('name', $data->name)}}" required>
                                 <x-invalid-feedback name="name"/>
                             </div>
@@ -70,7 +63,7 @@
                                 <label class="form-label" for="email">Email <span class="text-danger">*</span></label>
                                 <input type="email"
                                        class="js-maxlength form-control @error('email') is-invalid @enderror" id="email"
-                                       maxlength="255"
+                                       maxlength="250"
                                        name="email" value="{{old('emaill', $data->email)}}" required>
                                 @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -99,7 +92,7 @@
                                 <label class="form-label" for="address">Địa chỉ</label>
                                 <textarea type="text" class="js-maxlength form-control" id="address"
                                           name="address" rows="4"
-                                          maxlength="255">{{old('address', $data->address)}}</textarea>
+                                          maxlength="250">{{old('address', $data->address)}}</textarea>
                                 <x-invalid-feedback name="address"/>
                             </div>
                             <div class="mb-4 text-center">

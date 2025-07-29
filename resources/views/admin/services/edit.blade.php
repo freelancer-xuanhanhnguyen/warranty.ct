@@ -2,8 +2,6 @@
 
 @section('css')
     <!-- Page JS Plugins CSS -->
-    <link rel="stylesheet" href="{{ asset('js/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('js/plugins/select2/css/select2.min.css') }}">
 
     <style>
@@ -70,17 +68,10 @@
 @endsection
 
 @section('js')
-    <!-- jQuery (required for DataTables plugin) -->
-    <script src="{{ asset('js/lib/jquery.min.js') }}"></script>
+
 
     <!-- Page JS Plugins -->
     <script src="{{asset('js/plugins/select2/js/select2.full.min.js')}}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-jszip/jszip.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons/buttons.html5.min.js') }}"></script>
     <script src="{{asset('js/plugins/jquery.maskedinput/jquery.maskedinput.min.js')}}"></script>
     <script src="{{asset('js/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
     <script src="{{asset('js/plugins/raty-js/jquery.raty.js')}}"></script>
@@ -89,7 +80,7 @@
 
     <!-- Page JS Code -->
     <script type="module">
-        One.helpersOnLoad(['jq-select2', 'jq-maxlength', 'jq-masked-inputs']);
+        One.helpersOnLoad(['jq-select2', 'jq-masked-inputs']);
 
         $(() => {
             $('#order_code').change(function () {
@@ -147,11 +138,16 @@
                                         name="order_code" disabled="{{count($data->statuses) > 1 ? 'true' : 'false'}}"
                                         data-placeholder="#######" required>
                                     <option value=""></option>
-                                    @foreach($orderCodes as $code)
-                                        <option value="{{$code}}"
-                                                @if(old('order_code', $data->order->code) == $code) selected @endif >{{$code}}</option>
+                                    @foreach($orderCodes as $item)
+                                        <option value="{{$item->code}}"
+                                                @if(old('order_code', $data->order->code) == $item->code) selected @endif >
+                                            {{$item->code}} - {{$item->customer->name}}
+                                        </option>
                                     @endforeach
                                 </select>
+                                <div id="passwordHelpBlock" class="form-text">
+                                    Tìm kiếm theo mã đơn hàng hoặc tên khách hàng.
+                                </div>
                             </div>
 
                             <div class="mb-4">
@@ -166,6 +162,10 @@
                                             - {{$order->product?->name}}</option>
                                     @endforeach
                                 </select>
+
+                                <div id="passwordHelpBlock" class="form-text">
+                                    Chọn 1 sản phẩm trong đơn hàng được chọn.
+                                </div>
                             </div>
 
                             <div class="mb-4">

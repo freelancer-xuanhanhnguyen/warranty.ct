@@ -25,13 +25,12 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:6',
         ]);
 
-        $credentials = $request->only('email', 'password');
-        $user = User::where('email', $request->email)
+        $user = User::where('email', $credentials)
             ->where('status', 0)
             ->exists();
         if ($user) return back()->with([
@@ -50,18 +49,20 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
+        $data = $request->validate([
+            'name' => 'required||max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
+            'role' => 'required|in:' . implode(',', array_keys(User::ROLE)),
+            'phone' => 'nullable|numeric',
+            'birthday' => 'nullable|date',
+            'gender' => 'nullable|in:' . implode(',', array_keys(User::GENDER)),
+            'address' => 'nullable|string|max:255',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+        $user = User::create(array_merge($data, [
             'password' => Hash::make($request->password),
-            'role' => $request->role,
-        ]);
+        ]));
 
         $users = User::active()
             ->whereIn('role', [User::ROLE_ADMIN])

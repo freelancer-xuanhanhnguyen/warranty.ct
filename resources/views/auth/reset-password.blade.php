@@ -34,24 +34,15 @@
                                             <input type="text"
                                                    class="form-control form-control-lg form-control-alt @error('email') is-invalid @enderror"
                                                    id="email" name="email" value="{{old('email', $email)}}"
-                                                   placeholder="Email">
+                                                   placeholder="Email" required>
                                             @error('email')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                        <div class="mb-4">
-                                            <input type="password"
-                                                   class="form-control form-control-lg form-control-alt @error('password') is-invalid @enderror"
-                                                   id="password" name="password" placeholder="Password" required>
-                                            @error('password')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <div class="mb-4">
-                                            <input type="password" class="form-control form-control-lg form-control-alt"
-                                                   id="password_confirmation" name="password_confirmation"
-                                                   placeholder="Confirm Password">
-                                        </div>
+
+                                        <x-password name="password" placeholder="Mật khẩu"/>
+
+                                        <x-password name="password_confirmation" placeholder="Nhập lại mật khẩu"/>
                                     </div>
                                     <div class="row mb-4">
                                         <div class="col">

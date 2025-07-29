@@ -21,4 +21,8 @@
         line-clamp: 3;
         -webkit-box-orient: vertical;
     }
+
+    .invalid-feedback::first-letter {
+        text-transform: uppercase !important;
+    }
 </style>

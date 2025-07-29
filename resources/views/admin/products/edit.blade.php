@@ -2,8 +2,6 @@
 
 @section('css')
     <!-- Page JS Plugins CSS -->
-    <link rel="stylesheet" href="{{ asset('js/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('js/plugins/select2/css/select2.min.css') }}">
 
     <style>
@@ -70,17 +68,11 @@
 @endsection
 
 @section('js')
-    <!-- jQuery (required for DataTables plugin) -->
-    <script src="{{ asset('js/lib/jquery.min.js') }}"></script>
+
 
     <!-- Page JS Plugins -->
     <script src="{{asset('js/plugins/select2/js/select2.full.min.js')}}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-jszip/jszip.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons/buttons.html5.min.js') }}"></script>
+
     <script src="{{asset('js/plugins/jquery.maskedinput/jquery.maskedinput.min.js')}}"></script>
     <script src="{{asset('js/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
     <script src="{{asset('js/plugins/raty-js/jquery.raty.js')}}"></script>
@@ -89,7 +81,7 @@
 
     <!-- Page JS Code -->
     <script type="module">
-        One.helpersOnLoad(['jq-select2', 'jq-maxlength', 'jq-masked-inputs']);
+        One.helpersOnLoad(['jq-select2', 'jq-masked-inputs']);
 
         $(() => {
             $('#order_code').change(function () {

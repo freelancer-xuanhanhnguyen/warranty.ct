@@ -2,27 +2,19 @@
 
 @section('css')
     <!-- Page JS Plugins CSS -->
-    <link rel="stylesheet" href="{{ asset('js/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('js/plugins/select2/css/select2.min.css') }}">
 @endsection
 
 @section('js')
-    <!-- jQuery (required for DataTables plugin) -->
-    <script src="{{ asset('js/lib/jquery.min.js') }}"></script>
 
     <!-- Page JS Plugins -->
-    <script src="{{ asset('js/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-jszip/jszip.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons-pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/datatables-buttons/buttons.html5.min.js') }}"></script>
+    <script src="{{asset('js/plugins/jquery.maskedinput/jquery.maskedinput.min.js')}}"></script>
+    <script src="{{asset('js/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
 
     <script type="module">
         jQuery('.js-masked-phone-vn:not(.js-masked-enabled)').mask('0999 999 999');
 
-        One.helpersOnLoad(['jq-maxlength', 'jq-masked-inputs']);
+        One.helpersOnLoad(['jq-masked-inputs']);
     </script>
 @endsection
 
@@ -55,15 +47,16 @@
                             <div class="mb-4">
                                 <label class="form-label" for="name">Tên nhân viên <span
                                         class="text-danger">*</span></label>
-                                <input type="text" class="js-maxlength form-control" id="name" maxlength="255"
+                                <input type="text" class="js-maxlength form-control" id="name" maxlength="250"
                                        name="name" value="{{old('name')}}" required>
+                                <x-invalid-feedback name="name"/>
                             </div>
 
                             <div class="mb-4">
                                 <label class="form-label" for="email">Email <span class="text-danger">*</span></label>
                                 <input type="email"
                                        class="js-maxlength form-control @error('email') is-invalid @enderror" id="email"
-                                       maxlength="255"
+                                       maxlength="250"
                                        name="email" value="{{old('email')}}" required>
                                 @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -80,23 +73,15 @@
                                 </select>
                             </div>
 
-                            <div class="mb-4">
+                            <x-password name="password">
                                 <label class="form-label" for="password">Mật khẩu <span
                                         class="text-danger">*</span></label>
-                                <input type="password"
-                                       class="form-control form-control-lg form-control-alt @error('password') is-invalid @enderror"
-                                       id="password" name="password" required>
-                                @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            </x-password>
 
-                            <div class="mb-4">
+                            <x-password name="password_confirmation">
                                 <label class="form-label" for="password">Nhập lại mật khẩu <span
                                         class="text-danger">*</span></label>
-                                <input type="password" class="form-control form-control-lg form-control-alt"
-                                       id="password-confirm" name="password_confirmation" required>
-                            </div>
+                            </x-password>
 
                             <div class="mb-4">
                                 <label class="form-label" for="birthday">Ngày sinh</label>
@@ -124,7 +109,7 @@
                             <div class="mb-4">
                                 <label class="form-label" for="address">Địa chỉ</label>
                                 <textarea type="text" class="js-maxlength form-control" id="address"
-                                          name="address" rows="4" maxlength="255">{{old('address')}}</textarea>
+                                          name="address" rows="4" maxlength="250">{{old('address')}}</textarea>
                             </div>
 
                             <div class="mb-4">

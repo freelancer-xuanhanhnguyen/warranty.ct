@@ -40,7 +40,7 @@
                                         <input type="text"
                                                class="form-control form-control-lg form-control-alt @error('email') is-invalid @enderror"
                                                id="email" name="email" value="{{old('email')}}"
-                                               placeholder="Email">
+                                               placeholder="Email" required>
                                         @error('email')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

@@ -6,6 +6,7 @@ use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -48,12 +49,19 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
+            'name' => 'required||max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
+            'role' => 'required|in:' . implode(',', array_keys(User::ROLE)),
+            'phone' => 'nullable|string|max:20',
+            'birthday' => 'nullable|date',
+            'gender' => 'nullable|in:' . implode(',', array_keys(User::GENDER)),
+            'address' => 'nullable|string|max:255',
+            'status' => 'required|in:' . implode(',', array_keys(User::STATUS)),
         ]);
 
-        $service = User::create(collect($request->all())->merge([
+        $service = User::create(collect($data)->merge([
             'password' => Hash::make($request->password),
         ])->toArray());
 
@@ -86,10 +94,18 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $data = $request->all();
+        $data = $request->validate([
+            'name' => 'required||max:255',
+            'role' => 'required|in:' . implode(',', array_keys(User::ROLE)),
+            'phone' => 'nullable|string|max:20',
+            'birthday' => 'nullable|date',
+            'gender' => 'nullable|in:' . implode(',', array_keys(User::GENDER)),
+            'address' => 'nullable|string|max:255',
+            'status' => 'required|in:' . implode(',', array_keys(User::STATUS)),
+        ]);
 
-        unset($data['email']);
-        unset($data['password']);
+        if (Auth::id() === $id)
+            unset($data['status']);
 
         $updated = User::findOrFail($id)->update($data);
 
@@ -105,7 +121,10 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        User::destroy($id);
+        if (Auth::id() === $id) return back();
+
+        User::findOrFail($id)->delete();
+
         return back()->with(['message' => 'Đã xóa thành công.']);
     }
 }

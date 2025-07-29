@@ -38,20 +38,14 @@
                                         <div class="mb-4">
                                             <input type="text"
                                                    class="form-control form-control-alt form-control-lg @error('email') is-invalid @enderror"
-                                                   id="email" name="email" value="{{old('email')}}" placeholder="Email">
+                                                   id="email" name="email" value="{{old('email')}}" placeholder="Email" required>
                                             @error('email')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                        <div class="mb-4 position-relative">
-                                            <input type="password"
-                                                   class="form-control form-control-alt form-control-lg @error('password') is-invalid @enderror"
-                                                   id="password" name="password" placeholder="Mật khẩu">
-{{--                                            <i class="fa fa-fw fa-eye"></i>--}}
-                                            @error('password')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+
+                                        <x-password name="password" placeholder="Mật khẩu" />
+
                                         <div class="mb-4">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" value=""

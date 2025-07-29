@@ -85,12 +85,21 @@ class ServiceObserver
                 $type = strtolower(Service::TYPE[$service->type]);
                 $user = Auth::user();
                 if ($service->isDirty('repairman_id') && $service->repairman_id) {
+
+                    $oldRepairman = User::active()->find($service->getOriginal('repairman_id'));
+                    Notification::send($oldRepairman, new NewServiceNotification([
+                        'type' => 'remove_repairman_id',
+                        'service' => $service,
+                        'created_by' => Auth::user(),
+                        'message' => "Đã gỡ phiếu $type #$service->code"
+                    ]));
+
                     $repairman = User::active()->find($service->repairman_id);
                     Notification::send($repairman, new NewServiceNotification([
                         'type' => 'update_repairman_id',
                         'service' => $service,
                         'created_by' => Auth::user(),
-                        'message' => "Phiếu $type mới #$service->code"
+                        'message' => "Đã gán piếu $type mới #$service->code"
                     ]));
                 }
 

@@ -56,7 +56,11 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        $orderCodes = Order::distinct()->groupBy('code')->pluck('code');
+        $orderCodes = Order::with('customer:id,name')
+            ->distinct()
+            ->groupBy(['code', 'customer_id'])
+            ->get(['code', 'customer_id']);
+
         $users = User::where('role', User::ROLE_REPAIRMAN)->active()->get(['id', 'name']);
         $orders = null;
         if (\request()->has('order_code'))
@@ -111,7 +115,11 @@ class ServiceController extends Controller
     public function edit(string $id)
     {
         $data = Service::with(['order:id,code', 'status', 'statuses'])->findOrFail($id);
-        $orderCodes = Order::distinct()->groupBy('code')->pluck('code');
+        $orderCodes = Order::with('customer:id,name')
+            ->distinct()
+            ->groupBy(['code', 'customer_id'])
+            ->get(['code', 'customer_id']);
+
         $orders = Order::with('product:id,code,name')
             ->where('code', $data->order->code)
             ->get(['id', 'product_id', 'code']);
