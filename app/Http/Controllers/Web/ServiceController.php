@@ -34,8 +34,18 @@ class ServiceController extends Controller
             });
         }
 
+        $sort = \request()->sort ?? [];
+        if (\request()->sort)
+            foreach ($sort as $key => $value) {
+                $query = $query
+                    ->join('orders', 'orders.id', '=', 'services.order_id')
+                    ->join('products', 'products.id', '=', 'orders.product_id')
+                    ->orderBy(str_replace('__', '.', $key), $value);
+            } else {
+            $query = $query->latest();
+        }
+
         $data = $query
-            ->latest()
             ->paginate(20);
 
         return view('pages.services.index', compact('data'));

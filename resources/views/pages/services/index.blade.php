@@ -35,6 +35,8 @@
                             </div>
                         </div>
 
+                        <x-sort-input/>
+
                         <div class="col-md-4">
                             <label class="form-label" for="status">Trạng thái</label>
                             <select class="form-select" id="status"
@@ -55,16 +57,16 @@
                     <table class="table table-borderless table-striped table-vcenter">
                         <thead>
                         <tr>
-                            <th class="text-center" style="width: 100px;">Mã phiếu</th>
-                            <th class="text-center">Mã đơn hàng</th>
+                            <th class="sortable text-center" data-name="services__code" style="width: 100px;">Mã phiếu</th>
+                            <th class="sortable text-center" data-name="orders__code">Mã đơn hàng</th>
                             <th class="text-center">Loại phiếu</th>
-                            <th>Tên sản phẩm</th>
+                            <th class="sortable" data-name="products__name">Tên sản phẩm</th>
                             <th>Vấn đề bảo hành</th>
                             <th class="text-center">Tổng phí</th>
                             <th>Kỹ thuật viên</th>
                             <th class="text-center">Đánh giá</th>
                             <th class="text-center">Trạng thái</th>
-                            <th class="text-center">Ngày tạo</th>
+                            <th class="sortable text-center" data-name="services__created_at">Ngày tạo</th>
                             <th></th>
                         </tr>
                         </thead>
