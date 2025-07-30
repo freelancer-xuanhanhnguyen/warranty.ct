@@ -1,12 +1,14 @@
 <table class="table table-borderless table-striped table-vcenter">
     <thead>
     <tr>
-        <th class="text-center" style="width: 100px;">Mã khách hàng</th>
-        <th>Tên Khách hàng</th>
+        <th class="sortable text-center" data-name="code" style="width: 100px;">Mã khách hàng</th>
+        <th class="sortable" data-name="name">Tên Khách hàng</th>
         <th>Email</th>
         <th class="text-center">Ngày sinh</th>
         <th class="text-center">Giới tính</th>
         <th class="text-center">Địa chỉ</th>
+        <th class="sortable" data-name="created_at">Ngày tạo</th>
+        <th class="sortable" data-name="updated_at">Cập nhật gần nhất</th>
         <th></th>
     </tr>
     </thead>
@@ -31,14 +33,22 @@
                 {{ $item->email }}
             </td>
             <td class="text-center fs-sm">
-                {{ $item->birthday }}
+                {{ $item->birthday?->format(FORMAT_DATE) }}
             </td>
             <td class="text-center fs-sm">
                 {{ \App\Models\Customer::GENDER[$item->gender] ?? null }}
             </td>
 
-            <td class="fs-sm">
+            <td class="text-center fs-sm">
                 {{ $item->address }}
+            </td>
+
+            <td class="text-center fs-sm">
+                {{ $item->created_at->format(FORMAT_DATETIME) }}
+            </td>
+
+            <td class="text-center fs-sm">
+                {{ $item->updated_at->diffForHumans() }}
             </td>
             <td class="text-center text-nowrap">
                 <div class="btn-group btn-group-sm" role="group" aria-label="Small Horizontal Primary">

@@ -21,7 +21,7 @@ class RepairmanController extends Controller
             ->whereRaw('ss1.id = (SELECT MAX(ss2.id) FROM service_statuses ss2 WHERE ss2.service_id = ss1.service_id)');
 
         $query = DB::table('services')
-            ->select('users.name as repairman_name', 'services.repairman_id', 'users.email', DB::raw('COUNT(services.id) as total_services'))
+            ->select('users.name', 'services.repairman_id', 'users.email')
             ->join('users', 'users.id', '=', 'services.repairman_id')
             ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
                 $join->on('services.id', '=', 'latest_status.service_id');
@@ -43,7 +43,23 @@ class RepairmanController extends Controller
 
         $query = $query->groupBy('services.repairman_id', 'users.name', 'users.email')
             ->selectRaw("SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_warranty", [ServiceStatus::STATUS_UNDER_WARRANTY])
-            ->selectRaw("SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_repair", [ServiceStatus::STATUS_UNDER_REPAIR]);
+            ->selectRaw("SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_repair", [ServiceStatus::STATUS_UNDER_REPAIR])
+            ->selectRaw("
+        SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END)
+      + SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END)
+      AS total_services
+    ", [
+                ServiceStatus::STATUS_UNDER_WARRANTY,
+                ServiceStatus::STATUS_UNDER_REPAIR,
+            ]);
+
+        $sort = \request()->sort ?? [];
+        if (\request()->sort) {
+            foreach ($sort as $key => $value) {
+                $query = $query
+                    ->orderBy(str_replace('__', '.', $key), $value);
+            }
+        }
 
         $data = $query->paginate(20);
 
@@ -77,7 +93,7 @@ class RepairmanController extends Controller
             ->whereRaw('ss1.id = (SELECT MAX(ss2.id) FROM service_statuses ss2 WHERE ss2.service_id = ss1.service_id)');
 
         $report = DB::table('services')
-            ->select('users.name as repairman_name', 'services.repairman_id', 'users.email', DB::raw('COUNT(services.id) as total_services'))
+            ->select('users.name as repairman_name', 'services.repairman_id', 'users.email')
             ->join('users', 'users.id', '=', 'services.repairman_id')
             ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
                 $join->on('services.id', '=', 'latest_status.service_id');
@@ -86,6 +102,14 @@ class RepairmanController extends Controller
             ->groupBy('services.repairman_id', 'users.name', 'users.email')
             ->selectRaw("SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_warranty", [ServiceStatus::STATUS_UNDER_WARRANTY])
             ->selectRaw("SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_repair", [ServiceStatus::STATUS_UNDER_REPAIR])
+            ->selectRaw("
+        SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END)
+      + SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END)
+      AS total_services
+    ", [
+                ServiceStatus::STATUS_UNDER_WARRANTY,
+                ServiceStatus::STATUS_UNDER_REPAIR,
+            ])
             ->first();
 
         $q = \request()->q;
@@ -98,7 +122,7 @@ class RepairmanController extends Controller
         ])
             ->where('repairman_id', $id)
             ->when($q, function ($query) use ($q) {
-                    $q = escape_like($q);
+                $q = escape_like($q);
                 $query->where('code', 'like', "%{$q}%");
             });
 

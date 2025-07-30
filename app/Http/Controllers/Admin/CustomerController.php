@@ -24,6 +24,11 @@ class CustomerController extends Controller
                 ->orWhere('email', 'like', "%{$q}%");
         });
 
+        $sort = \request()->sort ?? [];
+        foreach ($sort as $key => $value) {
+            $query = $query->orderBy(str_replace('__', '.', $key), $value);
+        }
+
         if (request()->has('export')) {
             return Excel::download(new CustomersExport($query->get()), 'Khách hàng.xlsx');
         }
@@ -84,7 +89,7 @@ class CustomerController extends Controller
                     ->where('customer_id', $id);
             })
             ->when($q, function ($query) use ($q) {
-                    $q = escape_like($q);
+                $q = escape_like($q);
                 $query->where('code', 'like', "%{$q}%");
             });
 

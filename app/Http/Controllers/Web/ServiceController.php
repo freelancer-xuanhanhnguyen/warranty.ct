@@ -25,7 +25,7 @@ class ServiceController extends Controller
                 $query->select('id')->where('email', $email);
             })
             ->when($q, function ($query) use ($q) {
-                    $q = escape_like($q);
+                $q = escape_like($q);
                 $query->where('code', 'like', "%{$q}%");
             });
 
@@ -36,17 +36,18 @@ class ServiceController extends Controller
         }
 
         $sort = \request()->sort ?? [];
-        if (\request()->sort)
+        if (\request()->sort) {
             foreach ($sort as $key => $value) {
                 $query = $query
                     ->join('orders', 'orders.id', '=', 'services.order_id')
                     ->join('products', 'products.id', '=', 'orders.product_id')
                     ->orderBy(str_replace('__', '.', $key), $value);
-            } else {
+            }
+        } else {
             $query = $query->latest();
         }
 
-        $data = $query
+        $data = $query->selectRaw('services.*')
             ->paginate(20);
 
         return view('pages.services.index', compact('data'));

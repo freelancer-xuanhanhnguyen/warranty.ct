@@ -21,6 +21,10 @@ class Customer extends Model
         self::GENDER_OTHER => 'Khác',
     ];
 
+    protected $casts = [
+        'birthday' => 'date'
+    ];
+
     public function services()
     {
         return $this->hasMany(Service::class);

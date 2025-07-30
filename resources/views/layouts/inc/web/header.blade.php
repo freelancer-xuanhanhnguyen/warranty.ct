@@ -4,7 +4,7 @@
         <!-- Left Section -->
         <div class="d-flex align-items-center">
             <!-- Logo -->
-            <a class="fw-semibold fs-5 tracking-wider text-dual me-3" href="{{route('orders.index', request()->email)}}">
+            <a class="fw-semibold fs-5 tracking-wider text-dual me-3" href="{{route('products.index', request()->email)}}">
                 <x-logo :width="200" />
             </a>
             <!-- END Logo -->
@@ -17,8 +17,8 @@
             <div class="d-none d-lg-block">
                 <ul class="nav-main nav-main-horizontal nav-main-hover">
                     <li class="nav-main-item">
-                        <a class="nav-main-link @if(request()->routeIs('orders.index', request()->email)) active @endif"
-                           href="{{route('orders.index', request()->email)}}">
+                        <a class="nav-main-link @if(request()->routeIs('products.index', request()->email)) active @endif"
+                           href="{{route('products.index', request()->email)}}">
                             <i class="nav-main-link-icon si si-puzzle"></i>
                             <span class="nav-main-link-name">Sản phẩm</span>
                         </a>

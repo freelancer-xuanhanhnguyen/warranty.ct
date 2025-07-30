@@ -28,7 +28,7 @@ class ServiceController extends Controller
             'status',
         ])
             ->when($q, function ($query) use ($q) {
-                    $q = escape_like($q);
+                $q = escape_like($q);
                 $query->where('code', 'like', "%{$q}%");
             });
 
@@ -43,13 +43,14 @@ class ServiceController extends Controller
         }
 
         $sort = \request()->sort ?? [];
-        if (\request()->sort)
+        if (\request()->sort) {
             foreach ($sort as $key => $value) {
                 $query = $query
                     ->join('orders', 'orders.id', '=', 'services.order_id')
                     ->join('products', 'products.id', '=', 'orders.product_id')
                     ->orderBy(str_replace('__', '.', $key), $value);
-            } else {
+            }
+        } else {
             $query = $query->latest();
         }
 
@@ -57,7 +58,8 @@ class ServiceController extends Controller
             return Excel::download(new ServicesExport($query->latest()->get()), 'Phiếu yêu cầu bảo hành - sửa chữa.xlsx');
         }
 
-        $data = $query->paginate(20);
+        $data = $query->selectRaw('services.*')
+            ->paginate(20);
 
         return view('admin.services.index', compact('data'));
     }
@@ -65,7 +67,8 @@ class ServiceController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public
+    function create()
     {
         $orderCodes = Order::with('customer:id,name')
             ->distinct()
@@ -85,7 +88,8 @@ class ServiceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public
+    function store(Request $request)
     {
         $data = $request->validate([
             'order_id' => 'nullable|exists:orders,id',
@@ -123,7 +127,8 @@ class ServiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public
+    function show(string $id)
     {
         $data = Service::with([
             'order.product',
@@ -137,7 +142,8 @@ class ServiceController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public
+    function edit(string $id)
     {
         $data = Service::with(['order:id,code', 'status', 'statuses'])->findOrFail($id);
         $orderCodes = Order::with('customer:id,name')
@@ -158,7 +164,8 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public
+    function update(Request $request, string $id)
     {
         $data = $request->validate([
             'order_id' => 'nullable|exists:orders,id',
@@ -199,7 +206,8 @@ class ServiceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public
+    function destroy(string $id)
     {
         Service::destroy($id);
         return back()->with(['message' => 'Đã xóa thành công.']);

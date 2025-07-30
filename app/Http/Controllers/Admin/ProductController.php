@@ -41,7 +41,8 @@ class ProductController extends Controller
         if (request()->has('export')) {
             return Excel::download(new OrdersExport($query->get()), 'Thiết bị bảo hành - sửa chữa.xlsx');
         }
-        $data = $query->paginate(20);
+        $data = $query->selectRaw('products.*')
+            ->paginate(20);
 
         return view('admin.products.index', compact('data'));
     }

@@ -10,7 +10,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\Web\OrderController;
+use App\Http\Controllers\Web\ProductController as WebProductController;
 use App\Http\Controllers\Web\TrackEmailController;
 use App\Http\Controllers\Web\ServiceController;
 use App\Models\Customer;
@@ -109,9 +109,9 @@ Route::group([], function () {
     Route::post('/', [TrackEmailController::class, 'trackEmail'])->middleware('throttle:6,1')->name('track-email');
 
     Route::middleware('auth.customer')->prefix('track/{email}')->group(function () {
-        Route::prefix('/orders')->group(function () {
-            Route::get('/', [OrderController::class, 'index'])->name('orders.index');
-            Route::get('/{id}/history', [OrderController::class, 'history'])->name('orders.history');
+        Route::prefix('/products')->group(function () {
+            Route::get('/', [WebProductController::class, 'index'])->name('products.index');
+            Route::get('/{orderId}/history', [WebProductController::class, 'history'])->name('products.history');
         });
 
         Route::prefix('/services')->group(function () {

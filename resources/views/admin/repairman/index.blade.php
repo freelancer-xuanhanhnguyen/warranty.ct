@@ -14,7 +14,6 @@
 
 @section('js')
 
-
     <!-- Page JS Plugins -->
     <script src="{{ asset('js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
@@ -53,9 +52,11 @@
                             <input type="text" class="form-control form-control-alt" id="q"
                                    name="q" value="{{request()->q}}" placeholder="Tìm kiếm">
                             <span class="input-group-text bg-body border-0">
-                      <i class="fa fa-search"></i>
-                    </span>
+                              <i class="fa fa-search"></i>
+                            </span>
                         </div>
+
+                        <x-sort-input/>
                     </div>
                 </form>
                 <!-- END Search Form -->
@@ -65,12 +66,12 @@
                     <table class="table table-borderless table-striped table-vcenter">
                         <thead>
                         <tr>
-                            <th class="text-center" style="width: 100px;">ID</th>
-                            <th>Tên tài khoản</th>
-                            <th class="d-none d-sm-table-cell">Email</th>
-                            <th class="text-center">Thiết bị đang bảo hành</th>
-                            <th class="text-center">Thiết bị đang sửa</th>
-                            <th class="text-center">Tổng thiết bị</th>
+                            <th class="text-center sortable" data-name="services__repairman_id" style="width: 100px;">ID</th>
+                            <th class="sortable" data-name="users__name">Tên nhân viên</th>
+                            <th class="sortable" data-name="users__email">Email</th>
+                            <th class="sortable text-center" data-name="total_under_warranty">Thiết bị đang bảo hành</th>
+                            <th class="sortable text-center" data-name="total_under_repair">Thiết bị đang sửa</th>
+                            <th class="sortable text-center" data-name="total_services">Tổng thiết bị đang sửa</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -82,7 +83,7 @@
                                 <td class="fs-sm">
                                     <a class="fw-semibold"
                                        href="{{route('admin.repairman.show', $item->repairman_id)}}">
-                                        <strong>{{$item->repairman_name}}</strong>
+                                        <strong>{{$item->name}}</strong>
                                     </a>
                                 </td>
                                 <td class="d-none d-sm-table-cell fs-sm">
@@ -100,18 +101,6 @@
                                 <td class="text-center fs-sm">
                                     {{$item->total_services}}
                                 </td>
-
-                                {{--                                <td class="text-center text-nowrap">--}}
-                                {{--                                    <div class="btn-group btn-group-sm" role="group"--}}
-                                {{--                                         aria-label="Small Horizontal Primary">--}}
-                                {{--                                        <a class="btn btn-sm btn-alt-{{$isWarrantyExpired ? 'warning':'info'}}"--}}
-                                {{--                                           href="{{route('admin.services.create')}}?order_code={{$item->code}}&type={{$isWarrantyExpired ? \App\Models\Service::TYPE_REPAIR : \App\Models\Service::TYPE_WARRANTY}}"--}}
-                                {{--                                           data-bs-toggle="tooltip"--}}
-                                {{--                                           title="{{$isWarrantyExpired ? 'Sửa chữa' : 'Bảo hành'}}">--}}
-                                {{--                                            <i class="fa fa-fw fa-screwdriver-wrench"></i>--}}
-                                {{--                                        </a>--}}
-                                {{--                                    </div>--}}
-                                {{--                                </td>--}}
                             </tr>
                         @endforeach
 

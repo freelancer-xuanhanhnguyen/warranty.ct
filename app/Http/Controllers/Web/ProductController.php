@@ -7,7 +7,7 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Service;
 
-class OrderController extends Controller
+class ProductController extends Controller
 {
     public function index($email)
     {
@@ -36,11 +36,11 @@ class OrderController extends Controller
                     ->orderBy(str_replace('__', '.', $key), $value);
             }
 
-            $data = $query->paginate(20);
+            $data = $query->selectRaw('orders.*')
+                ->paginate(20);
         }
 
-
-        return view('pages.orders.index', compact('data'));
+        return view('pages.products.index', compact('data'));
     }
 
     public function history($email, $id)
@@ -73,6 +73,6 @@ class OrderController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('pages.orders.history', compact('data', 'services'));
+        return view('pages.products.history', compact('data', 'services'));
     }
 }

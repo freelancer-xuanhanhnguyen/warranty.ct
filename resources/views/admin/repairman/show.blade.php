@@ -92,7 +92,7 @@
                                         {{$report?->total_services}}
                                     </dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">
-                                        Tổng thiết bị
+                                        Tổng thiết bị đang sửa
                                     </dd>
                                 </dl>
                             </div>

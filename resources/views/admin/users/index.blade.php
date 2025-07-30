@@ -6,7 +6,6 @@
 
 @section('js')
 
-
     <!-- Page JS Plugins -->
     <script src="{{ asset('js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
@@ -47,8 +46,8 @@
                             <label class="form-label" for="status">Tìm kiếm</label>
                             <div class="input-group">
                                 <input type="text" class="form-control form-control-alt" id="q" name="q"
-                                    value="{{ request()->q }}">
-                                <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip"  title="Tìm kiếm">
+                                       value="{{ request()->q }}">
+                                <button type="submit" class="btn btn-primary" data-bs-toggle="tooltip" title="Tìm kiếm">
                                     <i class="fa fa-search me-1"></i>
                                 </button>
                             </div>
@@ -65,7 +64,8 @@
                             </select>
                         </div>
 
-                        <x-btn-export />
+                        <x-sort-input/>
+                        <x-btn-export/>
                     </div>
                 </form>
                 <!-- END Search Form -->

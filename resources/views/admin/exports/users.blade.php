@@ -1,13 +1,16 @@
 <table class="table table-borderless table-striped table-vcenter">
     <thead>
     <tr>
-        <th class="text-center" style="width: 100px;">Mã nhân viên</th>
-        <th>Tên nhân viên</th>
+        <th class="sortable text-center" data-name="id" style="width: 100px;">Mã nhân viên</th>
+        <th class="sortable" data-name="name">Tên nhân viên</th>
         <th>Email</th>
+        <th class="sortable text-center" data-name="email_verified_at">Ngày xác thực email</th>
         <th class="text-center">Ngày sinh</th>
         <th class="text-center">Giới tính</th>
         <th class="text-center">Chức vụ</th>
         <th class="text-center">Trạng thái</th>
+        <th class="sortable text-center" data-name="created_at">Ngày tạo</th>
+        <th class="sortable text-center" data-name="updated_at">Cập nhật gần nhất</th>
         <th></th>
     </tr>
     </thead>
@@ -29,8 +32,13 @@
             <td class="fs-sm">
                 {{ $item->email }}
             </td>
+
             <td class="text-center fs-sm">
-                {{ $item->birthday }}
+                {{ $item->email_verified_at?->format(FORMAT_DATETIME) ?? 'Chưa xác thực' }}
+            </td>
+
+            <td class="text-center fs-sm">
+                {{ $item->birthday?->format(FORMAT_DATE) }}
             </td>
             <td class="text-center fs-sm">
                 {{ \App\Models\User::GENDER[$item->gender] }}
@@ -43,6 +51,14 @@
                     <span
                         class="badge bg-{{ \App\Models\User::STATUS_CLASS[$item->status] ?? null }}">{{ \App\Models\User::STATUS[$item->status] ?? null }}</span>
             </td>
+            <td class="text-center fs-sm">
+                {{ $item->created_at->format(FORMAT_DATETIME) }}
+            </td>
+
+            <td class="text-center fs-sm">
+                {{ $item->updated_at->diffForHumans() }}
+            </td>
+
             <td class="text-center text-nowrap">
                 <div class="btn-group btn-group-sm" role="group" aria-label="Small Horizontal Primary">
                     <a class="btn btn-sm btn-alt-warning" href="{{ route('admin.users.edit', $item->id) }}"

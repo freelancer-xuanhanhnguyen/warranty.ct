@@ -29,6 +29,11 @@ class UserController extends Controller
                 $query->where('role', $role);
             });
 
+        $sort = \request()->sort ?? [];
+        foreach ($sort as $key => $value) {
+            $query = $query->orderBy(str_replace('__', '.', $key), $value);
+        }
+
         if (request()->has('export')) {
             return Excel::download(new UsersExport($query->get()), 'Nhân viên.xlsx');
         }
