@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('birthday')->nullable();
             $table->unsignedTinyInteger('gender')->default(Customer::GENDER_OTHER);
             $table->tinyText('address')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
     }

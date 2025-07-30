@@ -90,3 +90,8 @@ if (!function_exists('escape_like')) {
         return addcslashes($string, '%_');
     }
 }
+
+function customer(): \Illuminate\Contracts\Auth\Guard|\Illuminate\Contracts\Auth\StatefulGuard
+{
+    return Auth::guard('customer');
+}

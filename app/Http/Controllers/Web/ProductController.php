@@ -9,44 +9,39 @@ use App\Models\Service;
 
 class ProductController extends Controller
 {
-    public function index($email)
+    public function index()
     {
         $q = \request()->q;
-        $customer = Customer::where('email', $email)->first('id');
-        $data = null;
-        if ($customer) {
-            $query = Order::with([
-                'product',
-                'customer',
-                'service'
-            ])
-                ->where('customer_id', $customer->id)
-                ->when($q, function ($query) use ($q) {
-                    $q = escape_like($q);
-                    $query->where('code', 'like', "%{$q}%")
-                        ->orWhereHas('product', function ($_query) use ($q) {
-                            $_query->where('name', 'like', "%{$q}%")
-                                ->orWhere('code', 'like', "%{$q}%");
-                        });
-                });
+        $query = Order::with([
+            'product',
+            'customer',
+            'service'
+        ])
+            ->where('customer_id', customer()->id())
+            ->when($q, function ($query) use ($q) {
+                $q = escape_like($q);
+                $query->where('code', 'like', "%{$q}%")
+                    ->orWhereHas('product', function ($_query) use ($q) {
+                        $_query->where('name', 'like', "%{$q}%")
+                            ->orWhere('code', 'like', "%{$q}%");
+                    });
+            });
 
-            $sort = \request()->sort ?? [];
-            foreach ($sort as $key => $value) {
-                $query = $query->join('products', 'products.id', '=', 'orders.product_id')
-                    ->orderBy(str_replace('__', '.', $key), $value);
-            }
-
-            $data = $query->selectRaw('orders.*')
-                ->paginate(20);
+        $sort = \request()->sort ?? [];
+        foreach ($sort as $key => $value) {
+            $query = $query->join('products', 'products.id', '=', 'orders.product_id')
+                ->orderBy(str_replace('__', '.', $key), $value);
         }
+
+        $data = $query->selectRaw('orders.*')
+            ->paginate(20);
 
         return view('pages.products.index', compact('data'));
     }
 
-    public function history($email, $id)
+    public function history($id)
     {
-        $customer = Customer::where('email', $email)->first('id');
-        $data = Order::where('customer_id', $customer->id)
+        $data = Order::where('customer_id', customer()->id())
             ->findOrFail($id);
 
         $q = \request()->q;

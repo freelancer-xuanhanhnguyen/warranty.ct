@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\RepairmanController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\LoginTokenController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Web\ProductController as WebProductController;
 use App\Http\Controllers\Web\TrackEmailController;
@@ -105,10 +106,23 @@ Route::middleware(['auth', 'verified', 'auth.user'])->prefix('admin')->group(fun
 });
 
 Route::group([], function () {
-    Route::get('/', [TrackEmailController::class, 'index']);
-    Route::post('/', [TrackEmailController::class, 'trackEmail'])->middleware('throttle:6,1')->name('track-email');
 
-    Route::middleware('auth.customer')->prefix('track/{email}')->group(function () {
+    Route::get('/', [LoginTokenController::class, 'login'])
+        ->name('customer.login');
+    Route::post('/', [LoginTokenController::class, 'sendToken'])
+        ->name('customer.sendToken')
+        ->middleware('throttle:6,1');
+
+    Route::get('verify-token', [LoginTokenController::class, 'showVerifyToken'])
+        ->name('customer.verifyToken');
+    Route::post('verify-token', [LoginTokenController::class, 'verifyToken'])
+        ->middleware('throttle:6,1')
+        ->name('customer.verifyToken.request');
+
+
+    Route::middleware('auth.customer')->group(function () {
+        Route::post('/logout', [LoginTokenController::class, 'logout'])->name('customer.logout');
+
         Route::prefix('/products')->group(function () {
             Route::get('/', [WebProductController::class, 'index'])->name('products.index');
             Route::get('/{orderId}/history', [WebProductController::class, 'history'])->name('products.history');

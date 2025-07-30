@@ -16,10 +16,10 @@ class ValidateCustomer
      *
      * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string ...$guards): Response
+    public function handle(Request $request, Closure $next): Response
     {
-        if(!Customer::where('email', $request->email)->exists()) {
-            return redirect('/')->withErrors(['email' => "Bạn chưa mua thiết bị trên hệ thống."]);
+        if (!Auth::guard('customer')->check()) {
+            return redirect('/');
         }
 
         return $next($request);

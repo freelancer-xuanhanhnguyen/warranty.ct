@@ -182,7 +182,7 @@
                                     <tr>
                                         <td class="fs-sm">
                                             <a class="fw-semibold"
-                                               href="{{route('orders.history',['email' => request()->email, 'id'=>  $item->id])}}">
+                                               href="{{route('products.history',[$item->id])}}">
                                                 <strong>{{$item->product?->code}}</strong>
                                             </a>
                                             <br>

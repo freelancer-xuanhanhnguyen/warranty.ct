@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class ServiceController extends Controller
 {
-    public function index($email)
+    public function index()
     {
         $q = \request()->q;
         $status = \request()->status;
@@ -21,8 +21,8 @@ class ServiceController extends Controller
             'repairman',
             'status',
         ])
-            ->whereHas('order.customer', function ($query) use ($email) {
-                $query->select('id')->where('email', $email);
+            ->whereHas('order.customer', function ($query) {
+                $query->select('id')->where('id', customer()->id());
             })
             ->when($q, function ($query) use ($q) {
                 $q = escape_like($q);
@@ -53,7 +53,7 @@ class ServiceController extends Controller
         return view('pages.services.index', compact('data'));
     }
 
-    public function detail($email, $id)
+    public function detail($id)
     {
         $data = Service::with([
             'order.product',
@@ -61,8 +61,8 @@ class ServiceController extends Controller
             'repairman',
             'status',
         ])
-            ->whereHas('order.customer', function ($query) use ($email) {
-                $query->select('id')->where('email', $email);
+            ->whereHas('order.customer', function ($query) {
+                $query->select('id')->where('id', customer()->id());
             })
             ->findOrFail($id);
 
@@ -70,18 +70,18 @@ class ServiceController extends Controller
         return view('pages.services.detail', compact('data'));
     }
 
-    public function request($email, $orderId)
+    public function request($orderId)
     {
         $order = Order::with('product')
-            ->whereHas('customer', function ($query) use ($email) {
-                $query->select('id')->where('email', $email);
+            ->whereHas('customer', function ($query) {
+                $query->select('id')->where('id', customer()->id());
             })
             ->findOrFail($orderId, ['id', 'product_id', 'code', 'purchase_date']);
 
         return view('pages.services.create', compact('order'));
     }
 
-    public function create($email, $orderId, Request $request)
+    public function create($orderId, Request $request)
     {
         $order = Order::with('product:id,warranty_period,warranty_period_unit')
             ->findOrFail($orderId, ['id', 'product_id', 'purchase_date']);
@@ -98,7 +98,7 @@ class ServiceController extends Controller
                 $q->whereNotIn('code', [ServiceStatus::STATUS_COMPLETED, ServiceStatus::STATUS_CANCELED]);
             })->first('id');
 
-        if ($service) return redirect(route('services.detail', [$email, $service->id]))
+        if ($service) return redirect(route('services.detail', [$service->id]))
             ->with(['error' => 'Vui lòng chờ, sản phẩm đang trong quá trình bảo hành - sữa chữa.']);
 
         $service = Service::create(collect($request->all())->merge([
@@ -108,7 +108,7 @@ class ServiceController extends Controller
 
         if ($service) {
             DB::commit();
-            return redirect(route('services.detail', [$email, $service->id]))
+            return redirect(route('services.detail', [$service->id]))
                 ->with(['message' => "Thêm phiếu " . strtolower(Service::TYPE[$type]) . " thành công."]);
         }
 
@@ -117,7 +117,7 @@ class ServiceController extends Controller
         return back()->withInput()->with(['error' => 'Có lỗi xảy ra, vui lòng thử lại.']);
     }
 
-    public function review($email, $id, Request $request)
+    public function review($id, Request $request)
     {
         $service = Service::findOrFail($id);
         if ($service->evaluate > 0) return back()->with(['error' => 'Dịch vụ đã được đánh giá, vui lòng thử lại sau.']);
