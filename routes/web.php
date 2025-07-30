@@ -60,9 +60,10 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.request');
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:6,1')->name('register.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.forgot.request');
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.reset.request');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'verified', 'auth.user'])->prefix('admin')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
     Route::match(['get', 'post'], '/', function () {
         return redirect(\route('dashboard'));
     });
