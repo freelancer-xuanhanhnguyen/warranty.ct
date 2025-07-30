@@ -119,7 +119,7 @@ class ServiceController extends Controller
     public function review($email, $id, Request $request)
     {
         $service = Service::findOrFail($id);
-        if ($service->evaluate > 0) return back()->with(['error' => 'Dịch vụ đã được đánh giá, vui lòng kiểm tra lại.']);
+        if ($service->evaluate > 0) return back()->with(['error' => 'Dịch vụ đã được đánh giá, vui lòng thử lại sau.']);
         if ($request->score > 0) {
             $updated = $service->update(collect($request->only(['score', 'evaluate_note']))->merge([
                 'evaluate' => $request->score,

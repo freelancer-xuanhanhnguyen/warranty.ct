@@ -15,7 +15,7 @@ class OrderController extends Controller
         $customer = Customer::where('email', $email)->first('id');
         $data = null;
         if ($customer) {
-            $data = Order::with([
+            $query = Order::with([
                 'product',
                 'customer',
                 'service'
@@ -28,8 +28,15 @@ class OrderController extends Controller
                             $_query->where('name', 'like', "%{$q}%")
                                 ->orWhere('code', 'like', "%{$q}%");
                         });
-                })
-                ->paginate(20);
+                });
+
+            $sort = \request()->sort ?? [];
+            foreach ($sort as $key => $value) {
+                $query = $query->join('products', 'products.id', '=', 'orders.product_id')
+                    ->orderBy(str_replace('__', '.', $key), $value);
+            }
+
+            $data = $query->paginate(20);
         }
 
 
@@ -52,7 +59,7 @@ class OrderController extends Controller
         ])
             ->where('order_id', $id)
             ->when($q, function ($query) use ($q) {
-                    $q = escape_like($q);
+                $q = escape_like($q);
                 $query->where('code', 'like', "%{$q}%");
             });
 

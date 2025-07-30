@@ -46,9 +46,9 @@ function checkWarrantyStatus(
 
     return [
         'expired' => $expired,
-        'warranty_end_date' => $warrantyEndDate->toDateString(),
-        'next_warranty_check_date' => $expired ? null : $warrantyEndDate->toDateString(),
-        'used_base_date' => $baseDate->toDateString(), // để biết đang dùng ngày nào tính bảo hành
+        'warranty_end_date' => $warrantyEndDate->format(FORMAT_DATE),
+        'next_warranty_check_date' => $expired ? null : $warrantyEndDate->format(FORMAT_DATE),
+        'used_base_date' => $baseDate->format(FORMAT_DATE), // để biết đang dùng ngày nào tính bảo hành
     ];
 }
 

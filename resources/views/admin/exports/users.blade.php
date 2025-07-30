@@ -1,7 +1,7 @@
 <table class="table table-borderless table-striped table-vcenter">
     <thead>
     <tr>
-        <th class="text-center" style="width: 100px;">ID</th>
+        <th class="text-center" style="width: 100px;">Mã nhân viên</th>
         <th>Tên nhân viên</th>
         <th>Email</th>
         <th class="text-center">Ngày sinh</th>

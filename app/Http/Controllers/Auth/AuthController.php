@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Notifications\NewServiceNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 
@@ -29,13 +30,6 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:6',
         ]);
-
-        $user = User::where('email', $credentials)
-            ->where('status', 0)
-            ->exists();
-        if ($user) return back()->with([
-            'error' => 'Tài khoản của bạn chưa được phê duyệt.',
-        ])->withInput();
 
         if (Auth::attempt($credentials, $request->remember ?? false)) {
             $request->session()->regenerate();
@@ -60,9 +54,12 @@ class AuthController extends Controller
             'address' => 'nullable|string|max:255',
         ]);
 
+
         $user = User::create(array_merge($data, [
             'password' => Hash::make($request->password),
         ]));
+
+        $user->sendEmailVerificationNotification();
 
         $users = User::active()
             ->whereIn('role', [User::ROLE_ADMIN])

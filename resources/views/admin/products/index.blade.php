@@ -67,13 +67,9 @@
                 </form>
                 <!-- END Search Form -->
 
-                <!-- All Orders Table -->
-                <div class="table-responsive">
-                    @include('admin.exports.products')
-                </div>
-                <!-- END All Orders Table -->
-
-                {{ $data->links('layouts.inc.pagination') }}
+                <!-- Table -->
+                <x-table.products :data="$data"/>
+                <!-- END Table -->
             </div>
         </div>
         <!-- END Info -->

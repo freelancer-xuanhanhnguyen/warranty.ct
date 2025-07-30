@@ -2,15 +2,19 @@
     <thead>
     <tr>
         <th class="sortable" data-name="products__code" style="width: 100px;">Mã sản phẩm</th>
-        <th class="text-center">Mã đơn hàng</th>
-        <th>Khách hàng</th>
+        <th class="sortable text-center" data-name="orders__code">Mã đơn hàng</th>
+        <th>Mã khách hàng</th>
+        <th>Tên khách hàng</th>
+        <th>Email khách hàng</th>
         <th class="sortable" data-name="products__name">Tên sản phẩm</th>
         <th class="text-center">Thời gian bảo hành</th>
         <th class="text-center">Bảo hành định kỳ</th>
         <th class="sortable text-center" data-name="purchase_date">Ngày mua</th>
         <th class="text-center">Ngày bảo hành định kỳ</th>
-        <th>Kỹ thuật viên</th>
+        <th>Mã kỹ thuật viên</th>
+        <th>Tên kỹ thuật viên</th>
         <th class="text-center">Trạng thái</th>
+        <th class="text-center">Ngày cập nhật</th>
         <th class="text-center"></th>
     </tr>
     </thead>
@@ -18,27 +22,24 @@
     @foreach ($data ?? [] as $item)
         <tr>
             <td class="fs-sm">
-                <a class="fw-semibold" href="{{ route('admin.products.history', $item->id) }}">
-                    <strong>{{ $item->product?->code }}</strong>
-                </a><br/>
-                <small class="text-muted">{{ $item->product?->serial }}</small>
+                {{ $item->product?->code }}
             </td>
             <td class="text-center fs-sm">
-                <strong>{{ $item->code }}</strong>
+                {{ $item->code }}
             </td>
 
             <td class="fs-sm">
-                @if($item->customer?->code)
-                    <small class="text-muted">({{ $item->customer?->code }})</small>
-                    <br>
-                @endif
+                {{$item->customer?->code}}
+            </td>
+            <td class="fs-sm">
                 {{ $item->customer?->name }}
-                <br>
-                <small class="text-muted">({{ $item->customer?->email }})</small>
+            </td>
+            <td class="fs-sm">
+                {{ $item->customer?->email }}
             </td>
 
             <td class="fs-sm" style="min-width: 200px">
-                <strong>{{ $item->product?->name }}</strong>
+                {{ $item->product?->name }}
             </td>
 
             <td class="text-center fs-sm">
@@ -64,8 +65,10 @@
 
             <td class="text-nowrap fs-sm">
                 {{ $item->product?->repairman?->name }}
-                <br>
-                <small class="text-muted">{{ $item->product?->repairman?->email }}</small>
+            </td>
+
+            <td class="text-nowrap fs-sm">
+                {{ $item->product?->repairman?->email }}
             </td>
 
             <td class="fs-sm">
@@ -77,6 +80,10 @@
                           title="Ngày bảo hành tiếp theo là {{ $status['next_warranty_check_date'] }} (tính từ ngày {{ $status['used_base_date'] }})">Còn
                             bảo hành</span>
                 @endif
+            </td>
+
+            <td class="text-center fs-sm">
+                {{$item->updated_at->format(FORMAT_DATETIME)}}
             </td>
 
             <td class="text-center text-nowrap">

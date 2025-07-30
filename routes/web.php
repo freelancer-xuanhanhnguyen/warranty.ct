@@ -16,6 +16,8 @@ use App\Http\Controllers\Web\ServiceController;
 use App\Models\Customer;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +32,23 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Example Routes
+// Trang yêu cầu xác minh
+Route::get('/email/verify', function () {
+    return view('auth.verify-email'); // Tạo view này để hướng dẫn người dùng kiểm tra mail
+})->middleware('auth')->name('verification.notice');
+
+// Xác minh email khi user nhấn link
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill(); // Đánh dấu email_verified_at
+    return redirect(\route('dashboard')); // hoặc route khác
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+// Gửi lại email xác minh
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+
+    return back()->with('message', 'Đã gửi, vui lòng kiểm tra email!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -37,12 +56,12 @@ Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkReques
 Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 
 Route::post('/login', [AuthController::class, 'login'])->name('login.request');
-Route::post('/register', [AuthController::class, 'register'])->name('register.request');
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:6,1')->name('register.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.forgot.request');
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.reset.request');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware('auth')->prefix('admin')->group(function () {
+Route::middleware(['auth', 'verified', 'auth.user'])->prefix('admin')->group(function () {
     Route::match(['get', 'post'], '/', function () {
         return redirect(\route('dashboard'));
     });
@@ -87,7 +106,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
 Route::group([], function () {
     Route::get('/', [TrackEmailController::class, 'index']);
-    Route::post('/', [TrackEmailController::class, 'trackEmail'])->name('track-email');
+    Route::post('/', [TrackEmailController::class, 'trackEmail'])->middleware('throttle:6,1')->name('track-email');
 
     Route::middleware('auth.customer')->prefix('track/{email}')->group(function () {
         Route::prefix('/orders')->group(function () {

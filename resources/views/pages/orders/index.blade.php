@@ -22,6 +22,8 @@
                     </span>
                         </div>
                     </div>
+
+                    <x-sort-input/>
                 </form>
                 <!-- END Search Form -->
 
@@ -30,9 +32,9 @@
                     <table class="table table-borderless table-striped table-vcenter">
                         <thead>
                         <tr>
-                            <th style="width: 100px;">Mã sản phẩm</th>
-                            <th class="text-center">Mã đơn hàng</th>
-                            <th>Tên sản phẩm</th>
+                            <th class="sortable" data-name="products__code" style="width: 100px;">Mã sản phẩm</th>
+                            <th class="sortable text-center" data-name="orders__code">Mã đơn hàng</th>
+                            <th class="sortable" data-name="products__name">Tên sản phẩm</th>
                             <th class="text-center">Thời gian bảo hành</th>
                             <th class="text-center">Bảo hành định kỳ</th>
                             <th class="text-end">Ngày mua</th>

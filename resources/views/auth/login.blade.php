@@ -50,7 +50,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" value=""
                                                        id="remember" name="remember">
-                                                <label class="form-check-label" for="remember">Nhớ mật khẩu?</label>
+                                                <label class="form-check-label" for="remember">Ghi nhớ đăng nhập?</label>
                                             </div>
                                         </div>
                                     </div>

@@ -47,7 +47,7 @@
                                     <div class="row mb-4">
                                         <div class="col">
                                             <button type="submit" class="btn w-100 btn-alt-success">
-                                                <i class="fa fa-fw fa-plus me-1 opacity-50"></i> Đặt lại mật khẩu
+                                                Đặt lại mật khẩu
                                             </button>
                                         </div>
                                     </div>
@@ -60,7 +60,7 @@
                 </div>
             </div>
             <div class="fs-sm text-muted text-center">
-                <strong>OneUI 5.8</strong> &copy; <span data-toggle="year-copy"></span>
+                <strong>BẢN QUYỀN</strong> <span data-toggle="year-copy"></span> {{the_website_name()}}
             </div>
         </div>
 
