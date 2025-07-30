@@ -108,7 +108,7 @@
                     <div class="block-content">
                         <div class="fs-4 mb-1">{{$data->order?->customer?->name}}</div>
                         <address class="fs-sm">
-                            <i class="fa-solid fa-person-half-dress"></i> {{\App\Models\Customer::GENDER[$data->order?->customer?->gender]}}
+                            <i class="fa-solid fa-person-half-dress"></i> {{\App\Models\Customer::GENDER[$data->order?->customer?->gender] ?? null}}
                             <br>
                             <i class="fa fa-calendar"></i> {{$data->order?->customer?->birthday}}<br>
                             <i class="fa fa-address-book"></i> {{$data->order?->customer?->address}}

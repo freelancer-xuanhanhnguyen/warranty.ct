@@ -25,6 +25,7 @@ class ServiceController extends Controller
                 $query->select('id')->where('email', $email);
             })
             ->when($q, function ($query) use ($q) {
+                    $q = escape_like($q);
                 $query->where('code', 'like', "%{$q}%");
             });
 

@@ -37,11 +37,11 @@
             </td>
             <td class="text-center fs-sm">
                     <span
-                        class="badge bg-{{ \App\Models\User::ROLE_CLASS[$item->role] }}">{{ \App\Models\User::ROLE[$item->role] }}</span>
+                        class="badge bg-{{ \App\Models\User::ROLE_CLASS[$item->role] ?? null }}">{{ \App\Models\User::ROLE[$item->role] ?? null }}</span>
             </td>
             <td class="text-center fs-sm">
                     <span
-                        class="badge bg-{{ \App\Models\User::STATUS_CLASS[$item->status] }}">{{ \App\Models\User::STATUS[$item->status] }}</span>
+                        class="badge bg-{{ \App\Models\User::STATUS_CLASS[$item->status] ?? null }}">{{ \App\Models\User::STATUS[$item->status] ?? null }}</span>
             </td>
             <td class="text-center text-nowrap">
                 <div class="btn-group btn-group-sm" role="group" aria-label="Small Horizontal Primary">

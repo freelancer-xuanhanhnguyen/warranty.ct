@@ -28,6 +28,7 @@ class ServiceController extends Controller
             'status',
         ])
             ->when($q, function ($query) use ($q) {
+                    $q = escape_like($q);
                 $query->where('code', 'like', "%{$q}%");
             });
 

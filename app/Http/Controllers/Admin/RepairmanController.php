@@ -29,6 +29,7 @@ class RepairmanController extends Controller
 
         if (\request()->has('q')) {
             $q = \request()->q;
+            $q = escape_like($q);
             $query = $query->where([
                 ['users.role', '=', User::ROLE_REPAIRMAN],
                 ['users.name', 'like', "%{$q}%"],
@@ -97,6 +98,7 @@ class RepairmanController extends Controller
         ])
             ->where('repairman_id', $id)
             ->when($q, function ($query) use ($q) {
+                    $q = escape_like($q);
                 $query->where('code', 'like', "%{$q}%");
             });
 

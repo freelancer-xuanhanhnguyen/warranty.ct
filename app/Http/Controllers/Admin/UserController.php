@@ -20,6 +20,7 @@ class UserController extends Controller
         $q = \request()->q;
         $role = \request()->role;
         $query = User::when($q, function ($query) use ($q) {
+            $q = escape_like($q);
             $query->where('name', 'like', "%{$q}%")
                 ->orWhere('id', 'like', "%{$q}%")
                 ->orWhere('email', 'like', "%{$q}%");

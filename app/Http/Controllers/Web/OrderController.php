@@ -22,6 +22,7 @@ class OrderController extends Controller
             ])
                 ->where('customer_id', $customer->id)
                 ->when($q, function ($query) use ($q) {
+                    $q = escape_like($q);
                     $query->where('code', 'like', "%{$q}%")
                         ->orWhereHas('product', function ($_query) use ($q) {
                             $_query->where('name', 'like', "%{$q}%")
@@ -51,6 +52,7 @@ class OrderController extends Controller
         ])
             ->where('order_id', $id)
             ->when($q, function ($query) use ($q) {
+                    $q = escape_like($q);
                 $query->where('code', 'like', "%{$q}%");
             });
 

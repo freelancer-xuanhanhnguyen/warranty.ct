@@ -78,3 +78,15 @@ function the_website_name()
 {
     return "CÔNG TY CỔ PHẦN TẬP ĐOÀN NAM VIỆT NAM";
 }
+
+if (!function_exists('escape_like')) {
+    /**
+     * @param $string
+     * @return string
+     */
+    function escape_like($string): string
+    {
+
+        return addcslashes($string, '%_');
+    }
+}

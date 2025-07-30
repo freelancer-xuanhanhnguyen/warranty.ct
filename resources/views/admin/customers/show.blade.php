@@ -57,7 +57,7 @@
                     <div class="block-content">
                         <div class="fs-4 mb-1">{{$data->name}}</div>
                         <address class="fs-sm">
-                            <i class="fa-solid fa-person-half-dress"></i> {{\App\Models\Customer::GENDER[$data->gender]}}
+                            <i class="fa-solid fa-person-half-dress"></i> {{\App\Models\Customer::GENDER[$data->gender] ?? null}}
                             <br>
                             <i class="fa fa-calendar"></i> {{$data->birthday}}<br>
                             <i class="fa fa-address-book"></i> {{$data->address}}
