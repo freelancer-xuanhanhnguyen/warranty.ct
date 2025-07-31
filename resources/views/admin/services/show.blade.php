@@ -65,6 +65,9 @@
             font-size: 13px;
             color: #555;
         }
+        .dataTables_info {
+            display: none;
+        }
     </style>
 @endsection
 
@@ -102,6 +105,7 @@
                 ],
                 language: {
                     info: "",
+                    emptyTable: "Không có dữ liệu",
                 },
             });
         })
@@ -443,9 +447,6 @@
                                         </td>
                                     </tr>
                                 @endforeach
-
-                                <x-empty :data="$logs"/>
-
                                 </tbody>
                             </table>
                         </div>
