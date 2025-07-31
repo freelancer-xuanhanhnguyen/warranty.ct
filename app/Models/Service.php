@@ -5,10 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Contracts\LoggablePipe;
+use Spatie\Activitylog\EventLogBag;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Service extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = ['order_id', 'repairman_id', 'code', 'type', 'content', 'fee_total', 'fee_detail', 'reception_date', 'expected_completion_date', 'evaluate', 'evaluate_note'];
 
@@ -28,6 +32,26 @@ class Service extends Model
         self::TYPE_REPAIR => 'default',
         self::TYPE_WARRANTY => 'smooth',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logExcept(['id', 'order_id', 'created_at', 'updated_at'])
+            ->dontSubmitEmptyLogs()
+            ->useLogName('services');
+    }
+
+    protected static function booted(): void
+    {
+        static::addLogChange(new class implements LoggablePipe {
+            public function handle(EventLogBag $event, \Closure $next): EventLogBag
+            {
+                unset($event->changes['old']);
+                return $next($event);
+            }
+        });
+    }
 
     public function order()
     {
@@ -52,8 +76,8 @@ class Service extends Model
     protected function feeTotal(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => number_format($value, 0, '', ''),
-            set: fn ($value) => number_format((float) $value, 2, '.', ''),
+            get: fn($value) => number_format($value, 0, '', ''),
+            set: fn($value) => number_format((float)$value, 2, '.', ''),
         );
     }
 }

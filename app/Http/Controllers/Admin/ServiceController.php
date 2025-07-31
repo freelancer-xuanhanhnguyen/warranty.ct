@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\ServicesExport;
 use App\Http\Controllers\Controller;
+use App\Models\Activity;
 use App\Models\Order;
-use App\Models\Product;
 use App\Models\Service;
 use App\Models\ServiceStatus;
 use App\Models\User;
@@ -67,8 +67,7 @@ class ServiceController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public
-    function create()
+    public function create()
     {
         $orderCodes = Order::with('customer:id,name')
             ->distinct()
@@ -88,8 +87,7 @@ class ServiceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public
-    function store(Request $request)
+    public function store(Request $request)
     {
         $data = $request->validate([
             'order_id' => 'nullable|exists:orders,id',
@@ -127,8 +125,7 @@ class ServiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public
-    function show(string $id)
+    public function show(string $id)
     {
         $data = Service::with([
             'order.product',
@@ -136,14 +133,19 @@ class ServiceController extends Controller
             'repairman',
             'status',
         ])->findOrFail($id);
-        return view('admin.services.show', compact('data'));
+
+        $logs = Activity::inLog('services')
+            ->with(['causer:id,name', 'repairman:id,name'])
+            ->latest()
+            ->get();
+
+        return view('admin.services.show', compact('data', 'logs'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public
-    function edit(string $id)
+    public function edit(string $id)
     {
         $data = Service::with(['order:id,code', 'status', 'statuses'])->findOrFail($id);
         $orderCodes = Order::with('customer:id,name')
@@ -164,8 +166,7 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public
-    function update(Request $request, string $id)
+    public function update(Request $request, string $id)
     {
         $data = $request->validate([
             'order_id' => 'nullable|exists:orders,id',
@@ -206,8 +207,7 @@ class ServiceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public
-    function destroy(string $id)
+    public function destroy(string $id)
     {
         Service::destroy($id);
         return back()->with(['message' => 'Đã xóa thành công.']);

@@ -2,6 +2,8 @@
 
 @section('css')
     <!-- Page JS Plugins CSS -->
+    <link rel="stylesheet" href="{{ asset('js/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
 
     <style>
         body {
@@ -68,15 +70,42 @@
 
 @section('js')
 
-
     <!-- Page JS Plugins -->
     <script src="{{ asset('js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
     <script src="{{ asset('js/plugins/datatables-buttons/dataTables.buttons.min.js') }}"></script>
-
+    <script src="{{ asset('js/plugins/datatables-buttons-bs5/js/buttons.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/datatables-buttons-jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/datatables-buttons-pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/datatables-buttons-pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('js/plugins/datatables-buttons/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/datatables-buttons/buttons.html5.min.js') }}"></script>
 
     <!-- Page JS Code -->
     @vite(['resources/js/pages/datatables.js'])
+
+    <script>
+        $(() => {
+            jQuery('.js-dataTable-full_').dataTable({
+                pageLength: 20,
+                lengthMenu: false,
+                lengthChange: false,
+                autoWidth: false,
+                order: [
+                    [ 0, 'desc' ]     // cột thứ 4 (index = 3) sẽ được sắp xếp giảm dần
+                ],
+                columnDefs: [
+                    {
+                        targets: 'no-sort',
+                        orderable: false
+                    }
+                ],
+                language: {
+                    info: "",
+                },
+            });
+        })
+    </script>
 @endsection
 
 @section('content')
@@ -250,6 +279,10 @@
                 <div class="block-options">
                     <div class="btn-group btn-group-sm" role="group"
                          aria-label="Small Horizontal Primary">
+                        <button class="btn btn-sm btn-alt-info" data-bs-toggle="tooltip" title="Lịch sử chỉnh sửa"
+                                onclick="$('#log-modal').modal('show')">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </button>
                         <a class="btn btn-sm btn-alt-warning"
                            href="{{route('admin.services.edit', $data->id)}}"
                            data-bs-toggle="tooltip" title="Sửa">
@@ -326,4 +359,100 @@
         <!-- END Info -->
     </div>
     <!-- END Page Content -->
+
+    <!-- Modal --->
+    <div class="modal fade" id="log-modal" tabindex="-1" aria-labelledby="modal-block-popin"
+         style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-popin modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="block block-rounded block-transparent mb-0">
+                    <div class="block-header block-header-default">
+                        <h3 class="block-title">Lịch sử chỉnh sửa phiếu {{$data->code}}</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                <i class="fa fa-fw fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <div class="table-responsive table-responsive-xxl">
+                            <table class="table table-borderless table-striped table-vcenter js-dataTable-full_">
+                                <thead>
+                                <tr>
+                                    <th class="text-center no-sort">Thời gian</th>
+                                    <th class="text-center no-sort">Hành động</th>
+                                    <th class="no-sort">Người thực hiện</th>
+                                    <th class="text-center no-sort">Ngày thực hiện</th>
+                                    <th class="text-center no-sort">Mã phiếu</th>
+                                    <th class="text-center no-sort">Loại phiếu</th>
+                                    <th class="no-sort">Vấn đề sửa chữa</th>
+                                    <th class="text-center no-sort">Tổng phí</th>
+                                    <th class="no-sort">Chi tiết phí</th>
+                                    <th class="no-sort">Kỹ thuật viên</th>
+                                    <th class="text-center no-sort">Đánh giá</th>
+                                    <th class="text-center no-sort">Nội dung đánh giá</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach ($logs as $log)
+                                    @php($logData = (object)($log->properties['attributes'] ?? []))
+                                    <tr>
+                                        <td class="text-center fs-sm">
+                                            {{$log->created_at->diffForHumans()}}
+                                        </td>
+
+                                        <td class="text-center fs-sm">
+                                            {{ \App\Models\Activity::EVENTS[$log->event] }}
+                                        </td>
+                                        <td class="fs-sm">
+                                            {{$log->causer->name}}
+                                        </td>
+                                        <td class="text-center fs-sm">
+                                            {{$log->created_at->format(FORMAT_DATETIME)}}
+                                        </td>
+                                        <td class="text-center fs-sm">
+                                            {{$logData->code}}
+                                        </td>
+                                        <td class="fs-sm">
+                                            <span
+                                                class="badge bg-{{ \App\Models\Service::TYPE_CLASS[$logData->type] }}">
+                                                {{ \App\Models\Service::TYPE[$logData->type] }}
+                                            </span>
+                                        </td>
+                                        <td class="fs-sm">
+                                            {{ $logData->content }}
+                                        </td>
+                                        <td class="fs-sm">
+                                            {{ format_money($logData->fee_total) }}
+                                        </td>
+
+                                        <td class="fs-sm">
+                                            {{ $logData->fee_detail }}
+                                        </td>
+
+                                        <td class="text-nowrap fs-sm">
+                                            {{ $log?->repairman?->name }}
+                                        </td>
+                                        <td class="text-center fs-sm text-nowrap">
+                                            @include('components.evaluate_star', ['star' => $logData->evaluate])
+                                        </td>
+
+                                        <td class="text-center fs-sm text-nowrap">
+                                            {{$logData->evaluate_note}}
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+                                <x-empty :data="$logs"/>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Modal --->
 @endsection

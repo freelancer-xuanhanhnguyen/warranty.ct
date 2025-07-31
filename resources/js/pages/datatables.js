@@ -47,7 +47,13 @@ class pageTablesDatatables {
     jQuery('.js-dataTable-full').dataTable({
       pageLength: 5,
       lengthMenu: [[5, 10, 15, 20], [5, 10, 15, 20]],
-      autoWidth: false
+      autoWidth: false,
+      columnDefs: [
+        {
+          targets: 'no-sort',
+          orderable: false
+        }
+      ]
     });
 
     // Init DataTable with Buttons

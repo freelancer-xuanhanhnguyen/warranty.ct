@@ -83,17 +83,21 @@
     }
 
     th.sortable::after {
-        content: ' ⇅';
+        content: "";
         font-size: 0.8em;
         color: #888;
+        font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro";
+        font-weight: 600;
+        opacity: .4;
+        margin-left: 5px;
     }
 
     th.sortable.--asc::after {
-        content: ' ↑';
+        content: "";
     }
 
     th.sortable.--desc::after {
-        content: ' ↓';
+        content: "";
     }
 
 </style>
