@@ -70,7 +70,8 @@ function hasRole($role = array(), $only = false)
 function format_money($amount)
 {
     if (!$amount) return null;
-    return number_format($amount, 0, ',', '.') . 'đ';
+    $amount = number_format($amount, 0, ',', '.');
+    return "$amount\u{00A0}₫";
 }
 
 

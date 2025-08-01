@@ -21,7 +21,7 @@ class ServiceFactory extends Factory
             'type' => $this->faker->randomElement([Service::TYPE_REPAIR, Service::TYPE_WARRANTY]),
             'content' => $this->faker->paragraph,
             'fee_total' => $this->faker->randomFloat(2, 100, 1000),
-            'fee_detail' => $this->faker->text(100),
+            'note' => $this->faker->text(100),
             'reception_date' => $this->faker->date,
             'expected_completion_date' => $this->faker->date,
             'evaluate' => $this->faker->randomElement([null, 1, 2, 3, 4, 5]),

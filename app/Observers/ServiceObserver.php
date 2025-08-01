@@ -40,38 +40,43 @@ class ServiceObserver
             $user = Auth::user();
             if (request()->path() === "admin/services") {
                 if ($user->role === User::ROLE_ADMIN) {
-                    $users = User::active()
-                        ->where(function ($q) use ($service) {
-                            $q->where('role', User::ROLE_CSKH)
-                                ->orWhere('id', $service->repairman_id);
-                        })
-                        ->get();
+                    Notification::send($service, new NewServiceNotification([
+                        'role' => [User::ROLE_CSKH],
+                        'redirect_to' => route('admin.services.show', $service->id),
+                        'created_by' => Auth::user(),
+                        'message' => "Admin đã tạo phiếu $type mới <strong>$service->code</strong>"
+                    ]));
                 } else {
-                    $users = User::active()
-                        ->where(function ($q) use ($service) {
-                            $q->where('role', User::ROLE_ADMIN)
-                                ->orWhere('id', $service->repairman_id);
-                        })
-                        ->get();
+                    Notification::send($service, new NewServiceNotification([
+                        'role' => [User::ROLE_ADMIN],
+                        'redirect_to' => route('admin.services.show', $service->id),
+                        'created_by' => Auth::user(),
+                        'message' => "CSKH đã tạo phiếu $type mới <strong>$service->code</strong>"
+                    ]));
                 }
             } else {
-                $users = User::active()
-                    ->where(function ($q) use ($service) {
-                        $q->whereIn('role', [User::ROLE_ADMIN, User::ROLE_CSKH])
-                            ->orWhere('id', $service->repairman_id);
-                    })
-                    ->get();
+                Notification::send($service, new NewServiceNotification([
+                    'role' => [User::ROLE_ADMIN, User::ROLE_CSKH],
+                    'redirect_to' => route('admin.services.show', $service->id),
+                    'created_by' => customer()->user(),
+                    'message' => "Khách hàng đã tạo phiếu $type mới <strong>$service->code</strong>"
+                ]));
             }
-            $message = "Phiếu $type mới #$service->code";
 
-            Notification::send($users, new NewServiceNotification([
-                'type' => 'new',
-                'service' => $service,
-                'created_by' => $user ?? request()->email,
-                'message' => $message
-            ]));
+            if ($repairman_id) {
+                $repairman = User::active()
+                    ->find($service->repairman_id);
+
+                if ($repairman)
+                    Notification::send($repairman, new NewServiceNotification([
+                        'role' => [User::ROLE_REPAIRMAN],
+                        'redirect_to' => route('admin.services.show', $service->id),
+                        'created_by' => Auth::user(),
+                        'message' => "Bạn được gán phiếu $type mới <strong>$service->code</strong>"
+                    ]));
+            }
         } catch (\Exception $e) {
-            Log::error("Notification error #$service->code: " . $e->getMessage());
+            Log::error("Notification error $service->code: " . $e->getMessage());
         }
     }
 
@@ -87,40 +92,38 @@ class ServiceObserver
                 if ($service->isDirty('repairman_id') && $service->repairman_id) {
 
                     $oldRepairman = User::active()->find($service->getOriginal('repairman_id'));
-                    Notification::send($oldRepairman, new NewServiceNotification([
-                        'type' => 'remove_repairman_id',
-                        'service' => $service,
-                        'created_by' => Auth::user(),
-                        'message' => "Đã gỡ phiếu $type #$service->code"
-                    ]));
+
+                    if ($oldRepairman) {
+                        Notification::send($oldRepairman, new NewServiceNotification([
+                            'role' => [User::ROLE_REPAIRMAN],
+                            'redirect_to' => route('admin.services.show', $service->id),
+                            'created_by' => $user,
+                            'message' => "Bạn bị gỡ khỏi phiếu $type <strong>$service->code</strong>"
+                        ]));
+                    }
 
                     $repairman = User::active()->find($service->repairman_id);
-                    Notification::send($repairman, new NewServiceNotification([
-                        'type' => 'update_repairman_id',
-                        'service' => $service,
-                        'created_by' => Auth::user(),
-                        'message' => "Đã gán piếu $type mới #$service->code"
-                    ]));
+
+                    if ($repairman)
+                        Notification::send($repairman, new NewServiceNotification([
+                            'role' => [User::ROLE_REPAIRMAN],
+                            'redirect_to' => route('admin.services.show', $service->id),
+                            'created_by' => $user,
+                            'message' => "Bạn được gán phiếu $type mới <strong>$service->code</strong>"
+                        ]));
                 }
 
-                if ($service->isDirty('fee_total') || $service->isDirty('fee_detail')) {
-                    $users = User::where('role', User::ROLE_ADMIN)->active();
-                    if ($user->role === User::ROLE_ADMIN) {
-                        $users = $users->where('role', User::ROLE_ADMIN)
-                            ->where('id', '!=', $user->id);
-                    }
-                    $users = $users->get();
-
-                    Notification::send($users, new NewServiceNotification([
-                        'type' => 'update_fee',
-                        'service' => $service,
-                        'created_by' => Auth::user(),
-                        'message' => "Phụ phí #$service->code đã thay đổi " . format_money($service->fee_total)
+                if ($service->isDirty('fee_total')) {
+                    Notification::send($service, new NewServiceNotification([
+                        'role' => [User::ROLE_ADMIN],
+                        'redirect_to' => route('admin.services.show', $service->id),
+                        'created_by' => $user,
+                        'message' => "Phiếu <strong>$service->code</strong> đã thay đổi phụ phí <strong>" . format_money($service->fee_total) . "</strong>"
                     ]));
                 }
             }
         } catch (\Exception $e) {
-            Log::error("Notification error #$service->code: " . $e->getMessage());
+            Log::error("Notification error $service->code: " . $e->getMessage());
         }
     }
 
@@ -129,7 +132,15 @@ class ServiceObserver
      */
     public function deleted(Service $service): void
     {
-        //
+        $user = auth()->user();
+        $type = strtolower(Service::TYPE[$service->type]);
+
+        Notification::send($service, new NewServiceNotification([
+            'role' => array_values(array_diff([User::ROLE_ADMIN, User::ROLE_CSKH], $user->role)),
+            'redirect_to' => route('admin.services.show', $service->id),
+            'created_by' => $user,
+            'message' => "Phiếu $type <strong>$service->code</strong> đã bị xóa"
+        ]));
     }
 
     /**

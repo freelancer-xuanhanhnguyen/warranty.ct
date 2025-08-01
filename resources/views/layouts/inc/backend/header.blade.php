@@ -93,14 +93,13 @@
                 </div>
             </div>
             <!-- END User Dropdown -->
-            @php($count = auth()->user()->unreadNotifications->count())
-            {{--@php($count = count($unreadNotifications))--}}
+
             <!-- Notifications Dropdown -->
             <div class="dropdown d-inline-block ms-2">
                 <button type="button" class="btn btn-sm btn-alt-secondary" id="page-header-notifications-dropdown"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-fw fa-bell"></i>
-                    @if($count)
+                    @if($unreadNotifications)
                         <span class="text-primary">•</span>
                     @endif
                 </button>
@@ -110,12 +109,6 @@
                         <h5 class="dropdown-header text-uppercase">Thông báo</h5>
                     </div>
                     <ul class="nav-items mb-0" style="max-height: 80vh;overflow: auto">
-                        @php($notifications = auth()->user()
-                                                    ->notifications()
-                                                    ->orderBy('read_at', 'asc')
-                                                    ->orderBy('created_at', 'desc')
-                                                    ->limit(10)
-                                                    ->get())
                         @foreach ($notifications as $notification)
                             <li @if(!isset($notification->read_at)) class="bg-black-10" @endif>
                                 @if(!isset($notification->read_at))
@@ -123,23 +116,13 @@
                                           action="{{ route('notifications.read', $notification->id) }}">
                                         @csrf
                                         @method('PATCH')
-                                        <input name="redirect_url" type="text"
-                                               @if(isset($notification->data['service']))
-                                                   value="{{route('admin.services.show', $notification->data['service']['id'])}}"
-                                               @elseif(isset($notification->data['user']))
-                                                   value="{{route('admin.users.edit', $notification->data['user']['id'])}}"
-                                               @endif
-                                               hidden>
+                                        <input name="redirect_url" type="text" hidden
+                                               value="{{$notification->data['redirect_to']}}">
                                     </form>
                                 @endif
 
                                 <a class="text-dark d-flex py-2"
-                                   @if(isset($notification->data['service']))
-                                       href="{{route('admin.services.show', $notification->data['service']['id'])}}"
-                                   @elseif(isset($notification->data['user']))
-                                       href="{{route('admin.users.edit', $notification->data['user']['id'])}}"
-                                   @endif
-
+                                   href="{{$notification->data['redirect_to']}}"
                                    @if(!isset($notification->read_at))
                                        onclick="event.preventDefault();document.getElementById('notify-{{$notification->id}}').submit()"
                                     @endif
@@ -152,16 +135,11 @@
                                         @endif
                                     </div>
                                     <div class="flex-grow-1 pe-2">
-                                        <div class="fw-semibold"
-                                             @if($notification->data['type'] === "update_fee")
-                                                 data-bs-toggle="tooltip"
-                                             title="{{ $notification->data['service']['fee_detail'] }}"
-                                            @endif
-                                        >
-                                            {{ $notification->data['message'] }}
+                                        <div>
+                                            {!! $notification->data['message'] !!}
                                         </div>
                                         <small
-                                            class="fw-medium text-muted">{{ $notification->data['created_by']['email'] ?? $notification->data['user']['email'] ?? null }}
+                                            class="fw-medium text-muted">Bởi <strong>{{ $notification->data['created_by']['name'] ?? null }}</strong>
                                             • {{ $notification->created_at->diffForHumans() }}
                                         </small>
                                     </div>
@@ -169,7 +147,7 @@
                             </li>
                         @endforeach
                     </ul>
-                    @if($count)
+                    @if($unreadNotifications)
                         <div class="p-2 border-top text-center">
                             <form id="notify-read-all" method="POST" action="{{ route('notifications.readAll') }}">
                                 @csrf

@@ -105,7 +105,14 @@
                         <a class="nav-main-link{{ request()->is('admin/products*') ? ' active' : '' }}"
                            href="{{route('admin.products.index')}}">
                             <i class="nav-main-link-icon si si-puzzle"></i>
-                            <span class="nav-main-link-name">Thiết bị</span>
+                            <span class="nav-main-link-name">Sản phẩm</span>
+                        </a>
+                    </li>
+                    <li class="nav-main-item">
+                        <a class="nav-main-link{{ request()->is('admin/accessories*') ? ' active' : '' }}"
+                           href="{{route('admin.accessories.index')}}">
+                            <i class="nav-main-link-icon si si-puzzle"></i>
+                            <span class="nav-main-link-name">Linh kiện</span>
                         </a>
                     </li>
                     <li class="nav-main-item">

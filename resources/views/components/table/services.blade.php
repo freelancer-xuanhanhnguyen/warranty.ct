@@ -57,7 +57,7 @@
                 </td>
                 <td class="fs-sm">
                     <strong data-bs-toggle="tooltip"
-                            title="{{ $item->fee_detail }}">{{ format_money($item->fee_total) }}</strong>
+                            title="{{ $item->note }}">{{ format_money($item->fee_total) }}</strong>
                 </td>
                 <td class="text-nowrap fs-sm">
                     {{ $item?->repairman?->name }}

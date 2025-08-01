@@ -2,14 +2,13 @@
 
 namespace App\Observers;
 
-use App\Mail\ServiceStatusMail;
+use App\Jobs\SendEmailServiceStatus;
 use App\Models\Service;
 use App\Models\ServiceStatus;
 use App\Models\User;
 use App\Notifications\NewServiceNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 
 class ServiceStatusObserver
@@ -19,39 +18,28 @@ class ServiceStatusObserver
      */
     public function created(ServiceStatus $serviceStatus): void
     {
+        SendEmailServiceStatus::dispatch($serviceStatus);
+
+        $service = Service::query()->find($serviceStatus->service_id, ['id', 'type', 'code']);
         try {
-            $service = Service::with([
-                'order:id,customer_id,product_id',
-                'order.customer:id,email,name',
-                'order.product:id,name',
-            ])->find($serviceStatus->service_id);
+            $user = Auth::user();
+            $type = strtolower(Service::TYPE[$service->type]);
 
-            Mail::to($service?->order?->customer?->email)
-                ->send(new ServiceStatusMail($service, $serviceStatus));
-
-            Log::info("Send mail service #$service->code to customer: " . $service?->order?->customer?->email);
-
-            try {
-                if ($serviceStatus->code == ServiceStatus::STATUS_COMPLETED) {
-                    $user = Auth::user();
-
-                    if ($user->role != User::ROLE_CSKH) {
-                        $type = strtolower(Service::TYPE[$service->type]);
-                        $users = User::where('role', User::ROLE_CSKH)->active()->get();
-                        Notification::send($users, new NewServiceNotification([
-                            'type' => 'completed',
-                            'services' => $service,
-                            'created_by' => $user,
-                            'message' => "Phiếu #$service->code đã $type xong."
-                        ]));
-                    }
-                }
-            } catch (\Exception $e) {
-                Log::error("Notification error #$service->code: " . $e->getMessage());
+            $role = array_values(array_diff([User::ROLE_ADMIN, User::ROLE_CSKH], [$user->role]));
+            $to = $service;
+            if($user->role === User::ROLE_REPAIRMAN) {
+                $role = [User::ROLE_REPAIRMAN];
+                $to = $user;
             }
 
+            Notification::send($to, new NewServiceNotification([
+                'role' => $role,
+                'redirect_to' => route('admin.services.show', $serviceStatus->service_id),
+                'created_by' => $user,
+                'message' => "Phiếu $type <strong>$service->code</strong> đã thay đổi trạng thái <strong>" . ServiceStatus::STATUS[$serviceStatus->code] . "</strong>"
+            ]));
         } catch (\Exception $e) {
-            Log::error("Send mail service #$service->code to customer: " . $e->getMessage());
+            Log::error("Notification error $service->code: " . $e->getMessage());
         }
     }
 }

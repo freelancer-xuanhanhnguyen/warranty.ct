@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->unsignedTinyInteger('type')->default(Service::TYPE_WARRANTY);
             $table->text('content')->nullable();
             $table->decimal('fee_total', 20)->nullable();
-            $table->text('fee_detail')->nullable();
+            $table->text('note')->nullable();
             $table->date('reception_date')->nullable();
             $table->date('expected_completion_date')->nullable();
             $table->unsignedTinyInteger('evaluate')->nullable();

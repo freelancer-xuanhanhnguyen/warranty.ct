@@ -14,6 +14,10 @@
     <!-- Page JS Code -->
     <script type="module">
         One.helpersOnLoad(['jq-select2', 'jq-masked-inputs']);
+    </script>
+
+    <script>
+        const data = {!! json_encode($accessories->toArray(), JSON_UNESCAPED_UNICODE) !!};
 
         $(() => {
             $('#order_code').change(function () {
@@ -34,6 +38,124 @@
                     $("#order_id").prop("disabled", false);
                 })
             })
+
+            const body = $('body');
+            const $tbody = $('#accessory-tbody');
+            const $tfoot = $('#accessory-tfoot');
+            const $tbodyEmpty = $('#accessory-tbody-empty');
+
+            function renderMoney($price) {
+                return new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                }).format($price)
+            }
+
+            body.on('click', '#btn-add-accessory', function () {
+                $tbodyEmpty.hide();
+                const vals = [];
+                $('#accessory-tbody').find('tr').each((i, v) => {
+                    const value = $(v).data('value');
+                    if (value) vals.push(Number(value));
+                })
+
+                const options = data.map(v => `<option value="${v.id}" data-price="${v.unit_price}" data-quantity="${v.quantity}" ${vals?.includes(v.id) ? "disabled" : ""}>${v.name}</option>`);
+
+                $tbody.append(`<tr>
+                    <td class="accessory">
+                        <select class="item-select2 js-select2 form-select"
+                                name="accessories[id][]"
+                                data-placeholder="Chọn linh kiện" required>
+                            <option value=""></option>
+                            ${options}
+                        </select>
+                    </td>
+                    <td style="width: 120px">
+                        <input style="width: 100px;" data-price="0" class="item-quantity form-control" type="number" value="1" min="1" name="accessories[quantity][]" required/>
+                    </td>
+                    <td style="width: 150px"><input class="item-total" hidden name="accessories[total][]" value="" /><span class="item-total"></span></td>
+                    <td style="width: 120px" class="text-center">
+                        <button type="button" class="btn-remove-accessory btn btn-sm btn-alt-danger">
+                            <i class="fa fa-w fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>`);
+
+                $('.js-select2').select2();
+                $tfoot.show();
+            })
+
+            body.on('click', '.btn-remove-accessory', function () {
+                $(this).closest('tr').remove();
+
+                if ($('tr.accessory').length <= 0) {
+                    $('#accessory-tbody-empty').show();
+                    $tfoot.hide();
+                }
+
+                renderTotal();
+            })
+
+            body.on('change', '.item-select2', function () {
+                const value = $(this).val();
+                const option = $(this).find(`option[value=${value}]`);
+                const data = option.data();
+                const item = $(this).closest('tr');
+                const totalText = renderMoney(data.price);
+
+                item.find('.item-quantity')
+                    .data('price', data.price?.toString())
+                    .data('max', data.quantity)
+                    .attr('max', data.quantity).val(1);
+
+                item.find('span.item-total').data('total', data.price).text(totalText);
+                item.find('input.item-total').val(data.price);
+                renderTotal();
+                const preVal = item.data('value');
+
+                if (preVal) {
+                    $(`option[value=${preVal}]`)
+                        .attr('disabled', false);
+                }
+
+                item.data('value', value);
+                $('.item-select2')
+                    .not(this)
+                    .find(`option[value=${value}]`)
+                    .attr('disabled', true);
+            })
+
+            body.on('change', '.item-quantity', function () {
+                const data = $(this).data();
+                let value = $(this).val();
+
+                if (value < 1) {
+                    $(this).val(1);
+                    value = 1;
+                } else if (value > data.max) {
+                    $(this).val(data.max);
+                    value = data.max;
+                }
+
+                const total = data.price * value;
+                const totalText = renderMoney(data.price * value);
+
+                const item = $(this).closest('tr');
+                item.find('span.item-total').data('total', total).text(totalText);
+                item.find('input.item-total').val(total);
+                renderTotal();
+            })
+
+            function renderTotal() {
+                let total = 0;
+                $('.item-total').each((i, v) => {
+                    const value = Number($(v).data('total'));
+                    if (value) total += value;
+                })
+
+                $('input[name=fee_total]').val(total);
+                $('.total').text(renderMoney(total));
+            }
         })
     </script>
 @endsection
@@ -124,19 +246,6 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label" for="fee_total">Phụ phí (đ)</label>
-                                <input type="text" class="form-control" id="fee_total"
-                                       name="fee_total" value="">
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label" for="fee_detail">Chi tiết phụ
-                                    phí</label>
-                                <textarea class="form-control js-maxlength" maxlength="500" id="fee_detail"
-                                          name="fee_detal" rows="4"></textarea>
-                            </div>
-
-                            <div class="mb-4">
                                 <label class="form-label" for="repairman_id">Kỹ thuật viên</label>
                                 <select class="js-select2 form-select" id="repairman_id"
                                         name="repairman_id"
@@ -149,6 +258,45 @@
                                     @endforeach
                                 </select>
                             </div>
+
+                            <div class="table-responsive table-responsive-md">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Tên linh kiện</th>
+                                        <th style="width: 120px">Số lượng</th>
+                                        <th style="width: 150px">Tổng tiền</th>
+                                        <th style="width: 120px" class="text-center">
+                                            <button type="button" id="btn-add-accessory"
+                                                    class="btn btn-sm btn-alt-primary">Thêm
+                                            </button>
+                                        </th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody id="accessory-tbody">
+                                    <tr id="accessory-tbody-empty" class="text-center">
+                                        <td colspan="4">Không có linh kiện nào</td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot id="accessory-tfoot">
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td colspan="2">
+                                            <input hidden name="fee_total" value=""/>
+                                            <span class="total"></span>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label" for="note">Ghi chú</label>
+                                <textarea class="form-control js-maxlength" maxlength="500" id="note"
+                                          name="note" rows="4"></textarea>
+                            </div>
+
                             <div class="mb-4 text-center">
                                 <button type="submit" class="btn btn-alt-primary">Thêm mới</button>
                             </div>

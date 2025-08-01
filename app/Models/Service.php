@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\Contracts\LoggablePipe;
 use Spatie\Activitylog\EventLogBag;
 use Spatie\Activitylog\LogOptions;
@@ -12,9 +13,9 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Service extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, Notifiable;
 
-    protected $fillable = ['order_id', 'repairman_id', 'code', 'type', 'content', 'fee_total', 'fee_detail', 'reception_date', 'expected_completion_date', 'evaluate', 'evaluate_note'];
+    protected $fillable = ['order_id', 'repairman_id', 'code', 'type', 'content', 'fee_total', 'note', 'reception_date', 'expected_completion_date', 'evaluate', 'evaluate_note'];
 
     protected $casts = [
         'fee_total' => 'float',
@@ -51,6 +52,11 @@ class Service extends Model
                 return $next($event);
             }
         });
+    }
+
+    public function items()
+    {
+        return $this->hasMany(AccessoryService::class);
     }
 
     public function order()

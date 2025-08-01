@@ -173,7 +173,6 @@
                                     <th class="text-center">Bảo hành định kỳ</th>
                                     <th class="text-end">Ngày mua</th>
                                     <th class="text-center">Ngày bảo hành định kỳ</th>
-                                    <th>Kỹ thuật viên</th>
                                     <th class="text-center">Trạng thái</th>
                                 </tr>
                                 </thead>
@@ -213,12 +212,6 @@
 
                                         <td class="text-nowrap text-center fs-sm">
                                             {{$status['next_warranty_check_date']}}
-                                        </td>
-
-                                        <td class="text-nowrap fs-sm">
-                                            {{$item->product?->repairman?->name}}
-                                            <br>
-                                            <small class="text-muted">{{$item->product?->repairman?->email}}</small>
                                         </td>
 
                                         <td class="fs-sm">
@@ -270,6 +263,14 @@
                     </tr>
                     <tr>
                         <td class="fs-sm">
+                            Kỹ thuật viên
+                        </td>
+                        <td>
+                            <span class="fw-semibold">{{$data->repairman?->name}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="fs-sm">
                             Vấn đề sửa chữa
                         </td>
                         <td>
@@ -286,10 +287,10 @@
                     </tr>
                     <tr>
                         <td class="fs-sm">
-                            Chi tiết phụ phí
+                            Ghi chú
                         </td>
                         <td>
-                            <span class="fw-semibold">{{$data->fee_detail}}</span>
+                            <span class="fw-semibold">{{$data->note}}</span>
                         </td>
                     </tr>
                     <tr>

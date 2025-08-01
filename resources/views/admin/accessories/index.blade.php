@@ -2,14 +2,6 @@
 
 @section('css')
     <!-- Page JS Plugins CSS -->
-
-    <style>
-        .text-ellipsis {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    </style>
 @endsection
 
 @section('js')
@@ -31,11 +23,11 @@
             <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center py-2">
                 <div class="flex-grow-1">
                     <h1 class="h3 fw-bold mb-1">
-                        Danh sách sản phẩm
+                        Danh sách linh kiện
                     </h1>
                 </div>
 
-                {{-- <a class="btn btn-primary" href="{{route('admin.services.create')}}">Thêm mới</a> --}}
+                <a class="btn btn-primary" href="{{ route('admin.accessories.create') }}">Thêm mới</a>
             </div>
         </div>
     </div>
@@ -67,9 +59,13 @@
                 </form>
                 <!-- END Search Form -->
 
-                <!-- Table -->
-                <x-table.products :data="$data"/>
-                <!-- END Table -->
+                <!-- All Orders Table -->
+                <div class="table-responsive">
+                    @include('admin.exports.accessories')
+                </div>
+                <!-- END All Orders Table -->
+
+                {{ $data->links('layouts.inc.pagination') }}
             </div>
         </div>
         <!-- END Info -->

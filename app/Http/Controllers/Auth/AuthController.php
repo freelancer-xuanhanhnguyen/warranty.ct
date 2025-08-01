@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailVerify;
 use App\Models\User;
 use App\Notifications\NewServiceNotification;
 use Illuminate\Http\Request;
@@ -59,16 +60,13 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]));
 
-        $user->sendEmailVerificationNotification();
+        SendEmailVerify::dispatch($user);
 
-        $users = User::active()
-            ->whereIn('role', [User::ROLE_ADMIN])
-            ->get();
-
-        Notification::send($users, new NewServiceNotification([
-            'type' => 'user-register',
-            'user' => $user,
-            'message' => 'Phê duyệt tài khoản mới'
+        Notification::send($user, new NewServiceNotification([
+            'role' => [User::ROLE_ADMIN],
+            'redirect_to' => route('admin.users.show', $user->id),
+            'created_by' => null,
+            'message' => "Phê duyệt tài khoản mới <strong>$user->email</strong>"
         ]));
 
         return redirect('/login')->with('message', 'Đăng ký tài khoản thành công, vui lòng chờ Admin phê duyệt.');

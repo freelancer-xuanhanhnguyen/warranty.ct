@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AccessoryController;
 use App\Http\Controllers\Admin\ChangePasswordController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\NotificationController;
@@ -92,6 +93,7 @@ Route::middleware(['auth', 'verified', 'auth.user'])->prefix('admin')->group(fun
     Route::middleware('auth.role:' . User::ROLE_CSKH)->group(function () {
         Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)->only(['destroy'])->names('admin.services');
         Route::resource('products', ProductController::class)->names('admin.products');
+        Route::resource('accessories', AccessoryController::class)->names('admin.accessories');
         Route::get('products/{id}/history', [ProductController::class, 'history'])->name('admin.products.history');
         Route::resource('repairman', RepairmanController::class)->names('admin.repairman');
         Route::resource('customers', CustomerController::class)->names('admin.customers');

@@ -32,7 +32,7 @@
             <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center py-2">
                 <div class="flex-grow-1">
                     <h1 class="h3 fw-bold mb-1">
-                        Lịch sử bảo hành - sửa chữa của thiết bị {{$data->product?->code}}
+                        Lịch sử bảo hành - sửa chữa của sản phẩm {{$data->product?->code}}
                     </h1>
                     <h2 class="fs-base lh-base fw-medium text-muted mb-0">
                         {{$data->product?->name}}
@@ -254,8 +254,7 @@
                                          title="{{$item->content}}">{{$item->content}}</div>
                                 </td>
                                 <td class="fs-sm">
-                                    <strong data-bs-toggle="tooltip"
-                                            title="{{$item->fee_detail}}">{{format_money($item->fee_total)}}</strong>
+                                    <strong >{{format_money($item->fee_total)}}</strong>
                                 </td>
                                 <td class="text-nowrap fs-sm">
                                     {{$item?->repairman?->name}}
