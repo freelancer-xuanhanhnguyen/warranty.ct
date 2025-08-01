@@ -178,6 +178,7 @@ class ServiceController extends Controller
 
 
         $logs = Activity::inLog('services')
+            ->where('subject_id', $id)
             ->with(['causer:id,name', 'repairman:id,name'])
             ->latest()
             ->get();
