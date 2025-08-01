@@ -31,7 +31,9 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        View::composer('layouts.backend', function ($view) {
+        View::composer('layouts.backend', function ($view) use (&$notifications) {
+            global $notifications;
+
             $user = Auth::user();
             $unreadNotifications = $user->unreadNotifications()->exists();
             $notifications = $user

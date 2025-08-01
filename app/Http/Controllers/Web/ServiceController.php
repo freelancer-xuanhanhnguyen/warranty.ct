@@ -56,6 +56,7 @@ class ServiceController extends Controller
     public function detail($id)
     {
         $data = Service::with([
+            'items.accessory:id,name',
             'order.product',
             'order.customer',
             'repairman',

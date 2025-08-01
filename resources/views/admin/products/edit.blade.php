@@ -5,11 +5,7 @@
     <link rel="stylesheet" href="{{ asset('js/plugins/select2/css/select2.min.css') }}">
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f9f9f9;
-            padding: 20px;
-        }
+
 
         .order-timeline {
             list-style: none;

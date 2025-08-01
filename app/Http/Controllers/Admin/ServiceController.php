@@ -163,6 +163,7 @@ class ServiceController extends Controller
     public function show(string $id)
     {
         $query = Service::with([
+            'items.accessory:id,name',
             'order.product',
             'order.customer',
             'repairman:id,name',

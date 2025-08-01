@@ -6,11 +6,7 @@
     <link rel="stylesheet" href="{{ asset('js/plugins/datatables-buttons-bs5/css/buttons.bootstrap5.min.css') }}">
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f9f9f9;
-            padding: 20px;
-        }
+
 
         .order-timeline {
             list-style: none;
@@ -65,6 +61,7 @@
             font-size: 13px;
             color: #555;
         }
+
         .dataTables_info {
             display: none;
         }
@@ -95,7 +92,7 @@
                 lengthChange: false,
                 autoWidth: false,
                 order: [
-                    [ 0, 'desc' ]     // cột thứ 4 (index = 3) sẽ được sắp xếp giảm dần
+                    [0, 'desc']     // cột thứ 4 (index = 3) sẽ được sắp xếp giảm dần
                 ],
                 columnDefs: [
                     {
@@ -176,96 +173,142 @@
                 </div>
                 <!-- END Billing Address -->
             </div>
+        </div>
 
-            <div class="col">
-                <!-- Billing Address -->
-                <div class="block block-rounded">
-                    <div class="block-header block-header-default">
-                        <h3 class="block-title">Thông tin sản phẩm</h3>
-                    </div>
-                    <div class="block-content">
-                        <div class="table-responsive">
-                            <table class="table table-borderless table-striped table-vcenter">
-                                <thead>
-                                <tr>
-                                    <th style="width: 100px;">Mã sản phẩm</th>
-                                    <th class="text-center">Mã đơn hàng</th>
-                                    <th>Khách hàng</th>
-                                    <th>Tên sản phẩm</th>
-                                    <th class="text-center">Thời gian bảo hành</th>
-                                    <th class="text-center">Bảo hành định kỳ</th>
-                                    <th class="text-end">Ngày mua</th>
-                                    <th class="text-center">Ngày bảo hành định kỳ</th>
-                                    <th class="text-center">Trạng thái</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach([$data->order] as $item)
-                                    <tr>
-                                        <td class="fs-sm">
-                                            <a class="fw-semibold"
-                                               href="{{route('admin.products.history', $item->id)}}">
-                                                <strong>{{$item->product?->code}}</strong>
-                                            </a>
-                                            <br>
-                                            <small class="text-muted">{{$item->product?->serial}}</small>
-                                        </td>
-                                        <td class="text-center fs-sm">
-                                            <strong>{{$item->code}}</strong>
-                                        </td>
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Thông tin sản phẩm</h3>
+            </div>
+            <div class="block-content">
+                <div class="table-responsive">
+                    <table class="table table-borderless table-striped table-vcenter">
+                        <thead>
+                        <tr>
+                            <th style="width: 100px;">Mã sản phẩm</th>
+                            <th class="text-center">Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Tên sản phẩm</th>
+                            <th class="text-center">Thời gian bảo hành</th>
+                            <th class="text-center">Bảo hành định kỳ</th>
+                            <th class="text-end">Ngày mua</th>
+                            <th class="text-center">Ngày bảo hành định kỳ</th>
+                            <th class="text-center">Trạng thái</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach([$data->order] as $item)
+                            <tr>
+                                <td class="fs-sm">
+                                    <a class="fw-semibold"
+                                       href="{{route('admin.products.history', $item->id)}}">
+                                        <strong>{{$item->product?->code}}</strong>
+                                    </a>
+                                    <br>
+                                    <small class="text-muted">{{$item->product?->serial}}</small>
+                                </td>
+                                <td class="text-center fs-sm">
+                                    <strong>{{$item->code}}</strong>
+                                </td>
 
-                                        <td class="fs-sm">
-                                            @if($item->customer?->code)
-                                                <small class="text-muted">({{$item->customer?->code}})</small>
-                                                <br>
-                                            @endif
-                                            {{$item->customer?->name}}
-                                            <br>
-                                            <small class="text-muted">({{$item->customer?->email}})</small>
-                                        </td>
+                                <td class="fs-sm">
+                                    @if($item->customer?->code)
+                                        <small class="text-muted">({{$item->customer?->code}})</small>
+                                        <br>
+                                    @endif
+                                    {{$item->customer?->name}}
+                                    <br>
+                                    <small class="text-muted">({{$item->customer?->email}})</small>
+                                </td>
 
-                                        <td class="fs-sm" style="min-width: 200px">
-                                            <strong>{{$item->product?->name}}</strong>
-                                        </td>
+                                <td class="fs-sm" style="min-width: 200px">
+                                    <strong>{{$item->product?->name}}</strong>
+                                </td>
 
-                                        <td class="text-center fs-sm">
-                                            {{$item->product?->warranty_period}} {{\App\Models\Product::WARRANTY_UNIT[$item->product?->warranty_period_unit]}}
-                                        </td>
+                                <td class="text-center fs-sm">
+                                    {{$item->product?->warranty_period}} {{\App\Models\Product::WARRANTY_UNIT[$item->product?->warranty_period_unit]}}
+                                </td>
 
-                                        <td class="text-center fs-sm">
-                                            {{$item->product?->periodic_warranty}} {{\App\Models\Product::WARRANTY_UNIT[$item->product?->periodic_warranty_unit]}}
-                                        </td>
+                                <td class="text-center fs-sm">
+                                    {{$item->product?->periodic_warranty}} {{\App\Models\Product::WARRANTY_UNIT[$item->product?->periodic_warranty_unit]}}
+                                </td>
 
-                                        <td class="text-nowrap fs-sm">
-                                            {{$item->purchase_date}}
-                                        </td>
+                                <td class="text-nowrap fs-sm">
+                                    {{$item->purchase_date}}
+                                </td>
 
-                                        @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
-                                        @php($isWarrantyExpired = $status['expired'])
+                                @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
+                                @php($isWarrantyExpired = $status['expired'])
 
-                                        <td class="text-nowrap text-center fs-sm">
-                                            {{$status['next_warranty_check_date']}}
-                                        </td>
+                                <td class="text-nowrap text-center fs-sm">
+                                    {{$status['next_warranty_check_date']}}
+                                </td>
 
-                                        <td class="fs-sm">
-                                            @if($isWarrantyExpired)
-                                                <span
-                                                    class="badge bg-warning" data-bs-toggle="tooltip"
-                                                    title="Đã hết bảo hành vào ngày {{$status['warranty_end_date']}}">Hết bảo hành</span>
-                                            @else
-                                                <span
-                                                    class="badge bg-info" data-bs-toggle="tooltip"
-                                                    title="Ngày bảo hành tiếp theo là {{$status['next_warranty_check_date']}} (tính từ ngày {{$status['used_base_date']}})">Còn bảo hành</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                <td class="fs-sm">
+                                    @if($isWarrantyExpired)
+                                        <span
+                                            class="badge bg-warning" data-bs-toggle="tooltip"
+                                            title="Đã hết bảo hành vào ngày {{$status['warranty_end_date']}}">Hết bảo hành</span>
+                                    @else
+                                        <span
+                                            class="badge bg-info" data-bs-toggle="tooltip"
+                                            title="Ngày bảo hành tiếp theo là {{$status['next_warranty_check_date']}} (tính từ ngày {{$status['used_base_date']}})">Còn bảo hành</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
-                <!-- END Billing Address -->
+            </div>
+        </div>
+
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Danh sách linh kiện thay thế</h3>
+            </div>
+            <div class="block-content">
+                <div class="table-responsive">
+                    <table class="table table-borderless table-striped table-vcenter">
+                        <thead>
+                        <tr>
+                            <th class="sortable text-center" data-name="code" style="width: 100px;">Mã linh kiện
+                            </th>
+                            <th class="sortable" data-name="name">Tên linh kiện</th>
+                            <th class="sortable text-center" data-name="quantity">Số lượng</th>
+                            <th class="sortable text-center" data-name="unit_price">Giá tiền</th>
+                            <th class="sortable text-center" data-name="updated_at">Cập nhật gần nhất</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @php($items = $data->items ?? [])
+                        @foreach ($items as $item)
+                            <tr>
+                                <td class="text-center fs-sm">
+                                    <strong>{{ $item->accessory->code }}</strong>
+                                </td>
+                                <td class="fs-sm">
+                                    {{$item->accessory->name}}
+                                </td>
+                                <td class="fs-sm text-center">
+                                    {{ $item->quantity }}
+                                </td>
+
+                                <td class="text-center fs-sm">
+                                    {{ format_money($item->total) }}
+                                </td>
+
+                                <td class="text-center fs-sm">
+                                    {{ $item->updated_at->diffForHumans() }}
+                                </td>
+                            </tr>
+                        @endforeach
+
+                        <x-empty :data="$items"/>
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
