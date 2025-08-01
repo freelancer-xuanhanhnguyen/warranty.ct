@@ -6,7 +6,7 @@
         <th>Email</th>
         <th class="text-center">Ngày sinh</th>
         <th class="text-center">Giới tính</th>
-        <th class="text-center">Địa chỉ</th>
+        <th>Địa chỉ</th>
         <th class="sortable" data-name="created_at">Ngày tạo</th>
         <th class="sortable" data-name="updated_at">Cập nhật gần nhất</th>
         <th></th>
@@ -39,7 +39,7 @@
                 {{ \App\Models\Customer::GENDER[$item->gender] ?? null }}
             </td>
 
-            <td class="text-center fs-sm">
+            <td class="fs-sm">
                 {{ $item->address }}
             </td>
 
