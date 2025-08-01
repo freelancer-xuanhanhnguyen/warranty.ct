@@ -233,7 +233,7 @@
                                 </td>
 
                                 <td class="text-nowrap fs-sm">
-                                    {{$item->purchase_date}}
+                                    {{$item->purchase_date->format(FORMAT_DATE)}}
                                 </td>
 
                                 @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
