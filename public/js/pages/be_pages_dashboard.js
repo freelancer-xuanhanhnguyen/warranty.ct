@@ -24,34 +24,23 @@ class pageDashboard {
     Chart.defaults.plugins.legend.labels.boxWidth = 10;
 
     // Get Chart Containers
-    let chartEarningsCon = document.getElementById('js-chartjs-earnings');
+    let chartCreated = document.getElementById('js-chartjs-created');
+    let chartCompleted = document.getElementById('js-chartjs-completed');
     let chartTotalOrdersCon = document.getElementById('js-chartjs-total-orders');
     let chartTotalEarningsCon = document.getElementById('js-chartjs-total-earnings');
     let chartNewCustomersCon = document.getElementById('js-chartjs-new-customers');
 
     // Set Chart and Chart Data variables
     let chartEarnings, chartTotalOrders, chartTotalEarnings, chartNewCustomers;
-
     // Init Chart Earnings
-    if (chartEarningsCon !== null) {
-      chartEarnings = new Chart(chartEarningsCon, {
+    if (chartCreated !== null) {
+      new Chart(chartCreated, {
         type: 'bar',
         data: {
-          labels: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
+          labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
           datasets: [
             {
-              label: 'Phiếu mới',
-              fill: true,
-              backgroundColor: 'rgba(100, 116, 139, .7)',
-              borderColor: 'transparent',
-              pointBackgroundColor: 'rgba(100, 116, 139, 1)',
-              pointBorderColor: '#fff',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: 'rgba(100, 116, 139, 1)',
-              data: [716, 628, 1056, 560, 956, 890, 790]
-            },
-            {
-              label: 'Phiếu hoàn thành',
+              label: 'Tuần trước',
               fill: true,
               backgroundColor: 'rgba(100, 116, 139, .15)',
               borderColor: 'transparent',
@@ -59,8 +48,19 @@ class pageDashboard {
               pointBorderColor: '#fff',
               pointHoverBackgroundColor: '#fff',
               pointHoverBorderColor: 'rgba(100, 116, 139, 1)',
-              data: [1160, 923, 1052, 1300, 880, 926, 963]
-            }
+              data: stats?.created?.last ?? []
+            },
+            {
+              label: 'Tuần này',
+              fill: true,
+              backgroundColor: 'rgba(100, 116, 139, .7)',
+              borderColor: 'transparent',
+              pointBackgroundColor: 'rgba(100, 116, 139, 1)',
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: 'rgba(100, 116, 139, 1)',
+              data: stats?.created?.today ?? []
+            },
           ]
         },
         options: {
@@ -95,7 +95,78 @@ class pageDashboard {
             tooltip: {
               callbacks: {
                 label: function (context) {
-                  return context.dataset.label + ': $' + context.parsed.y;
+                  return ' ' + context.parsed.y + ' phiếu mới';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    if (chartCompleted !== null) {
+      new Chart(chartCompleted, {
+        type: 'bar',
+        data: {
+          labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
+          datasets: [
+            {
+              label: 'Tuần trước',
+              fill: true,
+              backgroundColor: 'rgba(100, 116, 139, .15)',
+              borderColor: 'transparent',
+              pointBackgroundColor: 'rgba(100, 116, 139, 1)',
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: 'rgba(100, 116, 139, 1)',
+              data: stats?.completed?.last ?? []
+            },
+            {
+              label: 'Tuần này',
+              fill: true,
+              backgroundColor: 'rgba(100, 116, 139, .7)',
+              borderColor: 'transparent',
+              pointBackgroundColor: 'rgba(100, 116, 139, 1)',
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: 'rgba(100, 116, 139, 1)',
+              data: stats?.completed?.today ?? []
+            },
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              display: false,
+              grid: {
+                drawBorder: false
+              }
+            },
+            y: {
+              display: false,
+              grid: {
+                drawBorder: false
+              }
+            }
+          },
+          interaction: {
+            intersect: false,
+          },
+          plugins: {
+            legend: {
+              labels: {
+                boxHeight: 10,
+                font: {
+                  size: 14
+                }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return ' ' + context.parsed.y + ' phiếu hoàn thành';
                 }
               }
             }
@@ -109,10 +180,10 @@ class pageDashboard {
       chartTotalOrders = new Chart(chartTotalOrdersCon, {
         type: 'line',
         data: {
-          labels: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
+          labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
           datasets: [
             {
-              label: 'Total Orders',
+              label: 'Nhân viên mới',
               fill: true,
               backgroundColor: 'rgba(220, 38, 38, .15)',
               borderColor: 'transparent',
@@ -120,7 +191,7 @@ class pageDashboard {
               pointBorderColor: '#fff',
               pointHoverBackgroundColor: '#fff',
               pointHoverBorderColor: 'rgba(220, 38, 38, 1)',
-              data: [33, 29, 32, 37, 38, 30, 34, 28, 43, 45, 26, 45, 49, 39],
+              data: stats?.users || [],
             }
           ]
         },
@@ -145,7 +216,7 @@ class pageDashboard {
             tooltip: {
               callbacks: {
                 label: function (context) {
-                  return ' ' + context.parsed.y + ' Orders';
+                  return ' ' + context.parsed.y + ' nhân viên';
                 }
               }
             }
@@ -159,10 +230,10 @@ class pageDashboard {
       chartTotalEarnings = new Chart(chartTotalEarningsCon, {
         type: 'line',
         data: {
-          labels: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
+          labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
           datasets: [
             {
-              label: 'Total Earnings',
+              label: 'Khách hàng mới',
               fill: true,
               backgroundColor: 'rgba(101, 163, 13, .15)',
               borderColor: 'transparent',
@@ -170,7 +241,7 @@ class pageDashboard {
               pointBorderColor: '#fff',
               pointHoverBackgroundColor: '#fff',
               pointHoverBorderColor: 'rgba(101, 163, 13, 1)',
-              data: [716, 1185, 750, 1365, 956, 890, 1200, 968, 1158, 1025, 920, 1190, 720, 1352],
+              data: stats?.customers || [],
             }
           ]
         },
@@ -195,7 +266,7 @@ class pageDashboard {
             tooltip: {
               callbacks: {
                 label: function (context) {
-                  return ' $' + context.parsed.y;
+                  return ' ' + context.parsed.y + ' khách hàng';
                 }
               }
             }
@@ -209,10 +280,10 @@ class pageDashboard {
       chartNewCustomers = new Chart(chartNewCustomersCon, {
         type: 'line',
         data: {
-          labels: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
+          labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
           datasets: [
             {
-              label: 'Total Orders',
+              label: 'Tổng phiếu bảo hành',
               fill: true,
               backgroundColor: 'rgba(101, 163, 13, .15)',
               borderColor: 'transparent',
@@ -220,7 +291,7 @@ class pageDashboard {
               pointBorderColor: '#fff',
               pointHoverBackgroundColor: '#fff',
               pointHoverBorderColor: 'rgba(101, 163, 13, 1)',
-              data: [25, 15, 36, 14, 29, 19, 36, 41, 28, 26, 29, 33, 23, 41],
+              data: stats?.services || [],
             }
           ]
         },
@@ -245,7 +316,7 @@ class pageDashboard {
             tooltip: {
               callbacks: {
                 label: function (context) {
-                  return ' ' + context.parsed.y + ' Customers';
+                  return ' ' + context.parsed.y + ' phiếu bảo hành';
                 }
               }
             }

@@ -4,102 +4,23 @@
     <!-- Page JS Plugins -->
     <script src="{{asset('js/plugins/chart.js/chart.umd.js')}}"></script>
     <!-- Page JS Code -->
-    {{--    <script src="{{asset('js/pages/be_pages_dashboard.js')}}"></script>--}}
-
     <script>
+        const stats = {!! json_encode($stats, JSON_UNESCAPED_UNICODE) !!};
+
         $(() => {
-            Chart.defaults.color = '#818d96';
-            Chart.defaults.scale.grid.lineWidth = 0;
-            Chart.defaults.scale.beginAtZero = true;
-            Chart.defaults.datasets.bar.maxBarThickness = 45;
-            Chart.defaults.elements.bar.borderRadius = 4;
-            Chart.defaults.elements.bar.borderSkipped = false;
-            Chart.defaults.elements.point.radius = 0;
-            Chart.defaults.elements.point.hoverRadius = 0;
-            Chart.defaults.plugins.tooltip.radius = 3;
-            Chart.defaults.plugins.legend.labels.boxWidth = 10;
+            $('.bar-tab').click(function () {
+                $(this).removeClass('bg-body-light');
+                $('.bar-tab').not(this).addClass('bg-body-light');
 
-            let chartEarningsCon = document.getElementById('js-chartjs-earnings');
-            let chartTotalOrdersCon = document.getElementById('js-chartjs-total-orders');
-            let chartTotalEarningsCon = document.getElementById('js-chartjs-total-earnings');
-            let chartNewCustomersCon = document.getElementById('js-chartjs-new-customers');
+                const type = $(this).data('type');
 
-            // Set Chart and Chart Data variables
-            let chartEarnings, chartTotalOrders, chartTotalEarnings, chartNewCustomers;
-
-            // Init Chart Earnings
-            if (chartEarningsCon !== null) {
-                new Chart(chartEarningsCon, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
-                        datasets: [
-                            {
-                                label: 'Phiếu mới',
-                                fill: true,
-                                backgroundColor: 'rgba(100, 116, 139, .15)',
-                                borderColor: 'transparent',
-                                pointBackgroundColor: 'rgba(100, 116, 139, 1)',
-                                pointBorderColor: '#fff',
-                                pointHoverBackgroundColor: '#fff',
-                                pointHoverBorderColor: 'rgba(100, 116, 139, 1)',
-                                data: {{json_encode($stats['created'], JSON_UNESCAPED_UNICODE)}}
-                            },
-                            {
-                                label: 'Phiếu hoàn thành',
-                                fill: true,
-                                backgroundColor: 'rgba(100, 116, 139, .7)',
-                                borderColor: 'transparent',
-                                pointBackgroundColor: 'rgba(100, 116, 139, 1)',
-                                pointBorderColor: '#fff',
-                                pointHoverBackgroundColor: '#fff',
-                                pointHoverBorderColor: 'rgba(100, 116, 139, 1)',
-                                data: {{json_encode($stats['completed'], JSON_UNESCAPED_UNICODE)}}
-                            },
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                display: false,
-                                grid: {
-                                    drawBorder: false
-                                }
-                            },
-                            y: {
-                                display: false,
-                                grid: {
-                                    drawBorder: false
-                                }
-                            }
-                        },
-                        interaction: {
-                            intersect: false,
-                        },
-                        plugins: {
-                            legend: {
-                                labels: {
-                                    boxHeight: 10,
-                                    font: {
-                                        size: 14
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        return context.parsed.y + ' ' + context.dataset.label.toLowerCase();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
+                const content = $('#' + type);
+                content.removeClass('d-none');
+                $('.bar-content').not(content).addClass('d-none');
+            })
         })
     </script>
+    <script src="{{asset('js/pages/be_pages_dashboard.js')}}"></script>
 @endsection
 
 @section('content')
@@ -204,47 +125,49 @@
 
         <!-- Statistics -->
         <div class="row">
-            <div class="col-xl-8 col-xxl-9 d-flex flex-column">
+            <div class="col-xl-4 col-xxl-9 d-flex flex-column">
                 <!-- Earnings Summary -->
                 <div class="block block-rounded flex-grow-1 d-flex flex-column">
                     <div class="block-header block-header-default">
-                        <h3 class="block-title">Thống kê trong tuần</h3>
+                        <h3 class="block-title">Thống kê trong 2 tuần gần đây</h3>
                     </div>
-                    <div class="block-content block-content-full flex-grow-1 d-flex align-items-center">
+                    <div id="created"
+                         class="bar-content block-content block-content-full flex-grow-1 d-flex align-items-center">
                         <!-- Earnings Chart Container -->
                         <!-- Chart.js Chart is initialized in js/pages/be_pages_dashboard.min.js which was auto compiled from _js/pages/be_pages_dashboard.js -->
                         <!-- For more info and examples you can check out http://www.chartjs.org/docs/ -->
-                        <canvas id="js-chartjs-earnings"></canvas>
+                        <canvas id="js-chartjs-created"></canvas>
                     </div>
-                    <div class="block-content bg-body-light">
-                        <div class="row items-push text-center w-100">
+
+                    <div id="completed"
+                         class="bar-content block-content block-content-full flex-grow-1 d-flex align-items-center d-none">
+                        <!-- Earnings Chart Container -->
+                        <!-- Chart.js Chart is initialized in js/pages/be_pages_dashboard.min.js which was auto compiled from _js/pages/be_pages_dashboard.js -->
+                        <!-- For more info and examples you can check out http://www.chartjs.org/docs/ -->
+                        <canvas id="js-chartjs-completed"></canvas>
+                    </div>
+
+                    <div class="block-content p-0">
+                        <div class="row text-center w-100">
                             <div class="col-sm-6">
-                                <dl class="mb-0">
+                                <dl data-type="created" class="p-3 m-0 bar-tab" style="cursor: pointer;">
                                     <dt class="fs-3 fw-bold d-inline-flex align-items-center space-x-2">
-                                        <i class="fa fa-caret-up fs-base text-success"></i>
-                                        <span>0%</span>
+                                        <i class="fa fs-base {{$growthService > 0 ? 'fa-caret-up text-success' : 'fa-caret-down text-danger'}}"></i>
+                                        <span>{{abs($growthService)}}%</span>
                                     </dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">Phiếu mới</dd>
                                 </dl>
                             </div>
                             <div class="col-sm-6">
-                                <dl class="mb-0">
+                                <dl data-type="completed" class="p-3 m-0 bar-tab bg-body-light"
+                                    style="cursor: pointer;">
                                     <dt class="fs-3 fw-bold d-inline-flex align-items-center space-x-2">
-                                        <i class="fa fa-caret-up fs-base text-success"></i>
-                                        <span>0%</span>
+                                        <i class="fa fs-base {{$growthCompletedService > 0 ? 'fa-caret-up text-success' : 'fa-caret-down text-danger'}}"></i>
+                                        <span>{{abs($growthCompletedService)}}%</span>
                                     </dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">Phiếu hoàn thành</dd>
                                 </dl>
                             </div>
-                            {{--                            <div class="col-sm-4">--}}
-                            {{--                                <dl class="mb-0">--}}
-                            {{--                                    <dt class="fs-3 fw-bold d-inline-flex align-items-center space-x-2">--}}
-                            {{--                                        <i class="fa fa-caret-down fs-base text-danger"></i>--}}
-                            {{--                                        <span>1.7%</span>--}}
-                            {{--                                    </dt>--}}
-                            {{--                                    <dd class="fs-sm fw-medium text-muted mb-0"></dd>--}}
-                            {{--                                </dl>--}}
-                            {{--                            </div>--}}
                         </div>
                     </div>
                 </div>
@@ -259,14 +182,14 @@
                         <div class="block block-rounded d-flex flex-column h-100 mb-0">
                             <div class="block-content flex-grow-1 d-flex justify-content-between">
                                 <dl class="mb-0">
-                                    <dt class="fs-3 fw-bold">0</dt>
+                                    <dt class="fs-3 fw-bold">{{$usersThisWeek}}</dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">Nhân viên mới</dd>
                                 </dl>
                                 <div>
                                     <div
-                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold text-danger bg-danger-light">
-                                        <i class="fa fa-caret-down me-1"></i>
-                                        0%
+                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold {{$growthUser > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}}">
+                                        <i class="fa fa-caret-{{$growthUser > 0 ? 'up' : 'down'}} me-1"></i>
+                                        {{abs($growthUser)}}%
                                     </div>
                                 </div>
                             </div>
@@ -280,14 +203,14 @@
                         <div class="block block-rounded d-flex flex-column h-100 mb-0">
                             <div class="block-content flex-grow-1 d-flex justify-content-between">
                                 <dl class="mb-0">
-                                    <dt class="fs-3 fw-bold">0</dt>
+                                    <dt class="fs-3 fw-bold">{{$customersThisWeek}}</dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">Khách hàng mới</dd>
                                 </dl>
                                 <div>
                                     <div
-                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold text-success bg-success-light">
-                                        <i class="fa fa-caret-up me-1"></i>
-                                        0%
+                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold {{$growthCustomer > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}}">
+                                        <i class="fa fa-caret-{{$growthCustomer > 0 ? 'up' : 'down'}} me-1"></i>
+                                        {{abs($growthCustomer)}}%
                                     </div>
                                 </div>
                             </div>
@@ -301,14 +224,14 @@
                         <div class="block block-rounded d-flex flex-column h-100 mb-0">
                             <div class="block-content flex-grow-1 d-flex justify-content-between">
                                 <dl class="mb-0">
-                                    <dt class="fs-3 fw-bold">0</dt>
+                                    <dt class="fs-3 fw-bold">{{$servicesThisWeek}}</dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">Phiếu bảo hành</dd>
                                 </dl>
                                 <div>
                                     <div
-                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold text-success bg-success-light">
-                                        <i class="fa fa-caret-up me-1"></i>
-                                        0%
+                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold {{$growthService > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}}">
+                                        <i class="fa fa-caret-{{$growthService > 0 ? 'up' : 'down'}} me-1"></i>
+                                        {{abs($growthService)}}%
                                     </div>
                                 </div>
                             </div>
