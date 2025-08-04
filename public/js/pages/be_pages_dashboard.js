@@ -40,7 +40,7 @@ class pageDashboard {
           labels: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
           datasets: [
             {
-              label: 'This Week',
+              label: 'Phiếu mới',
               fill: true,
               backgroundColor: 'rgba(100, 116, 139, .7)',
               borderColor: 'transparent',
@@ -51,7 +51,7 @@ class pageDashboard {
               data: [716, 628, 1056, 560, 956, 890, 790]
             },
             {
-              label: 'Last Week',
+              label: 'Phiếu hoàn thành',
               fill: true,
               backgroundColor: 'rgba(100, 116, 139, .15)',
               borderColor: 'transparent',
@@ -94,7 +94,7 @@ class pageDashboard {
             },
             tooltip: {
               callbacks: {
-                label: function(context) {
+                label: function (context) {
                   return context.dataset.label + ': $' + context.parsed.y;
                 }
               }
@@ -144,7 +144,7 @@ class pageDashboard {
             },
             tooltip: {
               callbacks: {
-                label: function(context) {
+                label: function (context) {
                   return ' ' + context.parsed.y + ' Orders';
                 }
               }
@@ -194,7 +194,7 @@ class pageDashboard {
             },
             tooltip: {
               callbacks: {
-                label: function(context) {
+                label: function (context) {
                   return ' $' + context.parsed.y;
                 }
               }
@@ -244,7 +244,7 @@ class pageDashboard {
             },
             tooltip: {
               callbacks: {
-                label: function(context) {
+                label: function (context) {
                   return ' ' + context.parsed.y + ' Customers';
                 }
               }
@@ -265,4 +265,6 @@ class pageDashboard {
 }
 
 // Initialize when page loads
-One.onLoad(() => pageDashboard.init());
+$(() => {
+  One.onLoad(() => pageDashboard.init());
+})

@@ -94,7 +94,7 @@ Route::middleware(['auth', 'verified', 'auth.user'])->prefix('admin')->group(fun
         Route::resource('customers', CustomerController::class)->names('admin.customers');
 
         Route::middleware('auth.role:' . User::ROLE_CSKH)->group(function () {
-            Route::resource('users', UserController::class)->names('admin.users');
+            Route::resource('users', UserController::class)->names('admin.users')->except(['show']);
         });
     });
 
