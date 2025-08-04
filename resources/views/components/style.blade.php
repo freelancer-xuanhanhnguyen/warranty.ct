@@ -47,8 +47,11 @@
         --bs-body-font-family: 'Gilroy', sans-serif;
     }
 
+    #page-container.sidebar-dark #sidebar .content-header {
+        background-color: #ffffff;
+    }
+
     #page-container.sidebar-dark #sidebar,
-    #page-container.sidebar-dark #sidebar .content-header,
     #page-container.page-header-dark #page-header {
         background-color: #123ac2;
     }
