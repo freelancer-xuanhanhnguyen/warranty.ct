@@ -208,7 +208,7 @@
                 <!-- Earnings Summary -->
                 <div class="block block-rounded flex-grow-1 d-flex flex-column">
                     <div class="block-header block-header-default">
-                        <h3 class="block-title">Earnings Summary</h3>
+                        <h3 class="block-title">Thống kê trong tuần</h3>
                         <div class="block-options">
                             <button type="button" class="btn-block-option" data-toggle="block-option"
                                     data-action="state_toggle" data-action-mode="demo">
@@ -231,7 +231,7 @@
                                 <dl class="mb-0">
                                     <dt class="fs-3 fw-bold d-inline-flex align-items-center space-x-2">
                                         <i class="fa fa-caret-up fs-base text-success"></i>
-                                        <span>2.5%</span>
+                                        <span>0%</span>
                                     </dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">Phiếu mới</dd>
                                 </dl>
@@ -240,7 +240,7 @@
                                 <dl class="mb-0">
                                     <dt class="fs-3 fw-bold d-inline-flex align-items-center space-x-2">
                                         <i class="fa fa-caret-up fs-base text-success"></i>
-                                        <span>3.8%</span>
+                                        <span>0%</span>
                                     </dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">Phiếu hoàn thành</dd>
                                 </dl>
@@ -268,14 +268,14 @@
                         <div class="block block-rounded d-flex flex-column h-100 mb-0">
                             <div class="block-content flex-grow-1 d-flex justify-content-between">
                                 <dl class="mb-0">
-                                    <dt class="fs-3 fw-bold">570</dt>
+                                    <dt class="fs-3 fw-bold">0</dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">Nhân viên mới</dd>
                                 </dl>
                                 <div>
                                     <div
                                         class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold text-danger bg-danger-light">
                                         <i class="fa fa-caret-down me-1"></i>
-                                        2.2%
+                                        0%
                                     </div>
                                 </div>
                             </div>
@@ -289,14 +289,14 @@
                         <div class="block block-rounded d-flex flex-column h-100 mb-0">
                             <div class="block-content flex-grow-1 d-flex justify-content-between">
                                 <dl class="mb-0">
-                                    <dt class="fs-3 fw-bold">$5,234.21</dt>
+                                    <dt class="fs-3 fw-bold">0</dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">Khách hàng mới</dd>
                                 </dl>
                                 <div>
                                     <div
                                         class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold text-success bg-success-light">
                                         <i class="fa fa-caret-up me-1"></i>
-                                        4.2%
+                                        0%
                                     </div>
                                 </div>
                             </div>
@@ -310,14 +310,14 @@
                         <div class="block block-rounded d-flex flex-column h-100 mb-0">
                             <div class="block-content flex-grow-1 d-flex justify-content-between">
                                 <dl class="mb-0">
-                                    <dt class="fs-3 fw-bold">264</dt>
+                                    <dt class="fs-3 fw-bold">0</dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">Phiếu bảo hành</dd>
                                 </dl>
                                 <div>
                                     <div
                                         class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold text-success bg-success-light">
                                         <i class="fa fa-caret-up me-1"></i>
-                                        9.3%
+                                        0%
                                     </div>
                                 </div>
                             </div>
