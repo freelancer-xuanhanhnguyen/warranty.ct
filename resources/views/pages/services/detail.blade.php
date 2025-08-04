@@ -283,13 +283,22 @@
             <div class="block-header block-header-default">
                 <h3 class="block-title">Thông tin chi tiết</h3>
 
-                @if($data->evaluate < 1 && $data?->status?->code === \App\Models\ServiceStatus::STATUS_COMPLETED)
-                    <div class="block-options">
-                        <button type="button" class="btn btn-alt-primary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#review-modal">
-                            <i class="fa fa-user-tag me-1"></i> Đánh giá
-                        </button>
-                    </div>
+                @if($data?->status?->code === \App\Models\ServiceStatus::STATUS_COMPLETED)
+                    @if($data->evaluate < 1)
+                        <div class="block-options">
+                            <button type="button" class="btn btn-alt-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#review-modal">
+                                <i class="fa fa-user-tag me-1"></i> Đánh giá
+                            </button>
+                        </div>
+                    @else
+                        <div class="block-options">
+                            <button type="button" class="btn btn-alt-warning btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#review-modal">
+                                <i class="fa fa-user-tag me-1"></i> Chỉnh sửa đánh giá
+                            </button>
+                        </div>
+                    @endif
                 @endif
             </div>
             <div class="block-content">
@@ -368,7 +377,7 @@
     </div>
     <!-- END Content -->
 
-    @if($data->evaluate < 1)
+    @if($data?->status?->code === \App\Models\ServiceStatus::STATUS_COMPLETED)
         <!-- Review Modal --->
         <div class="modal fade" id="review-modal" tabindex="-1" aria-labelledby="modal-block-popin"
              style="display: none;" aria-hidden="true">
@@ -392,18 +401,23 @@
                                 @csrf
                                 <div class="mb-4">
                                     <label class="form-label" for="status">Đánh giá</label>
-                                    <div class="js-rating" data-score="5"></div>
+                                    <div class="js-rating" data-score="{{$data->evaluate ?? 5}}"></div>
                                 </div>
 
                                 <div class="mb-4">
                                     <label class="form-label" for="evaluate_note">Đánh giá chi tiết</label>
-                                    <textarea id="evaluate_note" class="form-control js-maxlength" maxlength="500"
-                                              name="evaluate_note"
-                                              rows="4">Sản phẩm sau bảo hành:
+                                    @if(!$data->evaluate_note)
+                                        <textarea id="evaluate_note" class="form-control js-maxlength" maxlength="500"
+                                                  name="evaluate_note"
+                                                  rows="4">Sản phẩm sau bảo hành:
 Dịch vụ sửa chữa:
 Dịch vụ CSKH:
-Kỹ thuật viên:
-                            </textarea>
+Kỹ thuật viên:</textarea>
+                                    @else
+                                        <textarea id="evaluate_note" class="form-control js-maxlength" maxlength="500"
+                                                  name="evaluate_note"
+                                                  rows="4">{!! $data->evaluate_note !!}</textarea>
+                                    @endif
                                 </div>
 
                                 <div class="mb-4">

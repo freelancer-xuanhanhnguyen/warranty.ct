@@ -30,6 +30,62 @@
 
     <!-- Page Content -->
     <div class="content">
+        <div class="row items-push">
+            <div class="col-md-12">
+                <a class="block block-rounded block-link-shadow" href="javascript:void(0)">
+                    <div class="block-content block-content-full">
+                        <div class="row text-center">
+                            <div class="col-4 border-end">
+                                <div class="py-3">
+                                    <div class="item item-circle bg-body-light mx-auto">
+                                        <i class="fa-solid fa-screwdriver-wrench text-primary"></i>
+                                    </div>
+                                    <dl class="mb-0">
+                                        <dt class="h3 fw-extrabold mt-3 mb-0">
+                                            {{$reportServices?->total_under_warranty}}
+                                        </dt>
+                                        <dd class="fs-sm fw-medium text-muted mb-0">
+                                            Thiết bị đang bảo hành
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="col-4 border-end">
+                                <div class="py-3">
+                                    <div class="item item-circle bg-body-light mx-auto">
+                                        <i class="fa-solid fa-gears text-primary"></i>
+                                    </div>
+                                    <dl class="mb-0">
+                                        <dt class="h3 fw-extrabold mt-3 mb-0">
+                                            {{$reportServices?->total_under_repair}}
+                                        </dt>
+                                        <dd class="fs-sm fw-medium text-muted mb-0">
+                                            Thiết bị đang sửa
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="py-3">
+                                    <div class="item item-circle bg-body-light mx-auto">
+                                        <i class="fa-solid fa-list-check text-primary"></i>
+                                    </div>
+                                    <dl class="mb-0">
+                                        <dt class="h3 fw-extrabold mt-3 mb-0">
+                                            {{$reportServices?->total_services}}
+                                        </dt>
+                                        <dd class="fs-sm fw-medium text-muted mb-0">
+                                            Tổng thiết bị đang sửa
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
         <!-- Overview -->
         <div class="row items-push">
             <div class="col-sm-6 col-xxl-3">
@@ -126,6 +182,67 @@
             </div>
         </div>
         <!-- END Overview -->
+
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">{{count($reportRepairman) ?: ""}} kỹ thuật viên đang sửa nhiều thiết bị
+                    nhất</h3>
+            </div>
+            <div class="block-content">
+                <!-- All Orders Table -->
+                <div class="table-responsive">
+                    <table class="table table-borderless table-striped table-vcenter">
+                        <thead>
+                        <tr>
+                            <th class="text-center " data-name="services__repairman_id" style="width: 100px;">
+                                ID
+                            </th>
+                            <th class="" data-name="users__name">Tên nhân viên</th>
+                            <th class="" data-name="users__email">Email</th>
+                            <th class=" text-center" data-name="total_under_warranty">Thiết bị đang bảo hành
+                            </th>
+                            <th class=" text-center" data-name="total_under_repair">Thiết bị đang sửa</th>
+                            <th class=" text-center" data-name="total_services">Tổng thiết bị đang sửa</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($reportRepairman as $item)
+                            <tr>
+                                <td class="text-center fs-sm">
+                                    <strong>{{$item->repairman_id}}</strong>
+                                </td>
+                                <td class="fs-sm">
+                                    <a class="fw-semibold"
+                                       href="{{route('admin.repairman.show', $item->repairman_id)}}">
+                                        <strong>{{$item->name}}</strong>
+                                    </a>
+                                </td>
+                                <td class="d-none d-sm-table-cell fs-sm">
+                                    {{$item->email}}
+                                </td>
+
+                                <td class="text-center fs-sm">
+                                    {{$item->total_under_warranty}}
+                                </td>
+
+                                <td class="text-center fs-sm">
+                                    {{$item->total_under_repair}}
+                                </td>
+
+                                <td class="text-center fs-sm">
+                                    {{$item->total_services}}
+                                </td>
+                            </tr>
+                        @endforeach
+
+                        <x-empty :data="$reportRepairman"/>
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- END All Orders Table -->
+            </div>
+        </div>
     </div>
     <!-- END Page Content -->
 @endsection

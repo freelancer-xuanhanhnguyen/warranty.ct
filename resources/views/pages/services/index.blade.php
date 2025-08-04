@@ -18,7 +18,7 @@
 
         <div class="block block-rounded">
             <div class="block-header block-header-default">
-                <h3 class="block-title">Danh sách yêu cầu bảo hành - sửa chữa</h3>
+                <h3 class="block-title">Lịch sử yêu cầu bảo hành - sửa chữa</h3>
             </div>
             <div class="block-content">
                 <!-- Search Form -->

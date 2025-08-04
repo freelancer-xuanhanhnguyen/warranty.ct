@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AccessoryController;
 use App\Http\Controllers\Admin\ChangePasswordController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -69,13 +70,7 @@ Route::middleware(['auth', 'verified', 'auth.user'])->prefix('admin')->group(fun
         return redirect(\route('dashboard'));
     });
 
-    Route::match(['get', 'post'], '/dashboard', function () {
-        $cskh = User::where('role', User::ROLE_CSKH)->count();
-        $repairman = User::where('role', User::ROLE_REPAIRMAN)->count();
-        $customer = Customer::count();
-        $service = Service::count();
-        return view('dashboard', compact('cskh', 'repairman', 'customer', 'service'));
-    })->name('dashboard');
+    Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)
         ->only(['index', 'show', 'update', 'store', 'edit', 'create'])

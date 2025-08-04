@@ -12,7 +12,6 @@
             <th class="text-center">Ngày bảo hành định kỳ</th>
             <th>Kỹ thuật viên</th>
             <th class="text-center">Trạng thái</th>
-            <th class="sortable text-center" data-name="products__updated_at">Cập nhật gần nhất</th>
             <th class="text-center"></th>
         </tr>
         </thead>
@@ -79,11 +78,6 @@
                               title="Ngày bảo hành tiếp theo là {{ $status['next_warranty_check_date'] }} (tính từ ngày {{ $status['used_base_date'] }})">Còn
                             bảo hành</span>
                     @endif
-                </td>
-
-                <td class="text-center fs-sm" style="min-width: 140px" data-bs-toggle="tooltip"
-                    title="{{$item->product?->updated_at->format(FORMAT_DATETIME)}}">
-                    {{ $item->product?->updated_at->diffForHumans() }}
                 </td>
 
                 <td class="text-center text-nowrap">
