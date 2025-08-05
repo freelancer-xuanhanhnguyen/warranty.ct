@@ -6,6 +6,7 @@
     <!-- Page JS Code -->
     <script>
         const stats = {!! json_encode($stats, JSON_UNESCAPED_UNICODE) !!};
+        const growth = {user: {{$growthUser}}, customer: {{$growthCustomer}}, total: {{$growthTotalService}}};
 
         $(() => {
             $('.bar-tab').click(function () {

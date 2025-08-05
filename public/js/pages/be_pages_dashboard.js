@@ -175,6 +175,27 @@ class pageDashboard {
       });
     }
 
+    function colors(growth) {
+      if (growth > 0) {
+        return {
+          backgroundColor: 'rgba(101, 163, 13, .15)',
+          borderColor: 'transparent',
+          pointBackgroundColor: 'rgba(101, 163, 13, 1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(101, 163, 13, 1)',
+        }
+      }
+      return {
+        backgroundColor: 'rgba(220, 38, 38, .15)',
+        borderColor: 'transparent',
+        pointBackgroundColor: 'rgba(220, 38, 38, 1)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(220, 38, 38, 1)',
+      }
+    }
+
     // Init Chart Total Orders
     if (chartTotalOrdersCon !== null) {
       chartTotalOrders = new Chart(chartTotalOrdersCon, {
@@ -185,12 +206,7 @@ class pageDashboard {
             {
               label: 'Nhân viên mới',
               fill: true,
-              backgroundColor: 'rgba(220, 38, 38, .15)',
-              borderColor: 'transparent',
-              pointBackgroundColor: 'rgba(220, 38, 38, 1)',
-              pointBorderColor: '#fff',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: 'rgba(220, 38, 38, 1)',
+              ...colors(growth?.user),
               data: stats?.users || [],
             }
           ]
@@ -235,12 +251,7 @@ class pageDashboard {
             {
               label: 'Khách hàng mới',
               fill: true,
-              backgroundColor: 'rgba(101, 163, 13, .15)',
-              borderColor: 'transparent',
-              pointBackgroundColor: 'rgba(101, 163, 13, 1)',
-              pointBorderColor: '#fff',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: 'rgba(101, 163, 13, 1)',
+              ...colors(growth?.customer),
               data: stats?.customers || [],
             }
           ]
@@ -285,12 +296,7 @@ class pageDashboard {
             {
               label: 'Tổng chi phí',
               fill: true,
-              backgroundColor: 'rgba(101, 163, 13, .15)',
-              borderColor: 'transparent',
-              pointBackgroundColor: 'rgba(101, 163, 13, 1)',
-              pointBorderColor: '#fff',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: 'rgba(101, 163, 13, 1)',
+              ...colors(growth?.total),
               data: stats?.total || [],
             }
           ]
