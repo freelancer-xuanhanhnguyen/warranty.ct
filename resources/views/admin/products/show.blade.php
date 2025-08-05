@@ -14,7 +14,6 @@
 
 @section('js')
 
-
     <!-- Page JS Plugins -->
     <script src="{{ asset('js/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
@@ -53,13 +52,11 @@
             <div class="block-header block-header-default">
                 <h3 class="block-title">Thông tin sản phẩm</h3>
 
-                @php($isWarrantyExpired = isWarrantyExpired($data->purchase_date, $data->product?->warranty_period, $data->product?->warranty_period_unit))
-
                 <div>
                     <div class="btn-group btn-group-sm" role="group" aria-label="Small Horizontal Primary">
-                        <a class="btn btn-sm btn-alt-{{ $isWarrantyExpired ? 'danger' : 'info' }}"
-                           href="{{ route('admin.services.create') }}?order_code={{ $data->code }}&type={{ $isWarrantyExpired ? \App\Models\Service::TYPE_REPAIR : \App\Models\Service::TYPE_WARRANTY }}"
-                           data-bs-toggle="tooltip" title="{{ $isWarrantyExpired ? 'Sửa chữa' : 'Bảo hành' }}">
+                        <a class="btn btn-sm btn-alt-{{ $data->expired ? 'danger' : 'info' }}"
+                           href="{{ route('admin.services.create') }}?order_code={{ $data->code }}&type={{ $data->expired ? \App\Models\Service::TYPE_REPAIR : \App\Models\Service::TYPE_WARRANTY }}"
+                           data-bs-toggle="tooltip" title="{{ $data->expired ? 'Sửa chữa' : 'Bảo hành' }}">
                             <i class="fa fa-fw fa-screwdriver-wrench"></i>
                         </a>
 
@@ -126,11 +123,8 @@
                                     {{$item->purchase_date}}
                                 </td>
 
-                                @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
-                                @php($isWarrantyExpired = $status['expired'])
-
                                 <td class="text-nowrap text-center fs-sm">
-                                    {{$status['next_warranty_check_date']}}
+                                    {{ $item?->next_date?->format(FORMAT_DATE) }}
                                 </td>
 
                                 <td class="text-nowrap fs-sm">
@@ -140,15 +134,7 @@
                                 </td>
 
                                 <td class="fs-sm">
-                                    @if($isWarrantyExpired)
-                                        <span
-                                            class="badge bg-warning" data-bs-toggle="tooltip"
-                                            title="Đã hết bảo hành vào ngày {{$status['warranty_end_date']}}">Hết bảo hành</span>
-                                    @else
-                                        <span
-                                            class="badge bg-info" data-bs-toggle="tooltip"
-                                            title="Ngày bảo hành tiếp theo là {{$status['next_warranty_check_date']}} (tính từ ngày {{$status['used_base_date']}})">Còn bảo hành</span>
-                                    @endif
+                                    <x-warranty-status :order="$item"/>
                                 </td>
                             </tr>
                         @endforeach
@@ -254,7 +240,7 @@
                                          title="{{$item->content}}">{{$item->content}}</div>
                                 </td>
                                 <td class="fs-sm">
-                                    <strong >{{format_money($item->fee_total)}}</strong>
+                                    <strong>{{format_money($item->fee_total)}}</strong>
                                 </td>
                                 <td class="text-nowrap fs-sm">
                                     {{$item?->repairman?->name}}

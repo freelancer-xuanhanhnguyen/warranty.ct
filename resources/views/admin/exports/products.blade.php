@@ -14,7 +14,6 @@
         <th>Mã kỹ thuật viên</th>
         <th>Tên kỹ thuật viên</th>
         <th class="text-center">Trạng thái</th>
-        <th class="text-center">Ngày cập nhật</th>
         <th class="text-center"></th>
     </tr>
     </thead>
@@ -56,11 +55,8 @@
                 {{ $item->purchase_date->format(FORMAT_DATE) }}
             </td>
 
-            @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
-            @php($isWarrantyExpired = $status['expired'])
-
             <td class="text-nowrap text-center fs-sm">
-                {{ $status['next_warranty_check_date'] }}
+                {{ $item?->next_date?->format(FORMAT_DATE) }}
             </td>
 
             <td class="text-nowrap fs-sm">
@@ -72,26 +68,15 @@
             </td>
 
             <td class="fs-sm">
-                @if ($isWarrantyExpired)
-                    <span class="badge bg-warning" data-bs-toggle="tooltip"
-                          title="Đã hết bảo hành vào ngày {{ $status['warranty_end_date'] }}">Hết bảo hành</span>
-                @else
-                    <span class="badge bg-info" data-bs-toggle="tooltip"
-                          title="Ngày bảo hành tiếp theo là {{ $status['next_warranty_check_date'] }} (tính từ ngày {{ $status['used_base_date'] }})">Còn
-                            bảo hành</span>
-                @endif
-            </td>
-
-            <td class="text-center fs-sm">
-                {{$item->updated_at->format(FORMAT_DATETIME)}}
+                <x-warranty-status :order="$item"/>
             </td>
 
             <td class="text-center text-nowrap">
                 @if (!request()->has('export'))
                     <div class="btn-group btn-group-sm" role="group" aria-label="Small Horizontal Primary">
-                        <a class="btn btn-sm btn-alt-{{ $isWarrantyExpired ? 'danger' : 'info' }}"
-                           href="{{ route('admin.services.create') }}?order_code={{ $item->code }}&type={{ $isWarrantyExpired ? \App\Models\Service::TYPE_REPAIR : \App\Models\Service::TYPE_WARRANTY }}"
-                           data-bs-toggle="tooltip" title="{{ $isWarrantyExpired ? 'Sửa chữa' : 'Bảo hành' }}">
+                        <a class="btn btn-sm btn-alt-{{ $item->expired ? 'danger' : 'info' }}"
+                           href="{{ route('admin.services.create') }}?order_code={{ $item->code }}&type={{ $item->expired ? \App\Models\Service::TYPE_REPAIR : \App\Models\Service::TYPE_WARRANTY }}"
+                           data-bs-toggle="tooltip" title="{{ $item->expired ? 'Sửa chữa' : 'Bảo hành' }}">
                             <i class="fa fa-fw fa-screwdriver-wrench"></i>
                         </a>
 

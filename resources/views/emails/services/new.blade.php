@@ -8,7 +8,7 @@
 <p style="color: #718096;margin-bottom: 0">Ghi chú: {{ $service->note }}</p>
 <p style="color: #718096;margin-bottom: 0">Trạng thái: {{ \App\Models\ServiceStatus::STATUS[$status?->code ?? 0] }}</p>
 
-<x-mail::button :url="route('services.detail', [$service?->order?->customer?->email, $service->id])">
+<x-mail::button :url="route('services.detail', [$service->id])">
     Xem chi tiết tại đây
 </x-mail::button>
 

@@ -74,11 +74,8 @@
                                     {{$item->purchase_date}}
                                 </td>
 
-                                @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
-                                @php($isWarrantyExpired = $status['expired'])
-
                                 <td class="text-nowrap text-center fs-sm">
-                                    {{$status['next_warranty_check_date']}}
+                                    {{ $item?->next_date?->format(FORMAT_DATE) }}
                                 </td>
 
                                 <td class="text-nowrap fs-sm">
@@ -88,15 +85,7 @@
                                 </td>
 
                                 <td class="fs-sm">
-                                    @if($isWarrantyExpired)
-                                        <span
-                                            class="badge bg-warning" data-bs-toggle="tooltip"
-                                            title="Đã hết bảo hành vào ngày {{$status['warranty_end_date']}}">Hết bảo hành</span>
-                                    @else
-                                        <span
-                                            class="badge bg-info" data-bs-toggle="tooltip"
-                                            title="Ngày bảo hành tiếp theo là {{$status['next_warranty_check_date']}} (tính từ ngày {{$status['used_base_date']}})">Còn bảo hành</span>
-                                    @endif
+                                    <x-warranty-status :order="$item"/>
                                 </td>
                             </tr>
                         @endforeach

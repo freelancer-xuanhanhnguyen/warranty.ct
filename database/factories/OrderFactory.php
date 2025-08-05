@@ -19,7 +19,6 @@ class OrderFactory extends Factory
             'customer_id' => Customer::inRandomOrder()->value('id'),
             'code' => strtoupper($this->faker->bothify('#####??')),
             'purchase_date' => $purchaseDate,
-            'warranty_expired' => date('Y-m-d', strtotime("+1 year", strtotime($purchaseDate))),
         ];
     }
 }

@@ -236,23 +236,12 @@
                                     {{$item->purchase_date->format(FORMAT_DATE)}}
                                 </td>
 
-                                @php($status = checkWarrantyStatus($item->purchase_date, $item->product?->warranty_period, $item->product?->warranty_period_unit))
-                                @php($isWarrantyExpired = $status['expired'])
-
                                 <td class="text-nowrap text-center fs-sm">
-                                    {{$status['next_warranty_check_date']}}
+                                    {{ $item?->next_date?->format(FORMAT_DATE) }}
                                 </td>
 
                                 <td class="fs-sm">
-                                    @if($isWarrantyExpired)
-                                        <span
-                                            class="badge bg-warning" data-bs-toggle="tooltip"
-                                            title="Đã hết bảo hành vào ngày {{$status['warranty_end_date']}}">Hết bảo hành</span>
-                                    @else
-                                        <span
-                                            class="badge bg-info" data-bs-toggle="tooltip"
-                                            title="Ngày bảo hành tiếp theo là {{$status['next_warranty_check_date']}} (tính từ ngày {{$status['used_base_date']}})">Còn bảo hành</span>
-                                    @endif
+                                    <x-warranty-status :order="$item"/>
                                 </td>
                             </tr>
                         @endforeach
@@ -271,13 +260,11 @@
                     <table class="table table-borderless table-striped table-vcenter">
                         <thead>
                         <tr>
-                            <th class="sortable text-center" data-name="code" style="width: 100px;">Mã linh kiện
+                            <th class=" text-center" data-name="code" style="width: 100px;">Mã linh kiện
                             </th>
-                            <th class="sortable" data-name="name">Tên linh kiện</th>
-                            <th class="sortable text-center" data-name="quantity">Số lượng</th>
-                            <th class="sortable text-center" data-name="unit_price">Giá tiền</th>
-                            <th class="sortable text-center" data-name="updated_at">Cập nhật gần nhất</th>
-                            <th></th>
+                            <th class="" data-name="name">Tên linh kiện</th>
+                            <th class=" text-center" data-name="quantity">Số lượng</th>
+                            <th class=" text-end" data-name="unit_price">Giá tiền</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -294,12 +281,8 @@
                                     {{ $item->quantity }}
                                 </td>
 
-                                <td class="text-center fs-sm">
+                                <td class="text-end fs-sm">
                                     {{ format_money($item->total) }}
-                                </td>
-
-                                <td class="text-center fs-sm">
-                                    {{ $item->updated_at->diffForHumans() }}
                                 </td>
                             </tr>
                         @endforeach

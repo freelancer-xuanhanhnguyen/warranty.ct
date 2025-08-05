@@ -126,12 +126,9 @@ class ProductController extends Controller
     public function update(Request $request, string $id)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'nullable|string|max:255',
-            'serial' => 'nullable|string|max:255',
             'warranty_period_unit' => 'nullable|in:' . implode(',', array_keys(Product::WARRANTY_UNIT)),
             'warranty_period' => 'nullable|numeric|max:99999',
-            'periodic_warranty_unit' => 'nullable|in' . implode(',', array_keys(Product::WARRANTY_UNIT)),
+            'periodic_warranty_unit' => 'nullable|in:' . implode(',', array_keys(Product::WARRANTY_UNIT)),
             'periodic_warranty' => 'nullable|numeric|max:99999',
             'repairman_id' => 'nullable|exists:users,id',
         ]);

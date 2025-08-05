@@ -4,7 +4,7 @@
         <th class="sortable text-center" data-name="code" style="width: 100px;">Mã linh kiện</th>
         <th class="sortable" data-name="name">Tên linh kiện</th>
         <th class="sortable text-center" data-name="quantity">Số lượng</th>
-        <th class="sortable text-center" data-name="unit_price">Giá tiền</th>
+        <th class="sortable text-end" data-name="unit_price">Giá tiền</th>
         <th class="sortable text-center" data-name="created_at">Ngày tạo</th>
         <th class="sortable text-center" data-name="updated_at">Cập nhật gần nhất</th>
         <th></th>
@@ -19,11 +19,11 @@
             <td class="fs-sm">
                 {{$item->name}}
             </td>
-            <td class="fs-sm">
+            <td class="fs-sm text-center">
                 {{ $item->quantity }}
             </td>
 
-            <td class="text-center fs-sm">
+            <td class="text-end fs-sm">
                 {{ format_money($item->unit_price) }}
             </td>
 

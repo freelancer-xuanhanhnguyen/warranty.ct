@@ -24,32 +24,67 @@ function isWarrantyExpired($purchaseDate, $warrantyValue, $warrantyUnit): bool
     return now()->greaterThan($warrantyEndDate);
 }
 
-function checkWarrantyStatus(
-    $purchaseDate,
-    $warrantyValue,
-    $warrantyUnit,
-    $lastWarrantyDate = null
-): array
+function checkWarrantyStatus($order, $product = null): array
 {
-    $baseDate = $lastWarrantyDate ?: $purchaseDate;
+    $lastWarrantyDate = $order->purchase_date;
+    $lastWarrantyDate = $lastWarrantyDate instanceof Carbon ? $lastWarrantyDate : Carbon::parse($lastWarrantyDate);
 
-    $baseDate = $baseDate instanceof Carbon ? $baseDate : Carbon::parse($baseDate);
+    $product = $product ?? $order->product;
 
-    $warrantyEndDate = match ((int)$warrantyUnit) {
-        Product::WARRANTY_UNIT_DAY => $baseDate->copy()->addDays($warrantyValue),
-        Product::WARRANTY_UNIT_MONTH => $baseDate->copy()->addMonths($warrantyValue),
-        Product::WARRANTY_UNIT_YEAR => $baseDate->copy()->addYears($warrantyValue),
-        default => throw new InvalidArgumentException("Invalid warranty unit: $warrantyUnit"),
-    };
+    $warranty_period_unit = $product->warranty_period_unit;
+    $warranty_period = $product->warranty_period;
 
-    $expired = now()->greaterThan($warrantyEndDate);
+
+    $warrantyEndDate = $warranty_period ? match ((int)$warranty_period_unit) {
+        Product::WARRANTY_UNIT_DAY => $lastWarrantyDate->copy()->addDays($warranty_period),
+        Product::WARRANTY_UNIT_MONTH => $lastWarrantyDate->copy()->addMonths($warranty_period),
+        Product::WARRANTY_UNIT_YEAR => $lastWarrantyDate->copy()->addYears($warranty_period),
+        default => null,
+    } : null;
+
+    $expired = $warrantyEndDate ? now()->greaterThan($warrantyEndDate) : null;
+
+    $warrantyNextDate = null;
+    if (!$expired) {
+        if ($order->old_date) {
+            if (now()->toDateString() < $order->old_date->toDateString()) {
+                $lastWarrantyDate = $order->old_date;
+            }
+        }
+
+        $periodic_warranty_unit = $product->periodic_warranty_unit;
+        $periodic_warranty = $product->periodic_warranty;
+
+        [$warrantyNextDate, $lastWarrantyDate] = $periodic_warranty ? getNexDate($lastWarrantyDate, $periodic_warranty_unit, $periodic_warranty) : null;
+    }
 
     return [
         'expired' => $expired,
-        'warranty_end_date' => $warrantyEndDate->format(FORMAT_DATE),
-        'next_warranty_check_date' => $expired ? null : $warrantyEndDate->format(FORMAT_DATE),
-        'used_base_date' => $baseDate->format(FORMAT_DATE), // để biết đang dùng ngày nào tính bảo hành
+        'end_date' => $warrantyEndDate,
+        'next_date' => $warrantyNextDate,
+        'old_date' => $lastWarrantyDate,
     ];
+}
+
+function getNexDate($lastWarrantyDate, $periodic_warranty_unit, $periodic_warranty)
+{
+    $warrantyNextDate = match ((int)$periodic_warranty_unit) {
+        Product::WARRANTY_UNIT_DAY => $lastWarrantyDate->copy()->addDays($periodic_warranty),
+        Product::WARRANTY_UNIT_MONTH => $lastWarrantyDate->copy()->addMonths($periodic_warranty),
+        Product::WARRANTY_UNIT_YEAR => $lastWarrantyDate->copy()->addYears($periodic_warranty),
+        default => null,
+    };
+
+    if ($warrantyNextDate) {
+        if (now()->greaterThan($warrantyNextDate)) {
+            $lastWarrantyDate = $warrantyNextDate;
+            return getNexDate($lastWarrantyDate, $periodic_warranty_unit, $periodic_warranty);
+        }
+
+        return [$warrantyNextDate, $lastWarrantyDate];
+    }
+
+    return null;
 }
 
 function hasRole($role = array(), $only = false)

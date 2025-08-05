@@ -9,10 +9,17 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_id', 'customer_id', 'code', 'purchase_date', 'warranty_expired'];
+    protected $fillable = ['product_id', 'customer_id', 'code', 'purchase_date', 'end_date', 'next_date', 'old_date'];
+
+    protected $appends = [
+        'expired'
+    ];
 
     protected $casts = [
-        'purchase_date' => 'date'
+        'purchase_date' => 'date',
+        'end_date' => 'date',
+        'next_date' => 'date',
+        'old_date' => 'date',
     ];
 
     public function product()
@@ -33,5 +40,10 @@ class Order extends Model
     public function services()
     {
         return $this->hasMany(Service::class);
+    }
+
+    function getExpiredAttribute()
+    {
+        return is_null($this->end_date) ? null : now()->toDateString() > $this->end_date->toDateString();
     }
 }

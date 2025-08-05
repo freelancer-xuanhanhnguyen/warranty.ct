@@ -86,8 +86,7 @@ class ServiceController extends Controller
     {
         $order = Order::with('product:id,warranty_period,warranty_period_unit')
             ->findOrFail($orderId, ['id', 'product_id', 'purchase_date']);
-        $isWarrantyExpired = isWarrantyExpired($order->purchase_date, $order->product?->warranty_period, $order->product?->warranty_period_unit);
-        $type = $isWarrantyExpired ? Service::TYPE_REPAIR : Service::TYPE_WARRANTY;
+        $type = $order->expired ? Service::TYPE_REPAIR : Service::TYPE_WARRANTY;
 
         DB::beginTransaction();
         $service = Service::with('status')

@@ -33,8 +33,7 @@
                                        readonly>
                             </div>
 
-                            @php($isWarrantyExpired = isWarrantyExpired($order->purchase_date, $order->product?->warranty_period, $order->product?->warranty_period_unit))
-                            @php($type = $isWarrantyExpired ? \App\Models\Service::TYPE[\App\Models\Service::TYPE_REPAIR] : \App\Models\Service::TYPE[\App\Models\Service::TYPE_WARRANTY])
+                            @php($type = $order->expired ? \App\Models\Service::TYPE[\App\Models\Service::TYPE_REPAIR] : \App\Models\Service::TYPE[\App\Models\Service::TYPE_WARRANTY])
 
                             <div class="mb-4">
                                 <label class="form-label" for="type">Yêu cầu</label>
