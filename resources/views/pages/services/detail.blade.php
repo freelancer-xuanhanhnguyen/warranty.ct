@@ -169,6 +169,7 @@
                             <th class="text-end">Ngày mua</th>
                             <th class="text-center">Ngày bảo hành định kỳ</th>
                             <th class="text-center">Trạng thái</th>
+                            <th class="text-center"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -208,6 +209,17 @@
 
                                 <td class="fs-sm">
                                     <x-warranty-status :order="$item"/>
+                                </td>
+                                <td class="text-center text-nowrap">
+                                    <div class="btn-group btn-group-sm" role="group"
+                                         aria-label="Small Horizontal Primary">
+                                        <a class="btn btn-sm btn-alt-{{$item->expired ? 'warning':'info'}}"
+                                           href="{{route('services.request', ['email' => request()->email, 'orderId' => $item->id])}}"
+                                           data-bs-toggle="tooltip"
+                                           title="{{$item->expired ? 'Sửa chữa' : 'Bảo hành'}}">
+                                            <i class="fa fa-fw fa-screwdriver-wrench"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

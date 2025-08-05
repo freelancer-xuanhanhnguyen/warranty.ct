@@ -114,8 +114,10 @@ class ServiceObserver
                 }
 
                 if ($service->isDirty('fee_total')) {
+                    $role = array_values(array_diff([User::ROLE_ADMIN, User::ROLE_CSKH], [$user->role]));
+
                     Notification::send($service, new NewServiceNotification([
-                        'role' => [User::ROLE_ADMIN],
+                        'role' => $role,
                         'redirect_to' => route('admin.services.show', $service->id),
                         'created_by' => $user,
                         'message' => "Phiếu <strong>$service->code</strong> đã thay đổi phụ phí <strong>" . format_money($service->fee_total) . "</strong>"
