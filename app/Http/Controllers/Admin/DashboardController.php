@@ -95,18 +95,27 @@ class DashboardController
         $growthCompletedService = $this->calculatorGrowth($completedServicesThisWeek, $completedServicesLastWeek);
 
         // 3. Main query: join vào  services, filter theo created_at, group by ngày
-        $rawStats = DB::table('services')
+        $rawCreatedStats = DB::table('services')
             ->selectRaw('DATE(services.created_at) as date')
             ->selectRaw('count(*) as created_total')
-            ->selectRaw('sum(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as completed_total', [
-                ServiceStatus::STATUS_COMPLETED,
-            ])
-            ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
-                $join->on('services.id', '=', 'latest_status.service_id');
-            })
             ->whereDate('services.created_at', '>=', $startOfLastWeek->toDateString())
             ->whereDate('services.created_at', '<=', $endOfWeek->toDateString())
             ->groupBy(DB::raw('DATE(services.created_at)'))
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date')
+            ->toArray();
+
+        $rawCompletedStats = DB::table('services')
+            ->selectRaw('DATE(latest_status.created_at) as date')
+            ->selectRaw('count(*) as completed_total')
+            ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
+                $join->on('services.id', '=', 'latest_status.service_id');
+            })
+            ->whereDate('latest_status.created_at', '>=', $startOfLastWeek->toDateString())
+            ->whereDate('latest_status.created_at', '<=', $endOfWeek->toDateString())
+            ->where('latest_status.code', ServiceStatus::STATUS_COMPLETED)
+            ->groupBy(DB::raw('DATE(latest_status.created_at)'))
             ->orderBy('date')
             ->get()
             ->keyBy('date')
@@ -137,8 +146,8 @@ class DashboardController
         $stats = [];
         for ($i = 0; $i < 14; $i++) {
             $day = $startOfLastWeek->copy()->addDays($i)->toDateString();
-            $created = (int)($rawStats[$day]?->created_total ?? 0);
-            $completed = (int)($rawStats[$day]?->completed_total ?? 0);
+            $created = (int)($rawCreatedStats[$day]?->created_total ?? 0);
+            $completed = (int)($rawCompletedStats[$day]?->completed_total ?? 0);
 
             $stats['created'][$i < 7 ? 'last' : 'today'][] = $created;
             $stats['completed'][$i < 7 ? 'last' : 'today'][] = $completed;
