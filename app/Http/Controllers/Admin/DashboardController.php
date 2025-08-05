@@ -46,16 +46,14 @@ class DashboardController
         $reportRepairman = $query->limit(10)->get();
 
         $reportServices = DB::table('services')
-            ->select('services.id', 'latest_status.code')
             ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
                 $join->on('services.id', '=', 'latest_status.service_id');
             })
-            ->groupBy('services.id', 'latest_status.code')
-            ->selectRaw("Count(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_warranty", [ServiceStatus::STATUS_UNDER_WARRANTY])
-            ->selectRaw("Count(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_repair", [ServiceStatus::STATUS_UNDER_REPAIR])
+            ->selectRaw("sum(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_warranty", [ServiceStatus::STATUS_UNDER_WARRANTY])
+            ->selectRaw("sum(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_repair", [ServiceStatus::STATUS_UNDER_REPAIR])
             ->selectRaw("
-        Count(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END)
-      + Count(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END)
+        sum(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END)
+      + sum(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END)
       AS total_services
     ", [
                 ServiceStatus::STATUS_UNDER_WARRANTY,
