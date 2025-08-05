@@ -224,14 +224,14 @@
                         <div class="block block-rounded d-flex flex-column h-100 mb-0">
                             <div class="block-content flex-grow-1 d-flex justify-content-between">
                                 <dl class="mb-0">
-                                    <dt class="fs-3 fw-bold">{{$servicesThisWeek}}</dt>
-                                    <dd class="fs-sm fw-medium text-muted mb-0">Phiếu bảo hành</dd>
+                                    <dt class="fs-3 fw-bold">{{format_money($completedServicesThisWeek->total)}}</dt>
+                                    <dd class="fs-sm fw-medium text-muted mb-0">Phụ phí</dd>
                                 </dl>
                                 <div>
                                     <div
-                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold {{$growthService > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}}">
-                                        <i class="fa fa-caret-{{$growthService > 0 ? 'up' : 'down'}} me-1"></i>
-                                        {{abs($growthService)}}%
+                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold {{$growthTotalService > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}}">
+                                        <i class="fa fa-caret-{{$growthTotalService > 0 ? 'up' : 'down'}} me-1"></i>
+                                        {{abs($growthTotalService)}}%
                                     </div>
                                 </div>
                             </div>

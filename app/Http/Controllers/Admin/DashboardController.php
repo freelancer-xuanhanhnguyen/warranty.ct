@@ -69,12 +69,13 @@ class DashboardController
         $usersLastWeek = User::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count();
         $customersLastWeek = Customer::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count();
         $servicesLastWeek = Service::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count();
-        $completedServicesLastWeek = Service::whereBetween('latest_status.created_at', [$startOfLastWeek, $endOfLastWeek])
+        $completedServicesLastWeek = Service::selectRaw("COUNT(*) AS count, SUM(services.fee_total) AS total")
+            ->whereBetween('latest_status.created_at', [$startOfLastWeek, $endOfLastWeek])
             ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
                 $join->on('services.id', '=', 'latest_status.service_id');
             })
             ->where('latest_status.code', ServiceStatus::STATUS_COMPLETED)
-            ->count();
+            ->first();
 
         $startOfWeek = $now->clone()->startOfWeek();
         $endOfWeek = $now->clone()->endOfWeek();
@@ -82,17 +83,19 @@ class DashboardController
         $usersThisWeek = User::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
         $customersThisWeek = Customer::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
         $servicesThisWeek = Service::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
-        $completedServicesThisWeek = Service::leftJoinSub($latestStatuses, 'latest_status', function ($join) {
-            $join->on('services.id', '=', 'latest_status.service_id');
-        })
+        $completedServicesThisWeek = Service::selectRaw("COUNT(*) AS count, SUM(services.fee_total) AS total")
+            ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
+                $join->on('services.id', '=', 'latest_status.service_id');
+            })
             ->whereBetween('latest_status.created_at', [$startOfWeek, $endOfWeek])
             ->where('latest_status.code', ServiceStatus::STATUS_COMPLETED)
-            ->count();
+            ->first();
 
         $growthUser = $this->calculatorGrowth($usersThisWeek, $usersLastWeek);
         $growthCustomer = $this->calculatorGrowth($customersThisWeek, $customersLastWeek);
         $growthService = $this->calculatorGrowth($servicesThisWeek, $servicesLastWeek);
-        $growthCompletedService = $this->calculatorGrowth($completedServicesThisWeek, $completedServicesLastWeek);
+        $growthCompletedService = $this->calculatorGrowth($completedServicesThisWeek->count, $completedServicesLastWeek->count);
+        $growthTotalService = $this->calculatorGrowth($completedServicesThisWeek->total, $completedServicesLastWeek->total);
 
         // 3. Main query: join vào  services, filter theo created_at, group by ngày
         $rawCreatedStats = DB::table('services')
@@ -109,6 +112,21 @@ class DashboardController
         $rawCompletedStats = DB::table('services')
             ->selectRaw('DATE(latest_status.created_at) as date')
             ->selectRaw('count(*) as completed_total')
+            ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
+                $join->on('services.id', '=', 'latest_status.service_id');
+            })
+            ->whereDate('latest_status.created_at', '>=', $startOfLastWeek->toDateString())
+            ->whereDate('latest_status.created_at', '<=', $endOfWeek->toDateString())
+            ->where('latest_status.code', ServiceStatus::STATUS_COMPLETED)
+            ->groupBy(DB::raw('DATE(latest_status.created_at)'))
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date')
+            ->toArray();
+
+        $rawTotalStats = DB::table('services')
+            ->selectRaw('DATE(latest_status.created_at) as date')
+            ->selectRaw('sum(fee_total) as total')
             ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
                 $join->on('services.id', '=', 'latest_status.service_id');
             })
@@ -154,7 +172,7 @@ class DashboardController
 
             $stats['users'][] = (int)($rawNewUsersStats[$day]?->total ?? 0);
             $stats['customers'][] = (int)($rawNewCustomersStats[$day]?->total ?? 0);
-            $stats['services'][] = $created + $completed;
+            $stats['total'][] = (int)($rawTotalStats[$day]?->total ?? 0);
         }
 
         $reportCustomer = Customer::selectRaw('count(*) as total')
@@ -175,9 +193,9 @@ class DashboardController
             ->keyBy('role')
             ->toArray();
 
-
         return view('dashboard', compact('reportRepairman', 'reportServices', 'reportUsers', 'reportCustomer', 'reportService', 'stats',
-            'usersThisWeek', 'growthUser', 'customersThisWeek', 'growthCustomer', 'servicesThisWeek', 'growthService', 'growthCompletedService'));
+            'usersThisWeek', 'growthUser', 'customersThisWeek', 'growthCustomer', 'servicesThisWeek', 'growthService',
+            'growthCompletedService', 'growthTotalService', 'completedServicesThisWeek'));
     }
 
     private function calculatorGrowth($new, $old): float|int
@@ -187,6 +205,7 @@ class DashboardController
         } else {
             $growth = (($new - $old) / $old) * 100;
         }
-        return round($growth, 2);
+
+        return (float) bcdiv($growth, 1, 2);
     }
 }

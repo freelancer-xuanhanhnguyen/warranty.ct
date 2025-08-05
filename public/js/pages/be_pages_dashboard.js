@@ -283,7 +283,7 @@ class pageDashboard {
           labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
           datasets: [
             {
-              label: 'Tổng phiếu bảo hành',
+              label: 'Tổng chi phí',
               fill: true,
               backgroundColor: 'rgba(101, 163, 13, .15)',
               borderColor: 'transparent',
@@ -291,7 +291,7 @@ class pageDashboard {
               pointBorderColor: '#fff',
               pointHoverBackgroundColor: '#fff',
               pointHoverBorderColor: 'rgba(101, 163, 13, 1)',
-              data: stats?.services || [],
+              data: stats?.total || [],
             }
           ]
         },
@@ -316,7 +316,10 @@ class pageDashboard {
             tooltip: {
               callbacks: {
                 label: function (context) {
-                  return ' ' + context.parsed.y + ' phiếu bảo hành';
+                  return new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                  }).format(context.parsed.y)
                 }
               }
             }
