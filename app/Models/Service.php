@@ -15,10 +15,12 @@ class Service extends Model
 {
     use HasFactory, LogsActivity, Notifiable;
 
-    protected $fillable = ['order_id', 'repairman_id', 'code', 'type', 'content', 'fee_total', 'note', 'reception_date', 'expected_completion_date', 'evaluate', 'evaluate_note'];
+    protected $fillable = ['order_id', 'repairman_id', 'code', 'type', 'content', 'fee_total', 'note', 'canceled_date', 'completed_date', 'evaluate', 'evaluate_note'];
 
     protected $casts = [
         'fee_total' => 'float',
+        'canceled_date' => 'datetime',
+        'completed_date' => 'datetime',
     ];
 
     const TYPE_REPAIR = 0;

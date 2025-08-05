@@ -17,7 +17,7 @@ class DashboardController
     public function index()
     {
         $latestStatuses = DB::table('service_statuses as ss1')
-            ->select('ss1.service_id', 'ss1.code')
+            ->select('ss1.service_id', 'ss1.code', 'ss1.created_at')
             ->whereRaw('ss1.id = (SELECT MAX(ss2.id) FROM service_statuses ss2 WHERE ss2.service_id = ss1.service_id)');
 
         $reportRepairman = DB::table('services')
@@ -69,7 +69,7 @@ class DashboardController
         $usersLastWeek = User::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count();
         $customersLastWeek = Customer::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count();
         $servicesLastWeek = Service::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count();
-        $completedServicesLastWeek = Service::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])
+        $completedServicesLastWeek = Service::whereBetween('latest_status.created_at', [$startOfLastWeek, $endOfLastWeek])
             ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
                 $join->on('services.id', '=', 'latest_status.service_id');
             })
@@ -82,10 +82,10 @@ class DashboardController
         $usersThisWeek = User::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
         $customersThisWeek = Customer::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
         $servicesThisWeek = Service::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
-        $completedServicesThisWeek = Service::whereBetween('created_at', [$startOfWeek, $endOfWeek])
-            ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
-                $join->on('services.id', '=', 'latest_status.service_id');
-            })
+        $completedServicesThisWeek = Service::leftJoinSub($latestStatuses, 'latest_status', function ($join) {
+            $join->on('services.id', '=', 'latest_status.service_id');
+        })
+            ->whereBetween('latest_status.created_at', [$startOfWeek, $endOfWeek])
             ->where('latest_status.code', ServiceStatus::STATUS_COMPLETED)
             ->count();
 
