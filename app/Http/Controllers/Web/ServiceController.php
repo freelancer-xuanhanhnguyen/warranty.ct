@@ -21,8 +21,8 @@ class ServiceController extends Controller
             'repairman',
             'status',
         ])
-            ->whereHas('order.customer', function ($query) {
-                $query->select('id')->where('id', customer()->id());
+            ->whereHas('order', function ($query) {
+                $query->select('id')->where('customer_id', customer()->id());
             })
             ->when($q, function ($query) use ($q) {
                 $q = escape_like($q);
@@ -61,6 +61,7 @@ class ServiceController extends Controller
             'order.customer',
             'repairman',
             'status',
+            'comments.commentable:id,name',
         ])
             ->whereHas('order.customer', function ($query) {
                 $query->select('id')->where('id', customer()->id());
@@ -74,9 +75,7 @@ class ServiceController extends Controller
     public function request($orderId)
     {
         $order = Order::with('product')
-            ->whereHas('customer', function ($query) {
-                $query->select('id')->where('id', customer()->id());
-            })
+            ->where('customer_id', customer()->id())
             ->findOrFail($orderId, ['id', 'product_id', 'code', 'purchase_date']);
 
         return view('pages.services.create', compact('order'));
@@ -85,6 +84,7 @@ class ServiceController extends Controller
     public function create($orderId, Request $request)
     {
         $order = Order::with('product:id,warranty_period,warranty_period_unit')
+            ->where('customer_id', customer()->id())
             ->findOrFail($orderId, ['id', 'product_id', 'purchase_date']);
         $type = $order->expired ? Service::TYPE_REPAIR : Service::TYPE_WARRANTY;
 
@@ -119,7 +119,9 @@ class ServiceController extends Controller
 
     public function review($id, Request $request)
     {
-        $service = Service::findOrFail($id);
+        $service = Service::whereHas('order', function ($query) {
+            $query->select('id')->where('customer_id', customer()->id());
+        })->findOrFail($id);
 //        if ($service->evaluate > 0) return back()->with(['error' => 'Dịch vụ đã được đánh giá, vui lòng thử lại sau.']);
         if ($request->score > 0) {
             $updated = $service->update(collect($request->only(['score', 'evaluate_note']))->merge([

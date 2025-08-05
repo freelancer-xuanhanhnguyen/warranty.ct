@@ -30,4 +30,9 @@ class Customer extends Authenticatable
     {
         return $this->hasMany(Service::class);
     }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
 }

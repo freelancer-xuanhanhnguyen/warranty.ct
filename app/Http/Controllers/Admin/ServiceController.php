@@ -168,6 +168,7 @@ class ServiceController extends Controller
             'order.customer',
             'repairman:id,name',
             'status',
+            'comments.commentable:id,name',
         ]);
 
         if (auth()->user()->role === User::ROLE_REPAIRMAN) {
@@ -175,7 +176,6 @@ class ServiceController extends Controller
         }
 
         $data = $query->findOrFail($id);
-
 
         $logs = Activity::inLog('services')
             ->where('subject_id', $id)

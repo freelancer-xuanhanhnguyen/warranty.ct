@@ -93,6 +93,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $query->where('status', 1);
     }
 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
 //    public function sendPasswordResetNotification($token)
 //    {
 //        $this->notify(new \App\Notifications\CustomResetPasswordNotification($token));

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AccessoryController;
 use App\Http\Controllers\Admin\ChangePasswordController;
+use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Web\CommentController as WebCommentController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\NotificationController;
@@ -14,10 +16,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginTokenController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Web\ProductController as WebProductController;
-use App\Http\Controllers\Web\TrackEmailController;
 use App\Http\Controllers\Web\ServiceController;
-use App\Models\Customer;
-use App\Models\Service;
 use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -84,6 +83,7 @@ Route::middleware(['auth', 'verified', 'auth.user'])->prefix('admin')->group(fun
 
     Route::resource('/profile', ProfileController::class)->names('admin.profile')->only(['index', 'update']);
     Route::resource('/change-password', ChangePasswordController::class)->names('admin.change-password')->only(['index', 'update']);
+    Route::post('services/{id}/comments', [CommentController::class, 'store'])->name('admin.comments.store');
 
     Route::middleware('auth.role:' . User::ROLE_CSKH)->group(function () {
         Route::resource('services', \App\Http\Controllers\Admin\ServiceController::class)->only(['destroy'])->names('admin.services');
@@ -132,6 +132,7 @@ Route::group([], function () {
             Route::post('/{orderId}/create', [ServiceController::class, 'create'])->name('services.create');
             Route::get('/{id}', [ServiceController::class, 'detail'])->name('services.detail');
             Route::post('/{id}/review', [ServiceController::class, 'review'])->name('services.review');
+            Route::post('/{id}/comments', [WebCommentController::class, 'store'])->name('comments.store');
         });
     });
 });

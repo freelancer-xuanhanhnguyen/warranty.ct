@@ -36,6 +36,12 @@ class Service extends Model
         self::TYPE_WARRANTY => 'smooth',
     ];
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

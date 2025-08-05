@@ -129,5 +129,5 @@ if (!function_exists('escape_like')) {
 
 function customer(): \Illuminate\Contracts\Auth\Guard|\Illuminate\Contracts\Auth\StatefulGuard
 {
-    return Auth::guard('customer');
+    return auth('customer');
 }

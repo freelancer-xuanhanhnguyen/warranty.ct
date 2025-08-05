@@ -357,6 +357,47 @@
                 </table>
             </div>
         </div>
+        <!-- END Info -->
+
+        <!-- comment -->
+        <div class="block block-rounded">
+            <div class="block-header block-header-default">
+                <h3 class="block-title">Bình luận</h3>
+            </div>
+            <div class="block-content">
+                @foreach($data->comments as $comment)
+                    <div class="d-flex justify-content-{{!$comment->is_user ? 'end': 'start'}}">
+                        <p class="border rounded-2 p-3 mb-4 {{!$comment->is_user ? 'text-end bg-primary-lighter': 'text-start bg-gray-lighter'}}">
+                            {{ $comment->content }}
+                            <small><br><i class="fa fa-clock"></i> {{ $comment->created_at->diffForHumans() }}
+                                bởi <strong>{{ $comment->commentable->name }}</strong></small>
+                        </p>
+                    </div>
+                @endforeach
+            </div>
+            <div class="block-footer border-top p-3">
+                <form id="comment" action="{{route('comments.store', $data->id)}}#comment" method="POST">
+                    @csrf
+                    <div class="d-flex gap-3">
+                        <div class="w-100">
+                            <textarea class="form-control js-maxlength @error('content') is-invalid @enderror"
+                                      maxlength="500" name="content" cols="30"
+                                      rows="3" required>{{old('content', '')}}</textarea>
+                            @error('content')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div style="min-width: 81px">
+                            <button type="submit" class="btn btn-alt-primary">
+                                Gửi <i class="fa fa-reply me-1 opacity-50"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- END comment -->
     </div>
     <!-- END Content -->
 
