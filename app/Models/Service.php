@@ -66,7 +66,9 @@ class Service extends Model
 
     public function repairman()
     {
-        return $this->belongsTo(User::class, 'repairman_id');
+        return $this->belongsTo(User::class, 'repairman_id')
+            ->active()
+            ->where('role', User::ROLE_REPAIRMAN);
     }
 
     public function status()

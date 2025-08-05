@@ -23,6 +23,7 @@ class RepairmanController extends Controller
         $query = DB::table('services')
             ->select('users.name', 'services.repairman_id', 'users.email')
             ->join('users', 'users.id', '=', 'services.repairman_id')
+            ->where('users.status', 1)
             ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
                 $join->on('services.id', '=', 'latest_status.service_id');
             });

@@ -26,6 +26,7 @@ class DashboardController
             ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
                 $join->on('services.id', '=', 'latest_status.service_id');
             })
+            ->where('users.status', 1)
             ->where('users.role', '=', User::ROLE_REPAIRMAN)
             ->groupBy('services.repairman_id', 'users.name', 'users.email')
             ->selectRaw("
