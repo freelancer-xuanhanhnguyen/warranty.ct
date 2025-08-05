@@ -14,8 +14,8 @@ class ReminderNotify extends Command
 
     public function handle()
     {
-        $date = now()->addDay();
-        $orders = Order::with(['customer', 'product'])->whereDate('nex_date', $date)->get();
+        $date = now()->addDay()->toDateString();
+        $orders = Order::with(['customer', 'product'])->whereDate('next_date', $date)->get();
 
         foreach ($orders as $order) {
             Mail::to($order->customer->email)->queue(new ReminderWarrantyProductMail($order));

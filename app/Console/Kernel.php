@@ -25,7 +25,11 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->onOneServer();
 
-
+        // Chạy 09:00 mỗi ngày, cập nhật lại ngày bảo hành định kỳ
+        $schedule->command('update:orders')
+            ->dailyAt('09:00')
+            ->withoutOverlapping()
+            ->onOneServer();
     }
 
     /**
@@ -33,7 +37,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

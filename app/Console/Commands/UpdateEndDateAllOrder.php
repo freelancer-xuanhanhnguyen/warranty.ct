@@ -9,12 +9,20 @@ use Illuminate\Support\Facades\Mail;
 
 class UpdateEndDateAllOrder extends Command
 {
-    protected $signature = 'update:orders';
+    protected $signature = 'update:orders {--all}';
     protected $description = 'Cập nhật lại end date all order';
 
     public function handle()
     {
-        $orders = Order::with(['product'])->get();
+
+        if (!$this->option('all')) {
+            $yesterday = now()->subDay()->toDateString();
+            $orders = Order::with(['customer', 'product'])->whereDate('next_date', $yesterday)->get();
+
+            $this->info("Ngày cập nhật: $yesterday");
+        } else {
+            $orders = Order::with(['product'])->get();
+        }
 
         foreach ($orders as $order) {
             $status = checkWarrantyStatus($order);
