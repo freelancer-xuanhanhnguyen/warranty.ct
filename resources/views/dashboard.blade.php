@@ -191,7 +191,7 @@
                                 </dl>
                                 <div>
                                     <div
-                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold @if($growthUser) {{$growthUser > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}} @endif">
+                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold @if($growthUser) {{$growthUser > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}} @else bg-info-light text-info @endif">
                                         @if($growthUser)
                                             <i class="fa fa-caret-{{$growthUser > 0 ? 'up' : 'down'}} me-1"></i>
                                         @endif
@@ -214,7 +214,7 @@
                                 </dl>
                                 <div>
                                     <div
-                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold @if($growthCustomer) {{$growthCustomer > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}} @endif">
+                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold @if($growthCustomer) {{$growthCustomer > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}} @else bg-info-light text-info @endif">
                                         @if($growthCustomer)
                                             <i class="fa fa-caret-{{$growthCustomer > 0 ? 'up' : 'down'}} me-1"></i>
                                         @endif
@@ -237,7 +237,7 @@
                                 </dl>
                                 <div>
                                     <div
-                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold @if($growthTotalService) {{$growthTotalService > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}} @endif">
+                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold @if($growthTotalService) {{$growthTotalService > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}} @else bg-info-light text-info @endif">
                                         @if($growthTotalService)
                                             <i class="fa fa-caret-{{$growthTotalService > 0 ? 'up' : 'down'}} me-1"></i>
                                         @endif
