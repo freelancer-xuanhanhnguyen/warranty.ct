@@ -152,7 +152,9 @@
                             <div class="col-sm-6">
                                 <dl data-type="created" class="p-3 m-0 bar-tab" style="cursor: pointer;">
                                     <dt class="fs-3 fw-bold d-inline-flex align-items-center space-x-2">
-                                        <i class="fa fs-base {{$growthService > 0 ? 'fa-caret-up text-success' : 'fa-caret-down text-danger'}}"></i>
+                                        @if($growthService)
+                                            <i class="fa fs-base {{$growthService > 0 ? 'fa-caret-up text-success' : 'fa-caret-down text-danger'}}"></i>
+                                        @endif
                                         <span>{{abs($growthService)}}%</span>
                                     </dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">Phiếu mới</dd>
@@ -162,7 +164,9 @@
                                 <dl data-type="completed" class="p-3 m-0 bar-tab bg-body-light"
                                     style="cursor: pointer;">
                                     <dt class="fs-3 fw-bold d-inline-flex align-items-center space-x-2">
-                                        <i class="fa fs-base {{$growthCompletedService > 0 ? 'fa-caret-up text-success' : 'fa-caret-down text-danger'}}"></i>
+                                        @if($growthCompletedService)
+                                            <i class="fa fs-base {{$growthCompletedService > 0 ? 'fa-caret-up text-success' : 'fa-caret-down text-danger'}}"></i>
+                                        @endif
                                         <span>{{abs($growthCompletedService)}}%</span>
                                     </dt>
                                     <dd class="fs-sm fw-medium text-muted mb-0">Phiếu hoàn thành</dd>
@@ -187,8 +191,10 @@
                                 </dl>
                                 <div>
                                     <div
-                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold {{$growthUser > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}}">
-                                        <i class="fa fa-caret-{{$growthUser > 0 ? 'up' : 'down'}} me-1"></i>
+                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold @if($growthUser) {{$growthUser > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}} @endif">
+                                        @if($growthUser)
+                                            <i class="fa fa-caret-{{$growthUser > 0 ? 'up' : 'down'}} me-1"></i>
+                                        @endif
                                         {{abs($growthUser)}}%
                                     </div>
                                 </div>
@@ -208,8 +214,10 @@
                                 </dl>
                                 <div>
                                     <div
-                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold {{$growthCustomer > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}}">
-                                        <i class="fa fa-caret-{{$growthCustomer > 0 ? 'up' : 'down'}} me-1"></i>
+                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold @if($growthCustomer) {{$growthCustomer > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}} @endif">
+                                        @if($growthCustomer)
+                                            <i class="fa fa-caret-{{$growthCustomer > 0 ? 'up' : 'down'}} me-1"></i>
+                                        @endif
                                         {{abs($growthCustomer)}}%
                                     </div>
                                 </div>
@@ -229,8 +237,10 @@
                                 </dl>
                                 <div>
                                     <div
-                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold {{$growthTotalService > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}}">
-                                        <i class="fa fa-caret-{{$growthTotalService > 0 ? 'up' : 'down'}} me-1"></i>
+                                        class="d-inline-block px-2 py-1 rounded-3 fs-xs fw-semibold @if($growthTotalService) {{$growthTotalService > 0 ? 'bg-success-light text-success' : 'bg-danger-light text-danger'}} @endif">
+                                        @if($growthTotalService)
+                                            <i class="fa fa-caret-{{$growthTotalService > 0 ? 'up' : 'down'}} me-1"></i>
+                                        @endif
                                         {{abs($growthTotalService)}}%
                                     </div>
                                 </div>
