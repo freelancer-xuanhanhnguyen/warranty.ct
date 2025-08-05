@@ -20,42 +20,40 @@ class DashboardController
             ->select('ss1.service_id', 'ss1.code')
             ->whereRaw('ss1.id = (SELECT MAX(ss2.id) FROM service_statuses ss2 WHERE ss2.service_id = ss1.service_id)');
 
-        $query = DB::table('services')
+        $reportRepairman = DB::table('services')
             ->select('users.name', 'services.repairman_id', 'users.email')
             ->join('users', 'users.id', '=', 'services.repairman_id')
             ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
                 $join->on('services.id', '=', 'latest_status.service_id');
             })
-            ->where('users.role', '=', User::ROLE_REPAIRMAN);
-
-        $query = $query->groupBy('services.repairman_id', 'users.name', 'users.email')
-            ->selectRaw("SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_warranty", [ServiceStatus::STATUS_UNDER_WARRANTY])
-            ->selectRaw("SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_repair", [ServiceStatus::STATUS_UNDER_REPAIR])
+            ->where('users.role', '=', User::ROLE_REPAIRMAN)
+            ->groupBy('services.repairman_id', 'users.name', 'users.email')
             ->selectRaw("
-        SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END)
-      + SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END)
-      AS total_services
+        SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) AS total_under_warranty,
+        SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) AS total_under_repair,
+        SUM(CASE WHEN latest_status.code IN (?, ?) THEN 1 ELSE 0 END) AS total_services
     ", [
+                ServiceStatus::STATUS_UNDER_WARRANTY,
+                ServiceStatus::STATUS_UNDER_REPAIR,
                 ServiceStatus::STATUS_UNDER_WARRANTY,
                 ServiceStatus::STATUS_UNDER_REPAIR,
             ])
             ->havingRaw('total_services > 0')
-            ->orderBy('total_services', 'desc');
-
-
-        $reportRepairman = $query->limit(10)->get();
+            ->orderBy('total_services', 'desc')
+            ->limit(10)
+            ->get();
 
         $reportServices = DB::table('services')
             ->leftJoinSub($latestStatuses, 'latest_status', function ($join) {
                 $join->on('services.id', '=', 'latest_status.service_id');
             })
-            ->selectRaw("sum(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_warranty", [ServiceStatus::STATUS_UNDER_WARRANTY])
-            ->selectRaw("sum(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) as total_under_repair", [ServiceStatus::STATUS_UNDER_REPAIR])
             ->selectRaw("
-        sum(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END)
-      + sum(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END)
-      AS total_services
+        SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) AS total_under_warranty,
+        SUM(CASE WHEN latest_status.code = ? THEN 1 ELSE 0 END) AS total_under_repair,
+        SUM(CASE WHEN latest_status.code IN (?, ?) THEN 1 ELSE 0 END) AS total_services
     ", [
+                ServiceStatus::STATUS_UNDER_WARRANTY,
+                ServiceStatus::STATUS_UNDER_REPAIR,
                 ServiceStatus::STATUS_UNDER_WARRANTY,
                 ServiceStatus::STATUS_UNDER_REPAIR,
             ])
